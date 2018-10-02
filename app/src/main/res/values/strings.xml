@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">AppCuXa</string>
+    <string name="cu_xa">Cư xá</string>
+    <string name="YOUR_API_KEY">AIzaSyCZFFp865kpfZ4eztrR88sqlK1McmRVgQg</string>
+    <string name="facebook_app_id">1820275751401818</string>
+    <string name="client_id">893039684706-mcku052sjc6fnbi7e57fr9ukrojl7pg5.apps.googleusercontent.com</string>
+    <string name="bottom_sheet_option_camera">Use Camera</string>
+    <string name="bottom_sheet_option_gallery">Upload from Gallery</string>
+    <string name="bottom_sheet_option_heading">Add Photo</string>
+    <string name="bottom_sheet_option_remove_photo">Remove Photo</string>
+    <string name="below_million">&lt; 1 triệu</string>
+    <string name="above_three_millions">&gt; 3 triệu</string>
+    <string name="ip_all_images">所有图片</string>
+    <string name="ip_folder_image_count">共%1$d张</string>
+</resources>

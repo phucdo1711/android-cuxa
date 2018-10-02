@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:layout_marginTop="10dp"
+    android:orientation="vertical">
+    <!-- <android.support.v7.widget.Toolbar
+         android:id="@+id/toolbarUpdateProfile"
+         android:layout_width="match_parent"
+         android:layout_height="106dp"
+         android:background="#ffffff"
+         android:elevation="4dp"
+         tools:targetApi="lollipop">-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="106dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="16dp"
+                android:paddingLeft="10dp"
+                android:layout_weight="7"
+                android:background="@drawable/bg_search_layout"
+                android:elevation="4dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:background="@drawable/ripple_item"
+                    android:id="@+id/imgBack"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_back"
+                  />
+
+                <AutoCompleteTextView
+                    android:layout_marginRight="5dp"
+                    android:imeOptions="actionSearch"
+                    android:id="@+id/edtSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#00ffffff"
+                    android:hint="Gõ để bắt đầu tìm kiếm"
+                    android:textColorHint="@color/black" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5" />
+
+            <com.example.dell.appcuxa.CustomeView.RobButton
+                android:id="@+id/btnSearchAdvance"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_marginRight="16dp"
+                android:layout_weight="2.5"
+                android:background="@drawable/bg_search_layout"
+                android:elevation="10dp"
+                android:text="Nâng cao"
+                android:textAllCaps="false"
+                android:textColor="@color/black" />
+        </LinearLayout
+>
+
+        <RadioGroup
+            android:id="@+id/rgLocation"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="0.5" />
+
+            <com.example.dell.appcuxa.CustomeView.RobRadioButton
+                android:id="@+id/rdHN"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2.5"
+                android:background="@drawable/bg_radio"
+                android:button="@android:color/transparent"
+                android:textColor="@drawable/change_color_checkbox"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Hà Nội"
+                />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="0.5" />
+
+            <com.example.dell.appcuxa.CustomeView.RobRadioButton
+                android:id="@+id/rdSG"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2.5"
+                android:background="@drawable/bg_radio"
+                android:button="@android:color/transparent"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Sài Gòn"
+                android:textColor="@drawable/change_color_checkbox" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="0.5" />
+
+            <com.example.dell.appcuxa.CustomeView.RobRadioButton
+                android:id="@+id/rdCurrentLocation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:background="@drawable/bg_radio"
+                android:button="@android:color/transparent"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Vị trí hiện tại"
+                android:textColor="@drawable/change_color_checkbox" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="0.5" />
+        </RadioGroup>
+    </LinearLayout>
+
+
+    <!--</android.support.v7.widget.Toolbar>-->
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.example.dell.appcuxa.CustomeView.RobBoldText
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Gợi ý"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recHint"
+                android:layout_width="match_parent"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+            </android.support.v7.widget.RecyclerView>
+
+            <com.example.dell.appcuxa.CustomeView.RobBoldText
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Lịch sử tìm kiếm"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recHistory"
+                android:layout_width="match_parent"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+            </android.support.v7.widget.RecyclerView>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>

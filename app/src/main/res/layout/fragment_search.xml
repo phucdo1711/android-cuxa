@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="#ffffff"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--<android.support.v7.widget.Toolbar
+        android:id="@+id/toolbarUpdateProfile"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#ffffff"
+        android:elevation="4dp"
+        app:title="Update Information"
+        tools:targetApi="lollipop">-->
+
+        <LinearLayout
+            android:elevation="5dp"
+            android:id="@+id/lnQuickSearch"
+            android:gravity="center"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/bg_search"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <ImageView
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/ic_search"
+                android:layout_width="35dp"
+                android:layout_height="35dp" />
+            <com.example.dell.appcuxa.CustomeView.RobLightText
+                android:gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:text="Tìm kiếm nhanh"
+                android:layout_width="match_parent"
+                android:layout_height="46dp" />
+        </LinearLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:background="#ffffff"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <com.example.dell.appcuxa.CustomeView.RobBoldText
+                android:textColor="#000000"
+                android:textSize="18dp"
+                android:text="Cư xá có thể giúp gì bạn?"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:weightSum="9.5"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="40dp">
+                <com.example.dell.appcuxa.CustomeView.RobButton
+                    android:layout_marginLeft="3sp"
+                    android:elevation="10dp"
+                    android:text="Tìm phòng"
+                    android:id="@+id/btnFindRoom"
+                    android:textAllCaps="false"
+                    android:background="@drawable/ripple_item"
+                    android:layout_width="0dp"
+                    android:layout_weight="2.5"
+                    android:layout_height="35dp" />
+                <View android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent"/>
+                <com.example.dell.appcuxa.CustomeView.RobButton
+                    android:elevation="10dp"
+                    android:text="Ở ghép"
+                    android:textAllCaps="false"
+                    android:background="@drawable/ripple_item"
+                    android:layout_width="0dp"
+                    android:layout_weight="2.5"
+                    android:layout_height="35dp" />
+                <View android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent"/>
+                <com.example.dell.appcuxa.CustomeView.RobButton
+                    android:layout_marginRight="3dp"
+                    android:elevation="10dp"
+                    android:text="Đăng phòng"
+                    android:id="@+id/btnUpRoom"
+                    android:textAllCaps="false"
+                    android:background="@drawable/ripple_item"
+                    android:layout_width="0dp"
+                    android:layout_weight="2.5"
+                    android:layout_height="35dp" />
+            </LinearLayout>
+            <com.example.dell.appcuxa.CustomeView.RobBoldText
+                android:layout_marginTop="5dp"
+                android:textColor="#000000"
+                android:textSize="18dp"
+                android:text="Top đầu Cư xá"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recRoomList"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+
+</LinearLayout>

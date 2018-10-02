@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainPage.MainPageViews.MainPageActivity">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/main_pager"
+        android:layout_above="@+id/layout_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v4.view.ViewPager>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/layout_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="56.5dp">
+        <View
+            android:background="#c9c9c9"
+            android:elevation="0.5dp"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            tools:targetApi="lollipop" />
+        <android.support.design.widget.BottomNavigationView
+            android:id="@+id/bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            app:itemBackground="@color/white"
+            app:labelVisibilityMode="labeled"
+            app:itemIconTint="@drawable/change_color_bt_bar_icon"
+            app:itemTextColor="@drawable/change_color_bt_bar_icon"
+            app:menu="@menu/bottom_navigation_main" />
+
+    </LinearLayout>
+
+</RelativeLayout>

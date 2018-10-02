@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.example.dell.appcuxa.CustomeView.RobCheckBox
+        android:layout_marginTop="10dp"
+        android:id="@+id/checkbox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_weight="3"
+        android:background="@drawable/bg_radio"
+        android:button="@android:color/transparent"
+        android:drawableRight="@drawable/ic_air_conditioner"
+        android:padding="10dp"
+        android:paddingLeft="10dp"
+        android:text="Điều hòa"
+        android:textColor="@drawable/change_color_checkbox" />
+</LinearLayout>

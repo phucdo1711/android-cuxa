@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginTop="@dimen/dp_8"
+    android:orientation="vertical">
+
+    <com.example.dell.appcuxa.CustomeView.RobBoldText
+        android:id="@+id/tv_bottom_sheet_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_56"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:gravity="center"
+        android:text="Chọn giới tính"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <com.example.dell.appcuxa.CustomeView.RobLightText
+        android:id="@+id/tvBoth"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:backgroundTint="@android:color/white"
+        android:drawablePadding="@dimen/dp_32"
+        android:drawableStart="@drawable/ic_users"
+        android:drawableTint="@color/black"
+        android:gravity="start|center_vertical"
+        android:text="Tất cả"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:drawableLeft="@drawable/ic_users" />
+    <com.example.dell.appcuxa.CustomeView.RobLightText
+        android:id="@+id/tvBoy"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:backgroundTint="@android:color/white"
+        android:drawablePadding="@dimen/dp_32"
+        android:drawableStart="@drawable/ic_boy"
+        android:drawableTint="@color/black"
+        android:gravity="start|center_vertical"
+        android:text="Nam"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:drawableLeft="@drawable/ic_boy" />
+
+    <com.example.dell.appcuxa.CustomeView.RobLightText
+        android:id="@+id/tvGirl"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:backgroundTint="@android:color/white"
+        android:drawablePadding="@dimen/dp_32"
+        android:drawableStart="@drawable/ic_girl"
+        android:drawableTint="@color/black"
+        android:gravity="start|center_vertical"
+        android:text="Nữ"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:drawableLeft="@drawable/ic_girl" />
+
+</LinearLayout>

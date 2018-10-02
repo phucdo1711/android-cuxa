@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_search"
+        android:enabled="true"
+        android:icon="@drawable/ic_search"
+        android:title="Search"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_save"
+        android:enabled="true"
+        android:icon="@drawable/ic_saved"
+        android:title="Đã lưu"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_mess"
+        android:enabled="true"
+        android:icon="@drawable/ic_message"
+        android:title="Tin nhắn"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_noti"
+        android:enabled="true"
+        android:icon="@drawable/ic_notification"
+        android:title="Thông báo"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_profile"
+        android:enabled="true"
+        android:icon="@drawable/ic_profile"
+        android:title="Profile"
+        app:showAsAction="ifRoom" />
+</menu>
