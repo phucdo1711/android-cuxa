@@ -180,11 +180,13 @@ public class AddPhotoBottomDialogFragment extends BottomSheetDialogFragment impl
                 parts.add(prepareFilePart("images", imageUri));
                 MultipartBody.Part[] parts1 = new MultipartBody.Part[parts.size()];
                 parts.toArray(parts1);
+                FragmentUpRoom.progressBar.setVisibility(View.VISIBLE);
                 Call<ResponseBody> call = fileService.postImage("Bearer " + token, parts1);
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
+                            FragmentUpRoom.progressBar.setVisibility(View.GONE);
                             JSONArray jArray = null;
                             try {
                                 jArray = new JSONArray(response.body().string());
@@ -203,6 +205,7 @@ public class AddPhotoBottomDialogFragment extends BottomSheetDialogFragment impl
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         Log.d("hihhh", "failure");
+                        FragmentUpRoom.progressBar.setVisibility(View.GONE);
                     }
                 });
             } else if (requestCode ==  PhotoPicker.REQUEST_CODE) {
@@ -223,11 +226,13 @@ public class AddPhotoBottomDialogFragment extends BottomSheetDialogFragment impl
                 }
                 MultipartBody.Part[] parts1 = new MultipartBody.Part[parts.size()];
                 parts.toArray(parts1);
+                FragmentUpRoom.progressBar.setVisibility(View.VISIBLE);
                 Call<ResponseBody> call = fileService.postImage("Bearer " + token, parts1);
                 call.enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
+                            FragmentUpRoom.progressBar.setVisibility(View.GONE);
                           /* String  a = "[{\"id\":\"5baa6e9bd17a1e4453d5673a\",\"src\":\"http://haihoa.emmasoft.com.vn:9000/cuxa/5ba2df77d07ed52ff0d8e60b/images-1537896091152.jpeg\"}" +
                                    ",{\"id\":\"5baa6e9bd17a1e4453d56739\",\"src\":\"http://haihoa.emmasoft.com.vn:9000/cuxa/5ba2df77d07ed52ff0d8e60b/images-1537896091152.jpeg\"}]";*/
                             try {
@@ -247,6 +252,7 @@ public class AddPhotoBottomDialogFragment extends BottomSheetDialogFragment impl
                     @Override
                     public void onFailure(Call<ResponseBody> call, Throwable t) {
                         Log.d("onFailure uploadImage", "failure");
+                        FragmentUpRoom.progressBar.setVisibility(View.GONE);
                     }
                 });
                 sendBackImage(lstBitmap);

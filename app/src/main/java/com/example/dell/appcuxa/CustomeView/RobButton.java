@@ -8,6 +8,8 @@ import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.widget.Button;
 
+import com.example.dell.appcuxa.R;
+
 @SuppressLint("AppCompatCustomView")
 public class RobButton extends Button {
     public RobButton(Context context) {
@@ -32,8 +34,9 @@ public class RobButton extends Button {
     }
     private void init() {
         if (!isInEditMode()) {
-            Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Light.ttf");
+            Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Bold.ttf");
             setTypeface(tf);
+            RobButton.this.setTextColor(getResources().getColor(R.color.orange));
         }
     }
 }

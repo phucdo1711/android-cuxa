@@ -52,6 +52,7 @@ public class FragmentSearch extends FragmentCommon{
     SharedPreferences sharedPreferences;
     RobButton btnFindRoom;
     CuXaAPI fileService;
+    LinearLayout lnProgressbar;
     public LinearLayout edtQuickSearch;
     public ListRoomAdapter listRoomAdapter;
     public FragmentSearch(){
@@ -66,6 +67,7 @@ public class FragmentSearch extends FragmentCommon{
         edtQuickSearch = mView.findViewById(R.id.lnQuickSearch);
         btnUpRoom = mView.findViewById(R.id.btnUpRoom);
         btnFindRoom = mView.findViewById(R.id.btnFindRoom);
+        lnProgressbar = mView.findViewById(R.id.lnProgressbar);
         btnUpRoom.setOnClickListener(this);
         sharedPreferences = getActivity().getSharedPreferences("login_data", MODE_PRIVATE);
         token = sharedPreferences.getString("token", "");
@@ -85,6 +87,7 @@ public class FragmentSearch extends FragmentCommon{
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()){
+                    lnProgressbar.setVisibility(View.GONE);
                     roomInfoList.clear();
                     try {
                         JSONObject jsonObject = new JSONObject(response.body().string());
@@ -126,7 +129,7 @@ public class FragmentSearch extends FragmentCommon{
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                lnProgressbar.setVisibility(View.GONE);
             }
         });
     }

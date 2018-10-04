@@ -27,6 +27,7 @@ import com.example.dell.appcuxa.CustomeView.RobAutoCompleteTextView;
 import com.example.dell.appcuxa.CustomeView.RobButton;
 import com.example.dell.appcuxa.CustomeView.RobCheckBox;
 import com.example.dell.appcuxa.CustomeView.RobEditText;
+import com.example.dell.appcuxa.CustomeView.RobLightText;
 import com.example.dell.appcuxa.CuxaAPI.CuXaAPI;
 import com.example.dell.appcuxa.CuxaAPI.NetworkController;
 import com.example.dell.appcuxa.MainPage.Adapter.CheckBoxAdapter;
@@ -39,6 +40,7 @@ import com.example.dell.appcuxa.ObjectModels.RoomObject;
 import com.example.dell.appcuxa.ObjectModels.UtilityObject;
 import com.example.dell.appcuxa.R;
 import com.example.dell.appcuxa.Utils.AppUtils;
+import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
@@ -84,13 +86,16 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
     @BindView(R.id.edtNumOfPpl)
     public RobEditText edtNumOfPeople;
     @BindView(R.id.edtGender)
-    public RobEditText edtGender;
+    public RobLightText edtGender;
     @BindView(R.id.edtDesc)
     public RobEditText edtDesc;
     public RobCheckBox cbRent;
     public RobCheckBox cbLiveTogether;
     RobAutoCompleteTextView edtAddress;
+    RobEditText edtElecPrice;
+    RobEditText edtWaterPrice;
     MyGridView gridView;
+    public static SpinKitView progressBar;
     Double[] latlon;
     String type = "";
     String genderAccepted = "";
@@ -236,8 +241,8 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
         String roomName = edtRoomName.getText().toString();
 
         String price = edtPrice.getText().toString();
-        String electricPrice = "120000";
-        String wterPrice = "12345";
+        String electricPrice = edtElecPrice.getText().toString();
+        String wterPrice = edtWaterPrice.getText().toString();
         String downPayment = "12343";
 
         LocationRoom locationRoom = new LocationRoom("Point",latlon);
@@ -247,14 +252,16 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
         String desc = edtDesc.getText().toString();
         String area = edtDienTich.getText().toString();
         String amountOfTenant = edtNumOfPeople.getText().toString();
+        progressBar.setVisibility(View.VISIBLE);
         RoomObject roomObject = new RoomObject(desc,type,roomName,price,electricPrice,wterPrice,downPayment,locationRoom,address,images,area,amountOfTenant,genderAccepted,utiArray);
         Call<ResponseBody> call = fileService.uploadRoom("Bearer " + token,roomObject);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()){
+                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(getActivity(), "Upload thành công", Toast.LENGTH_SHORT).show();
-                    imageHinhId.clear();
+                    imageBytes.clear();
                     FragmentUpRoom.this.dismiss();
                 }
             }
@@ -262,12 +269,15 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Toast.makeText(getActivity(), "Upload thất bại", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
 
 
     public void init() {
+        edtWaterPrice = mMainView.findViewById(R.id.edtWaterPrice);
+        edtElecPrice = mMainView.findViewById(R.id.edtElecPrice);
         edtDesc = mMainView.findViewById(R.id.edtDesc);
         edtNumOfPeople = mMainView.findViewById(R.id.edtNumOfPpl);
         gvCheckBox = mMainView.findViewById(R.id.gridCheckBox);
@@ -277,6 +287,7 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
         btnUpload = mMainView.findViewById(R.id.btnUpload);
         btnUpload.setOnClickListener(this);
         imgBack = mMainView.findViewById(R.id.imgBack);
+        progressBar = mMainView.findViewById(R.id.spin_kit);
         imgBack.setOnClickListener(this);
         edtDienTich = mMainView.findViewById(R.id.edtDienTich);
         edtPrice = mMainView.findViewById(R.id.edtPrice);
@@ -340,7 +351,6 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
 
     @Override
     public void deleteImage(final int pos, String id) {
-
         Call<ResponseBody> call = fileService.deleteImage("Bearer " + token,imageHinhId.get(pos) );
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -362,11 +372,13 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
         });
     }
     public void getAllUtilities(){
+        progressBar.setVisibility(View.VISIBLE);
         Call<ResponseBody> call = fileService.getAllUtilities("code");
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()){
+                    progressBar.setVisibility(View.GONE);
                     try {
                         JSONObject jsonObject = new JSONObject(response.body().string());
                         //JSONArray  jsonArray = jsonObject.getJSONArray("rows");
@@ -391,7 +403,7 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
