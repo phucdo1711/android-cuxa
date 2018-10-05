@@ -4,31 +4,276 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <!--<android.support.design.widget.AppBarLayout
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:background="@color/black"
-        android:layout_height="?attr/actionBarSize"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="56dp"
+        android:elevation="4dp"
+        android:gravity="center">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbarUpdateProfile"
+        <com.example.dell.appcuxa.CustomeView.RobBoldText
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="#000000"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="Update Information" >
-            <android.support.v7.widget.SearchView
+            android:layout_height="56dp"
+            android:gravity="center"
+            android:text="Profile"
+            android:textColor="@color/black"/>
+    </RelativeLayout>
+
+    <View
+        android:background="@color/black"
+        android:elevation="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:background="#ffffff"
-                android:layout_height="50dp">
+                android:layout_height="140dp"
+                android:paddingHorizontal="25dp"
+                android:weightSum="10"
+                android:background="@drawable/background_border">
 
-            </android.support.v7.widget.SearchView>
-        </android.support.v7.widget.Toolbar>
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="80dp"
+                    android:layout_weight="3.5"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_default_user" />
 
+                <RelativeLayout
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
 
-    </android.support.design.widget.AppBarLayout>-->
-    <TextView
-        android:text="profile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+                    <com.example.dell.appcuxa.CustomeView.RobBoldText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nguyễn Văn A"
+                        android:textColor="@color/black"/>
+
+                    <com.example.dell.appcuxa.CustomeView.RobLightText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="Sống tại Hà Nội, Việt Nam" />
+
+                    <com.example.dell.appcuxa.CustomeView.RobLightText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="40dp"
+                        android:text="Đang học tại Đại học Hà Nội" />
+
+                </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/imgEditprofile"
+                    android:background="@drawable/ripple_item"
+                    android:layout_width="0dp"
+                    android:layout_weight="1.5"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_edit" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_myroom"
+                android:weightSum="10"
+                android:orientation="horizontal"
+                android:background="@drawable/background_border"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:paddingHorizontal="25dp">
+
+                <com.example.dell.appcuxa.CustomeView.RobBoldText
+                    android:layout_width="0dp"
+                    android:layout_weight="10"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Phòng của bạn"
+                    android:textColor="@color/black"
+                    />
+                <ImageView
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_house"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/layout_coupon"
+                android:weightSum="10"
+                android:background="@drawable/background_border"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:paddingHorizontal="25dp">
+
+                <com.example.dell.appcuxa.CustomeView.RobBoldText
+                    android:layout_width="0dp"
+                    android:layout_weight="10"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/black"
+                    android:text="Phiếu giảm giá/ Coupon"
+                    />
+                <ImageView
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_coupon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_gift"
+                android:weightSum="10"
+                android:background="@drawable/background_border"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:paddingHorizontal="25dp">
+
+                <com.example.dell.appcuxa.CustomeView.RobBoldText
+                    android:layout_width="0dp"
+                    android:layout_weight="10"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Mời bạn bè"
+                    android:textColor="@color/black"
+                    />
+                <ImageView
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_gift"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_qrcode"
+                android:orientation="horizontal"
+                android:weightSum="10"
+                android:background="@drawable/background_border"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:paddingHorizontal="25dp">
+
+                <com.example.dell.appcuxa.CustomeView.RobBoldText
+                    android:layout_width="0dp"
+                    android:layout_weight="10"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Quét QR Code"
+                    android:textColor="@color/black"
+                  />
+                <ImageView
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_qr_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_setting"
+                android:orientation="horizontal"
+                android:weightSum="10"
+                android:background="@drawable/background_border"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:paddingHorizontal="25dp">
+
+                <com.example.dell.appcuxa.CustomeView.RobBoldText
+                    android:layout_width="0dp"
+                    android:layout_weight="10"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/black"
+                    android:text="Cài đặt"
+                 />
+                <ImageView
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_help"
+                android:weightSum="10"
+                android:orientation="horizontal"
+                android:background="@drawable/background_border"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:paddingHorizontal="25dp">
+
+                <com.example.dell.appcuxa.CustomeView.RobBoldText
+                    android:layout_width="0dp"
+                    android:layout_weight="10"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Cần trợ giúp"
+                    android:textColor="@color/black"
+                     />
+                <ImageView
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_questions_circular_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_feedback"
+                android:weightSum="10"
+                android:orientation="horizontal"
+                android:background="@drawable/background_border"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:paddingHorizontal="25dp">
+
+                <com.example.dell.appcuxa.CustomeView.RobBoldText
+                    android:layout_width="0dp"
+                    android:layout_weight="10"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/black"
+                    android:text="Feedback"
+                    />
+                <ImageView
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_feedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_logout"
+                android:weightSum="10"
+                android:orientation="horizontal"
+                android:background="@drawable/background_border"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:paddingHorizontal="25dp">
+
+                <com.example.dell.appcuxa.CustomeView.RobBoldText
+                    android:layout_width="0dp"
+                    android:layout_weight="10"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Đăng xuất"
+                    android:textColor="@color/black"
+                    />
+                <ImageView
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_exit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
 </LinearLayout>

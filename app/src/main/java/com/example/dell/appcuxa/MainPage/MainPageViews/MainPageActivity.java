@@ -48,7 +48,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         ButterKnife.bind(this);
         sharedPreferences = getSharedPreferences("login_data",MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        mBottomNav.setItemIconSize(110);
+        //mBottomNav.setItemIconSize(110);
         mBottomNav.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override

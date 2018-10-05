@@ -26,8 +26,13 @@ import com.example.dell.appcuxa.CuxaAPI.CuXaAPI;
 import com.example.dell.appcuxa.CuxaAPI.NetworkController;
 import com.example.dell.appcuxa.MainPage.Adapter.CheckBoxAdapter;
 import com.example.dell.appcuxa.MainPage.Adapter.PlaceAutoCompleteAdapter;
+import com.example.dell.appcuxa.ObjectModels.LocationRoom;
+import com.example.dell.appcuxa.ObjectModels.Price;
+import com.example.dell.appcuxa.ObjectModels.RoomObject;
+import com.example.dell.appcuxa.ObjectModels.RoomSearch;
 import com.example.dell.appcuxa.ObjectModels.UtilityObject;
 import com.example.dell.appcuxa.R;
+import com.example.dell.appcuxa.Utils.AppUtils;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Places;
@@ -124,6 +129,7 @@ public class FragmentSearchAdvance extends DialogFragment implements View.OnClic
         imgBack.setOnClickListener(this);
         gvCheckBox = mMainView.findViewById(R.id.gridCheckBox);
         progressBar = mMainView.findViewById(R.id.spin_kit);
+        btnSearch.setOnClickListener(this);
     }
 
     @Override
@@ -133,39 +139,79 @@ public class FragmentSearchAdvance extends DialogFragment implements View.OnClic
                 FragmentSearchAdvance.this.dismiss();
             break;
             case R.id.btnUpload:
-                searchRoom();
+                if(AppUtils.haveNetworkConnection(getContext())){
+                    searchRoom();
+                }else{
+                    Toast.makeText(getActivity(), "Đéo có mạng", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }
 
     private void searchRoom() {
+        String distance = "";
+        String min = "";
+        String max = "";
         if(rbBelowMil.isChecked()){
-
+            min = "0";
+            max = "1000000";
         }else if(rbBtOneVsTwo.isChecked()){
-
+            min = "1000000";
+            max = "2000000";
         }else if(rbTwoVsThree.isChecked()){
-
+            min = "2000000";
+            max = "3000000";
         }else if(rbMtThree.isChecked()){
-
+            min = "3000000";
+            max = "1000000000";
         }else{
             Toast.makeText(getActivity(), "Bạn chưa chọn giá tiền mong muốn", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if(rb500m.isChecked()){
-
+                distance = "500";
         }else if(rb1km.isChecked()){
-
-        }else if(rb1km.isChecked()){
-
-        }else if(rb1km.isChecked()){
-
-        }else if(rb1km.isChecked()){
-
+                distance = "1000";
+        }else if(rb5km.isChecked()){
+                distance = "5000";
+        }else if(rb8km.isChecked()){
+                distance = "8000";
+        }else if(rb10km.isChecked()){
+                distance = "10000";
         }else{
             Toast.makeText(getActivity(), "Bạn chưa chọn khoảng cách", Toast.LENGTH_SHORT).show();
             return;
         }
+        Double[] latlon = new Double[doubleList.size()];
+        latlon = doubleList.toArray(latlon);
+        if(latlon.length!=2 || edtAddress.getText().toString().trim().equals("")){
+            Toast.makeText(getActivity(), "Bạn chưa chọn địa điểm", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Price price = new Price(min,max);
+        LocationRoom locationRoom = new LocationRoom("Point",latlon);
+        RoomSearch roomObject = new RoomSearch();
+        roomObject.setLocation(locationRoom);
+        roomObject.setDistance(distance);
+        roomObject.setPrice(price);
+        progressBar.setVisibility(View.VISIBLE);
+        Call<ResponseBody> searchRoom = fileService.searchRoom("", roomObject);
+
+        searchRoom.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()){
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(getContext(), "Có lỗi trong quá trình tìm kiếm, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 

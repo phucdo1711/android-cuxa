@@ -17,8 +17,11 @@ public class RoomObject implements Serializable {
     public String area;
     public String genderAccepted;
     public String[] utilities;
+    public String distance;
+    public RoomObject() {
+    }
 
-    public RoomObject(String description, String type, String name, String price, String electricityPrice, String waterPrice, String downPayment, LocationRoom location, String address, String[] images, String area,String amountOfTenant,String genderAccepted,String[] utilities) {
+    public RoomObject(String description, String type, String name, String price, String electricityPrice, String waterPrice, String downPayment, LocationRoom location, String address, String[] images, String area, String amountOfTenant, String genderAccepted, String[] utilities) {
         this.type = type;
         this.name = name;
         this.price = price;
@@ -33,6 +36,14 @@ public class RoomObject implements Serializable {
         this.genderAccepted = genderAccepted;
         this.utilities = utilities;
         this.description = description;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
     }
 
     public String[] getUtilities() {

@@ -1,19 +1,28 @@
 package com.example.dell.appcuxa.MainPage.MainPageViews.ProfileTab.ProfileView;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
+import com.example.dell.appcuxa.Login.LoginView.MainActivity;
+import com.example.dell.appcuxa.MainPage.MainPageViews.MainPageActivity;
 import com.example.dell.appcuxa.R;
 
-public class FragmentProfile extends Fragment {
+public class FragmentProfile extends Fragment implements View.OnClickListener{
     private View mMainView;
-    ImageView imgView;
+    ImageView imgEdit;
+    LinearLayout lnLogout, lnFeedBack, lnHelp, lnSetting, lnQrCode,lnInviteFriend, lnCoupon,lnMyRoom;
     public FragmentProfile(){
 
     }
@@ -21,9 +30,60 @@ public class FragmentProfile extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mMainView = inflater.inflate(R.layout.fragment_profile, container, false);
-        //imgView = mMainView.findViewById(R.id.imgView);
-        //imgView.setImageBitmap(AppUtils.decodeSampledBitmapFromResource(getResources(), R.drawable.fragment_first, 200, 200));
+        init();
+
         return mMainView;
+    }
+
+    private void init() {
+        imgEdit = mMainView.findViewById(R.id.imgEditprofile);
+        lnLogout = mMainView.findViewById(R.id.layout_logout);
+        lnFeedBack = mMainView.findViewById(R.id.layout_feedback);
+        lnHelp = mMainView.findViewById(R.id.layout_help);
+        lnSetting = mMainView.findViewById(R.id.layout_setting);
+        lnQrCode = mMainView.findViewById(R.id.layout_qrcode);
+        lnInviteFriend = mMainView.findViewById(R.id.layout_gift);
+        lnCoupon = mMainView.findViewById(R.id.layout_coupon);
+        lnMyRoom = mMainView.findViewById(R.id.layout_myroom);
+        imgEdit.setOnClickListener(this);
+        lnLogout.setOnClickListener(this);
+        lnFeedBack.setOnClickListener(this);
+        lnHelp.setOnClickListener(this);
+        lnSetting.setOnClickListener(this);
+        lnQrCode.setOnClickListener(this);
+        lnInviteFriend.setOnClickListener(this);
+        lnCoupon.setOnClickListener(this);
+        lnMyRoom.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.layout_logout:
+                logout();
+        }
+    }
+
+    private void logout() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Logout");
+        builder.setMessage("Bạn có muốn đăng xuất không?");
+        builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // do nothing
+            }
+        });
+        builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                SharedPreferences preferences = getActivity().getSharedPreferences("login_data", Context.MODE_PRIVATE);
+                preferences.edit().clear().commit();
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
+        builder.show();
     }
 }
 
