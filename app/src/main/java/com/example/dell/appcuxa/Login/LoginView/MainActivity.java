@@ -218,7 +218,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void sendBackUserModel(UserModel userModel) {
         if(userModel!=null){
-            edit.putString("token",userModel.getToken()); // token cũ
+            edit.putString("token",userModel.getToken());
+            edit.putString("name",userModel.getUserObject().getName());
             edit.commit();
             updateUI(userModel);
         }

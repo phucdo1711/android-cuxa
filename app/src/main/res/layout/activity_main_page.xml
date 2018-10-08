@@ -6,13 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".MainPage.MainPageViews.MainPageActivity">
 
-    <android.support.v4.view.ViewPager
+    <com.example.dell.appcuxa.CustomeView.NonSwipeableViewPager
         android:id="@+id/main_pager"
         android:layout_above="@+id/layout_bottom"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </android.support.v4.view.ViewPager>
+    </com.example.dell.appcuxa.CustomeView.NonSwipeableViewPager>
     <LinearLayout
         android:orientation="vertical"
         android:layout_alignParentBottom="true"

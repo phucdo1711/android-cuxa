@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.example.dell.appcuxa.CustomeView.NonSwipeableViewPager;
 import com.example.dell.appcuxa.Login.LoginView.MainActivity;
 import com.example.dell.appcuxa.MainPage.Adapter.ViewPagerAdapter;
 import com.example.dell.appcuxa.MainPage.MainPageViews.MessTab.MessView.FragmentMess;
@@ -35,7 +36,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     FragmentSearch fragmentSearch;
     FragmentNotification fragmentNoti;
     @BindView(R.id.main_pager)
-    public ViewPager viewPager;
+    public NonSwipeableViewPager viewPager;
     @BindView(R.id.bottom_navigation)
     public BottomNavigationView mBottomNav;
     SharedPreferences sharedPreferences;

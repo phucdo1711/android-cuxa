@@ -3,6 +3,7 @@ package com.example.dell.appcuxa.CuxaAPI;
 import com.example.dell.appcuxa.FileInfo;
 import com.example.dell.appcuxa.ObjectModels.RoomObject;
 import com.example.dell.appcuxa.ObjectModels.RoomSearch;
+import com.example.dell.appcuxa.ObjectModels.RoomSearchResult;
 import com.example.dell.appcuxa.ObjectModels.UserModel;
 
 import java.util.List;
@@ -50,5 +51,5 @@ public interface CuXaAPI {
     Call<ResponseBody> uploadRoom(@Header("Authorization") String authHeader, @Body RoomObject room);
 
     @POST("rooms/search")
-    Call<ResponseBody> searchRoom(@Header("Authorization") String authHeader,@Body RoomSearch room);
+    Call<RoomSearchResult> searchRoom(@Header("Authorization") String authHeader, @Body RoomSearch room);
 }

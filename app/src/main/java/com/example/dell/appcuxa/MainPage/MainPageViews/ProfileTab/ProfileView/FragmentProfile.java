@@ -15,13 +15,21 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.example.dell.appcuxa.CustomeView.RobBoldText;
 import com.example.dell.appcuxa.Login.LoginView.MainActivity;
 import com.example.dell.appcuxa.MainPage.MainPageViews.MainPageActivity;
 import com.example.dell.appcuxa.R;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class FragmentProfile extends Fragment implements View.OnClickListener{
     private View mMainView;
     ImageView imgEdit;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+    RobBoldText tvUserName;
+    String token = "";
+    String username = "";
     LinearLayout lnLogout, lnFeedBack, lnHelp, lnSetting, lnQrCode,lnInviteFriend, lnCoupon,lnMyRoom;
     public FragmentProfile(){
 
@@ -31,11 +39,20 @@ public class FragmentProfile extends Fragment implements View.OnClickListener{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mMainView = inflater.inflate(R.layout.fragment_profile, container, false);
         init();
-
+        sharedPreferences = getActivity().getSharedPreferences("login_data",MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+        token = sharedPreferences.getString("token", "");
+        username = sharedPreferences.getString("name","");
+        if(username.equals("")){
+            tvUserName.setText("Người dùng Cư Xá");
+        }else{
+            tvUserName.setText(username);
+        }
         return mMainView;
     }
 
     private void init() {
+        tvUserName = mMainView.findViewById(R.id.tvUserName);
         imgEdit = mMainView.findViewById(R.id.imgEditprofile);
         lnLogout = mMainView.findViewById(R.id.layout_logout);
         lnFeedBack = mMainView.findViewById(R.id.layout_feedback);
@@ -77,7 +94,7 @@ public class FragmentProfile extends Fragment implements View.OnClickListener{
         builder.setPositiveButton("Có", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                SharedPreferences preferences = getActivity().getSharedPreferences("login_data", Context.MODE_PRIVATE);
+                SharedPreferences preferences = getActivity().getSharedPreferences("login_data", MODE_PRIVATE);
                 preferences.edit().clear().commit();
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 startActivity(intent);

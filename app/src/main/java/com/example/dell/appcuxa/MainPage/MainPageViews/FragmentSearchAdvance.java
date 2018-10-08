@@ -28,8 +28,10 @@ import com.example.dell.appcuxa.MainPage.Adapter.CheckBoxAdapter;
 import com.example.dell.appcuxa.MainPage.Adapter.PlaceAutoCompleteAdapter;
 import com.example.dell.appcuxa.ObjectModels.LocationRoom;
 import com.example.dell.appcuxa.ObjectModels.Price;
+import com.example.dell.appcuxa.ObjectModels.RoomInfo;
 import com.example.dell.appcuxa.ObjectModels.RoomObject;
 import com.example.dell.appcuxa.ObjectModels.RoomSearch;
+import com.example.dell.appcuxa.ObjectModels.RoomSearchResult;
 import com.example.dell.appcuxa.ObjectModels.UtilityObject;
 import com.example.dell.appcuxa.R;
 import com.example.dell.appcuxa.Utils.AppUtils;
@@ -63,6 +65,8 @@ public class FragmentSearchAdvance extends DialogFragment implements View.OnClic
     RadioButton rbBelowMil, rbBtOneVsTwo, rbTwoVsThree, rbMtThree;
     RadioButton rb500m,rb1km,rb5km,rb8km,rb10km;
     List<Double> doubleList = new ArrayList<>();
+    List<RoomInfo> lstRoomByLocation = new ArrayList<>();
+    List<RoomInfo> lstRoomByPrice = new ArrayList<>();
     AutoCompleteTextView edtAddress;
     protected GeoDataClient mGeoDataClient;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40,-168),new LatLng(71,136));
@@ -196,23 +200,47 @@ public class FragmentSearchAdvance extends DialogFragment implements View.OnClic
         roomObject.setDistance(distance);
         roomObject.setPrice(price);
         progressBar.setVisibility(View.VISIBLE);
-        Call<ResponseBody> searchRoom = fileService.searchRoom("", roomObject);
+        Call<RoomSearchResult> searchRoom = fileService.searchRoom("", roomObject);
 
-        searchRoom.enqueue(new Callback<ResponseBody>() {
+        searchRoom.enqueue(new Callback<RoomSearchResult>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(Call<RoomSearchResult> call, Response<RoomSearchResult> response) {
                 if(response.isSuccessful()){
                     progressBar.setVisibility(View.GONE);
+                    RoomSearchResult roomSearchResult = response.body();
+                    /*try {
+                        JSONObject object = new JSONObject(response.body().string());
+                        JSONObject byLocation = object.getJSONObject("byLocaction");
+                        JSONObject byPrice = new JSONObject("byPrice");
+                        JSONArray lstByLocation = byLocation.getJSONArray("rows");
+                        parseJSonArray(lstByLocation,lstRoomByLocation);
+                        JSONArray lstByPrice = byPrice.getJSONArray("rows");
+                        parseJSonArray(lstByPrice,lstRoomByPrice);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }*/
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<RoomSearchResult> call, Throwable t) {
                 progressBar.setVisibility(View.GONE);
                 Toast.makeText(getContext(), "Có lỗi trong quá trình tìm kiếm, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
             }
         });
 
+    }
+
+    private void parseJSonArray(JSONArray lstByLocation, List<RoomInfo> lstRoom) throws JSONException {
+        for(int i = 0;i<lstByLocation.length();i++){
+            JSONObject object = (JSONObject) lstByLocation.get(i);
+            String name = object.getString("name");
+            String price = object.getString("price");
+            //String address = object.get
+        }
     }
 
     public void getAllUtilities(){

@@ -3,6 +3,7 @@ package com.example.dell.appcuxa.MainPage.Adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.relex.circleindicator.CircleIndicator;
 
 public class ListRoomAdapter extends RecyclerView.Adapter<ListRoomAdapter.ViewHolder> {
     private Context context;
@@ -43,7 +45,11 @@ public class ListRoomAdapter extends RecyclerView.Adapter<ListRoomAdapter.ViewHo
         }else if(info.getPurpose().equals("graft")){
             holder.tvPurpose.setText("Tìm người ở ghép");
         }
-        Picasso.get().load(info.getImage().get(0)).placeholder(R.drawable.default_image).into(holder.imgHinh);
+        //Picasso.get().load(info.getImage().get(0)).placeholder(R.drawable.default_image).into(holder.imgHinh);
+        SlideImageAdapter slideImageAdapter = new SlideImageAdapter(context,info.getImage());
+        holder.imgHinh.setAdapter(slideImageAdapter);
+        slideImageAdapter.notifyDataSetChanged();
+        holder.circleIndicator.setViewPager(holder.imgHinh);
         holder.tvAddress.setText(info.getAddress()==null?"":info.getAddress());
         holder.tvPrice.setText(info.getAddress()==null?"":info.getPrice()+" đ");
         holder.tvName.setText(info.getAddress()==null?"":info.getNameRoom());
@@ -56,7 +62,7 @@ public class ListRoomAdapter extends RecyclerView.Adapter<ListRoomAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.imgHinh)
-        public ImageView imgHinh;
+        public ViewPager imgHinh;
         @BindView(R.id.tvPrice)
         public TextView tvPrice;
         @BindView(R.id.tvAddress)
@@ -65,9 +71,11 @@ public class ListRoomAdapter extends RecyclerView.Adapter<ListRoomAdapter.ViewHo
         public TextView tvName;
         @BindView(R.id.tvPurpose)
         public TextView tvPurpose;
+        CircleIndicator circleIndicator;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            circleIndicator = itemView.findViewById(R.id.indicator);
             imgHinh = itemView.findViewById(R.id.imgHinh);
             tvPrice = itemView.findViewById(R.id.tvPrice);
             tvPurpose = itemView.findViewById(R.id.tvPurpose);
