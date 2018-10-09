@@ -38,7 +38,6 @@
                         android:layout_height="200dp" />
                     <me.relex.circleindicator.CircleIndicator
                         android:id="@+id/indicator"
-                        app:ci_drawable="@color/orange"
                         android:layout_marginTop="152dp"
                         android:layout_marginBottom="10dp"
                         android:layout_width="match_parent"

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <SurfaceView
+        android:id="@+id/cameraQrcode"
+        android:layout_width="match_parent"
+        android:layout_height="400dp" />
+    <com.example.dell.appcuxa.CustomeView.RobBoldText
+        android:gravity="center"
+        android:id="@+id/tvResult"
+        android:text="Please focus camera to Qr code"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

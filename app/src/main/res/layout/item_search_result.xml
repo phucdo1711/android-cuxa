@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical"
+    android:layout_margin="10dp"
+    android:background="@drawable/ripple_item"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.CardView
+        android:layout_marginBottom="15dp"
+        app:cardCornerRadius="3dp"
+        app:cardElevation="1dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="0dp">
+                <RelativeLayout
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <android.support.v4.view.ViewPager
+                        android:gravity="center"
+                        android:scaleType="centerCrop"
+                        android:adjustViewBounds="true"
+                        android:id="@+id/imgHinh"
+                        android:cropToPadding="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp" />
+                    <me.relex.circleindicator.CircleIndicator
+                        android:id="@+id/indicator"
+                        android:layout_marginTop="152dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"/>
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+            <LinearLayout
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_marginTop="5dp"
+                    android:weightSum="10"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:weightSum="10"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="0dp"
+                            android:layout_weight="8"
+                            android:layout_height="wrap_content">
+                            <com.example.dell.appcuxa.CustomeView.RobBoldText
+                                android:id="@+id/tvName"
+                                android:layout_marginTop="2dp"
+                                tools:text="Tìm người thuê trọ"
+                                android:textSize="17sp"
+                                android:textColor="@color/black"
+                                android:layout_width="wrap_content"
+                                android:layout_weight="6"
+                                android:layout_height="wrap_content" />
+                            <com.example.dell.appcuxa.CustomeView.RobLightText
+                                android:layout_marginTop="2dp"
+                                android:id="@+id/tvAddress"
+                                android:textColor="@color/black"
+                                android:drawablePadding="5dp"
+                                android:drawableLeft="@drawable/ic_placeholder"
+                                tools:text="Nguyễn Trãi, quận Thanh Xuân, Hà Nội"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                            <com.example.dell.appcuxa.CustomeView.RobLightText
+                                android:textColor="@color/black"
+                                android:layout_marginTop="2dp"
+                                android:drawablePadding="5dp"
+                                android:drawableLeft="@drawable/ic_money"
+                                android:id="@+id/tvMoney"
+                                tools:text="6tr/tháng"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:layout_width="0dp"
+                            android:layout_weight="2"
+                            android:layout_height="wrap_content">
+                            <CheckBox
+                                android:layout_marginLeft="15dp"
+                                android:gravity="center"
+                                android:button="@drawable/custome_checkbox_save"
+                                android:id="@+id/imgSave"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+
+</LinearLayout>

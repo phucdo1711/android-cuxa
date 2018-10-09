@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.widget.LinearLayout;
 
 import com.example.dell.appcuxa.CustomeView.RobBoldText;
 import com.example.dell.appcuxa.Login.LoginView.MainActivity;
+import com.example.dell.appcuxa.MainPage.MainPageViews.FragmentSearchAdvance;
 import com.example.dell.appcuxa.MainPage.MainPageViews.MainPageActivity;
 import com.example.dell.appcuxa.R;
 
@@ -78,6 +80,13 @@ public class FragmentProfile extends Fragment implements View.OnClickListener{
         switch (view.getId()){
             case R.id.layout_logout:
                 logout();
+                break;
+            case R.id.layout_qrcode:
+                FragmentQrCode fragment = new FragmentQrCode();
+                //fragmentSearQuickAdva.setCancelable(false);
+                fragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
+                fragment.show(getFragmentManager(), "fragment_qrocde");
+                break;
         }
     }
 

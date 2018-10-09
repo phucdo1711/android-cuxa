@@ -4,19 +4,33 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 
 public class ImageItem implements Serializable {
-
     public String name;
+    @SerializedName("pathName")
     public String path;
+    @SerializedName("src")
+    public String src;
+    @SerializedName("id")
+    public String id;
     public long size;
     public int width;
     public int height;
     public String mimeType;
     public long addTime;
     public byte[] uri;
+
+    public String getSrc() {
+        return src;
+    }
+
+    public void setSrc(String src) {
+        this.src = src;
+    }
 
     public String getName() {
         return name;

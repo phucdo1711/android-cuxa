@@ -12,7 +12,7 @@ public class RoomSearchItem {
     @SerializedName("name")
     public String name;
     @SerializedName("images")
-    public String[] images;
+    public ImageItem[] images;
     @SerializedName("price")
     public String price;
     @SerializedName("electricityPrice")
@@ -40,7 +40,7 @@ public class RoomSearchItem {
     @SerializedName("isVerified")
     public Boolean isVerified;
     @SerializedName("utilities")
-    public String utilities;
+    public String[] utilities;
     @SerializedName("saved")
     public String[] saved;
     @SerializedName("tenants")
@@ -82,11 +82,11 @@ public class RoomSearchItem {
         this.name = name;
     }
 
-    public String[] getImages() {
+    public ImageItem[] getImages() {
         return images;
     }
 
-    public void setImages(String[] images) {
+    public void setImages(ImageItem[] images) {
         this.images = images;
     }
 
@@ -194,11 +194,11 @@ public class RoomSearchItem {
         isVerified = verified;
     }
 
-    public String getUtilities() {
+    public String[] getUtilities() {
         return utilities;
     }
 
-    public void setUtilities(String utilities) {
+    public void setUtilities(String[] utilities) {
         this.utilities = utilities;
     }
 

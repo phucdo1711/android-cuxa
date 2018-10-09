@@ -143,8 +143,11 @@ public class FragmentSearchAdvance extends DialogFragment implements View.OnClic
                 FragmentSearchAdvance.this.dismiss();
             break;
             case R.id.btnUpload:
+                doubleList = geoLocate();
                 if(AppUtils.haveNetworkConnection(getContext())){
-                    searchRoom();
+                    if(doubleList.size()==2){
+                        searchRoom();
+                    }
                 }else{
                     Toast.makeText(getActivity(), "Đéo có mạng", Toast.LENGTH_SHORT).show();
                 }
@@ -207,8 +210,15 @@ public class FragmentSearchAdvance extends DialogFragment implements View.OnClic
             public void onResponse(Call<RoomSearchResult> call, Response<RoomSearchResult> response) {
                 if(response.isSuccessful()){
                     progressBar.setVisibility(View.GONE);
-                    RoomSearchResult roomSearchResult = response.body();
-                    /*try {
+                    FragmentSearQuickAdva searchAdvance = new FragmentSearQuickAdva();
+                    searchAdvance.isFromSearchResult(true);
+                    searchAdvance.lstSearchShop(response.body());
+                    searchAdvance.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
+                    searchAdvance.show(getFragmentManager(),"fragment_search_quick_advance");
+                    FragmentSearchAdvance.this.dismiss();
+
+                    //RoomSearchResult roomSearchResult = response.body();
+                 /*   try {
                         JSONObject object = new JSONObject(response.body().string());
                         JSONObject byLocation = object.getJSONObject("byLocaction");
                         JSONObject byPrice = new JSONObject("byPrice");
