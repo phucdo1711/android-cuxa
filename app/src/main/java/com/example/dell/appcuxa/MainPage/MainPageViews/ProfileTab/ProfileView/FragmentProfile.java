@@ -19,12 +19,15 @@ import android.widget.LinearLayout;
 import com.example.dell.appcuxa.CustomeView.RobBoldText;
 import com.example.dell.appcuxa.Login.LoginView.MainActivity;
 import com.example.dell.appcuxa.MainPage.MainPageViews.FragmentSearchAdvance;
+import com.example.dell.appcuxa.MainPage.MainPageViews.FragmentUpRoom;
+import com.example.dell.appcuxa.MainPage.MainPageViews.Interface.ISendBackToEdit;
 import com.example.dell.appcuxa.MainPage.MainPageViews.MainPageActivity;
+import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 import com.example.dell.appcuxa.R;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class FragmentProfile extends Fragment implements View.OnClickListener{
+public class FragmentProfile extends Fragment implements View.OnClickListener, ISendBackToEdit{
     private View mMainView;
     ImageView imgEdit;
     SharedPreferences sharedPreferences;
@@ -87,6 +90,26 @@ public class FragmentProfile extends Fragment implements View.OnClickListener{
                 fragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
                 fragment.show(getFragmentManager(), "fragment_qrocde");
                 break;
+            case R.id.layout_myroom:
+                FragmentMyRoom myRoom = new FragmentMyRoom();
+                myRoom.setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogFragmentTheme);
+                myRoom.show(getFragmentManager(),"fragment_my_room");
+                break;
+            case R.id.layout_gift:
+                FragmentPromotion promotion= new FragmentPromotion();
+                promotion.setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogFragmentTheme);
+                promotion.show(getFragmentManager(),"fragment_promotion");
+                break;
+            case R.id.layout_feedback:
+                FragmentFeedback fragmentFeedback= new FragmentFeedback();
+                fragmentFeedback.setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogFragmentTheme);
+                fragmentFeedback.show(getFragmentManager(),"fragment_feedback");
+                break;
+            case R.id.layout_setting:
+                FragmentSetting setting= new FragmentSetting();
+                setting.setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogFragmentTheme);
+                setting.show(getFragmentManager(),"fragment_setting");
+                break;
         }
     }
 
@@ -110,6 +133,14 @@ public class FragmentProfile extends Fragment implements View.OnClickListener{
             }
         });
         builder.show();
+    }
+
+    @Override
+    public void sendBackToEdit(RoomSearchItem object) {
+        FragmentUpRoom myRoom = new FragmentUpRoom();
+        myRoom.setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogFragmentTheme);
+        myRoom.setDataEdit(object);
+        myRoom.show(getFragmentManager(),"fragment_uproom");
     }
 }
 

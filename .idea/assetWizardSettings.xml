@@ -62,9 +62,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="opacityPercent" value="63" />
-                            <entry key="outputName" value="ic_head" />
-                            <entry key="sourceFile" value="C:\Users\Dell\Downloads\head.svg" />
+                            <entry key="outputName" value="ic_right_arrow" />
+                            <entry key="sourceFile" value="C:\Users\Dell\Downloads\right-arrow.svg" />
                           </map>
                         </option>
                       </PersistentState>

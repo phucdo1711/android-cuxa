@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:background="#CC4201"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:background="#CC4201"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/imgBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/ic_left_arrow" />
+
+        <com.example.dell.appcuxa.CustomeView.RobBoldText
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:gravity="center"
+            android:textColor="@color/black" />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_marginTop="-56dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.github.ybq.android.spinkit.SpinKitView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/spin_kit"
+            android:visibility="gone"
+            style="@style/SpinKitView.Large.Circle"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            app:SpinKit_Color="@color/white" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:gravity="center"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:src="@drawable/ic_gift_promo"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp" />
+                <com.example.dell.appcuxa.CustomeView.RobBoldText
+                    android:gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:textColor="@color/white"
+                    android:textSize="25sp"
+                    android:layout_width="match_parent"
+                    android:text="Mời bạn bè và"
+                    android:layout_height="wrap_content" />
+                <com.example.dell.appcuxa.CustomeView.RobBoldText
+                    android:gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/white"
+                    android:textSize="25sp"
+                    android:layout_width="match_parent"
+                    android:text="nhận ngay discount 25%"
+                    android:layout_height="wrap_content" />
+                <com.example.dell.appcuxa.CustomeView.RobLightText
+                    android:gravity="center"
+                    android:layout_marginTop="30dp"
+                    android:textColor="@color/white"
+                    android:textSize="17sp"
+                    android:layout_width="match_parent"
+                    android:text="Mã ưu đãi của bạn"
+                    android:layout_height="wrap_content" />
+                <com.example.dell.appcuxa.CustomeView.RobBoldText
+                    android:gravity="center"
+                    android:id="@+id/tvPromotionCode"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/white"
+                    android:textSize="25sp"
+                    android:layout_width="match_parent"
+                    android:text="DAYLACUXA"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <com.example.dell.appcuxa.CustomeView.RobButton
+                android:layout_width="match_parent"
+                android:id="@+id/btnPresent"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="30dp"
+                android:layout_marginLeft="30dp"
+                android:text="Mời bạn bè"
+                android:background="@drawable/bg_search_layout"
+                android:textAllCaps="false"
+                android:textColor="#CC4201"
+                android:layout_marginBottom="15dp"
+                android:layout_height="40dp" />
+        </RelativeLayout>
+
+    </FrameLayout>
+
+</LinearLayout>

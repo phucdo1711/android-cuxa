@@ -36,7 +36,7 @@ public class RobButton extends Button {
         if (!isInEditMode()) {
             Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "fonts/Roboto-Bold.ttf");
             setTypeface(tf);
-            RobButton.this.setTextColor(getResources().getColor(R.color.orange));
+            //obButton.this.setTextColor(getResources().getColor(R.color.orange));
         }
     }
 }

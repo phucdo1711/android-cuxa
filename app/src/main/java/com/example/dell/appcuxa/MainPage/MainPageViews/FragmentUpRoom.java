@@ -36,7 +36,9 @@ import com.example.dell.appcuxa.MainPage.Adapter.PlaceAutoCompleteAdapter;
 import com.example.dell.appcuxa.MainPage.MainPageViews.Interface.ILogicDeleteImage;
 import com.example.dell.appcuxa.MainPage.MainPageViews.SearchTab.GenderBottomDialog;
 import com.example.dell.appcuxa.ObjectModels.LocationRoom;
+import com.example.dell.appcuxa.ObjectModels.ObjectListByOption;
 import com.example.dell.appcuxa.ObjectModels.RoomObject;
+import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 import com.example.dell.appcuxa.ObjectModels.UtilityObject;
 import com.example.dell.appcuxa.R;
 import com.example.dell.appcuxa.Utils.AppUtils;
@@ -438,5 +440,14 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
         edtGender.setText(gender);
         return gender;
     }
+
+    public void setDataEdit(RoomSearchItem object){
+        if(object ==null){
+            Toast.makeText(getActivity(), "Null", Toast.LENGTH_SHORT).show();
+        }else{
+            //TODO do something here.
+        }
+    }
+
 }
 
