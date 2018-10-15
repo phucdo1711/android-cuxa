@@ -46,6 +46,7 @@ public class FragmentMyRoom extends DialogFragment implements AdapterMyRoom.ILog
     private View mMainView;
     AdapterMyRoom adapterMyRoom;
     private RobButton btnCreateNew;
+    List<RoomSearchItem> roomSearchResults;
     private ImageView imgBack;
     private RecyclerView rcMyRoom;
     AdapterMyRoom.ILogicDeleteRoom logicDeleteRoom = this;
@@ -110,7 +111,6 @@ public class FragmentMyRoom extends DialogFragment implements AdapterMyRoom.ILog
                     if(response.isSuccessful()){
                         RoomSearchItem[] objectListByOptions = response.body().getLstRoom();
 
-                        List<RoomSearchItem> roomSearchResults;
                         roomSearchResults =new ArrayList<>(Arrays.asList(objectListByOptions));
                         adapterMyRoom = new AdapterMyRoom(getContext(),logicDeleteRoom,roomSearchResults);
                         LinearLayoutManager manager = new LinearLayoutManager(getContext());
@@ -134,7 +134,7 @@ public class FragmentMyRoom extends DialogFragment implements AdapterMyRoom.ILog
     }
 
     @Override
-    public void deleteRoom(final String idRoom) {
+    public void deleteRoom(final RoomSearchItem info) {
         final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
         builder.setTitle("Xóa phòng");
         builder.setMessage("Bạn có chắc chắn muốn xóa phòng này không?.");
@@ -148,7 +148,7 @@ public class FragmentMyRoom extends DialogFragment implements AdapterMyRoom.ILog
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 progressBar.setVisibility(View.VISIBLE);
-                deleteRoomFunc(idRoom);
+                deleteRoomFunc(info);
             }
         });
         builder.show();
@@ -166,15 +166,16 @@ public class FragmentMyRoom extends DialogFragment implements AdapterMyRoom.ILog
 
     }
 
-    public void deleteRoomFunc(String id){
+    public void deleteRoomFunc(final RoomSearchItem item){
         fileService = NetworkController.upload();
-        Call<ResponseBody> deleteRoom = fileService.deleteRoom("Bearer "+ AppUtils.getToken(getActivity()),id);
+        Call<ResponseBody> deleteRoom = fileService.deleteRoom("Bearer "+ AppUtils.getToken(getActivity()),item.getId());
         deleteRoom.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()){
                     Toast.makeText(getActivity(), "Xóa phòng thành công", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
+                    roomSearchResults.remove(item);
                     adapterMyRoom.notifyDataSetChanged();
                 }else{
                     progressBar.setVisibility(View.GONE);

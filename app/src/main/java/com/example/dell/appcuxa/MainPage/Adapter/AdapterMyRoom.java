@@ -59,7 +59,7 @@ public class AdapterMyRoom extends RecyclerView.Adapter<AdapterMyRoom.ViewHolder
             @Override
             public void onClick(View view) {
                 //TODO DELETE EVENT HERE
-                iLogicDeleteRoom.deleteRoom(info.getId());
+                iLogicDeleteRoom.deleteRoom(info);
             }
         });
     }
@@ -91,7 +91,7 @@ public class AdapterMyRoom extends RecyclerView.Adapter<AdapterMyRoom.ViewHolder
         }
     }
     public interface ILogicDeleteRoom {
-        public void deleteRoom(String idRoom);
+        public void deleteRoom(RoomSearchItem info);
         public void backToEdit(RoomSearchItem info);
     }
 
