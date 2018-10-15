@@ -16,39 +16,41 @@ import com.example.dell.appcuxa.ObjectModels.ObjectListByOption;
 import com.example.dell.appcuxa.ObjectModels.RoomInfo;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchResult;
+import com.example.dell.appcuxa.ObjectModels.SavedRoom;
 import com.example.dell.appcuxa.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import me.relex.circleindicator.CircleIndicator;
 
-public class AdapterSearchResultRoom extends RecyclerView.Adapter<AdapterSearchResultRoom.ViewHolder> {
+public class AdapterSavedItem extends RecyclerView.Adapter<AdapterSavedItem.ViewHolder> {
     private Context context;
-    private ObjectListByOption roomInfos;
+    private List<SavedRoom> roomInfos;
     List<String> imageList = new ArrayList<>();
     ILogicSaveRoom iLogicSaveRoom;
 
-    public AdapterSearchResultRoom(Context context, ObjectListByOption roomInfos,ILogicSaveRoom iLogicSaveRoom) {
+    public AdapterSavedItem(Context context, List<SavedRoom> roomInfos,ILogicSaveRoom iLogicSaveRoom) {
         this.context = context;
         this.roomInfos = roomInfos;
         this.iLogicSaveRoom = iLogicSaveRoom;
     }
 
     @Override
-    public AdapterSearchResultRoom.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_search_result, parent, false);
+    public AdapterSavedItem.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_saved_room, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final AdapterSearchResultRoom.ViewHolder holder, int position) {
-        final RoomSearchItem info = roomInfos.getLstRoom()[position];
-            imageList.clear();
-            holder.tvName.setText(info.getName());
-            for(int i = 0;i<info.getImages().length;i++){
-                imageList.add(info.getImages()[i].getSrc());
-            }
+    public void onBindViewHolder(final AdapterSavedItem.ViewHolder holder, int position) {
+        final SavedRoom info = roomInfos.get(position);
+        imageList.clear();
+        holder.tvName.setText(info.getName());
+        for(int i = 0;i<info.getImageObject().length;i++){
+            imageList.add(info.getImageObject()[i].getSrc());
+        }
         SlideImageAdapter slideImageAdapter = new SlideImageAdapter(context,imageList);
         holder.imgHinh.setAdapter(slideImageAdapter);
         slideImageAdapter.notifyDataSetChanged();
@@ -60,8 +62,10 @@ public class AdapterSearchResultRoom extends RecyclerView.Adapter<AdapterSearchR
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
                     iLogicSaveRoom.saveRoom(info.getId());
+                    AdapterSavedItem.this.notifyDataSetChanged();
                 }else{
                     iLogicSaveRoom.unSaveRoom(info.getId());
+                    AdapterSavedItem.this.notifyDataSetChanged();
                 }
             }
         });
@@ -69,7 +73,7 @@ public class AdapterSearchResultRoom extends RecyclerView.Adapter<AdapterSearchR
 
     @Override
     public int getItemCount() {
-        return roomInfos.getLstRoom().length;
+        return roomInfos.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -78,10 +82,12 @@ public class AdapterSearchResultRoom extends RecyclerView.Adapter<AdapterSearchR
         public TextView tvAddress;
         public TextView tvName;
         CheckBox imgSave;
+        CircleImageView imgAvatar;
         CircleIndicator circleIndicator;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            imgAvatar = itemView.findViewById(R.id.imgAvatar);
             circleIndicator = itemView.findViewById(R.id.indicator);
             imgHinh = itemView.findViewById(R.id.imgHinh);
             tvPrice = itemView.findViewById(R.id.tvMoney);

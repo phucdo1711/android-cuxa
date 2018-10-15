@@ -17,6 +17,7 @@ import com.example.dell.appcuxa.CustomeView.RobButton;
 import com.example.dell.appcuxa.CuxaAPI.CuXaAPI;
 import com.example.dell.appcuxa.CuxaAPI.NetworkController;
 import com.example.dell.appcuxa.MainPage.Adapter.ListRoomAdapter;
+import com.example.dell.appcuxa.MainPage.MainPageViews.Interface.ILogicSaveRoom;
 import com.example.dell.appcuxa.ObjectModels.RoomInfo;
 import com.example.dell.appcuxa.Utils.AppUtils;
 import com.example.dell.appcuxa.R;
@@ -42,7 +43,7 @@ import retrofit2.Response;
 import static android.content.Context.MODE_PRIVATE;
 
 
-public class FragmentSearch extends FragmentCommon{
+public class FragmentSearch extends FragmentCommon implements ILogicSaveRoom{
     List<RoomInfo> roomInfoList = new ArrayList<>();
     @BindView(R.id.recRoomList)
     public RecyclerView recyclerView;
@@ -50,6 +51,7 @@ public class FragmentSearch extends FragmentCommon{
     RobButton btnUpRoom;
     String token = "";
     SharedPreferences sharedPreferences;
+    ILogicSaveRoom iLogicSaveRoom;
     RobButton btnFindRoom;
     CuXaAPI fileService;
     LinearLayout lnProgressbar;
@@ -63,6 +65,7 @@ public class FragmentSearch extends FragmentCommon{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_search, container, false);
         ButterKnife.bind(mView);
+        iLogicSaveRoom = this;
         recyclerView = mView.findViewById(R.id.recRoomList);
         edtQuickSearch = mView.findViewById(R.id.lnQuickSearch);
         btnUpRoom = mView.findViewById(R.id.btnUpRoom);
@@ -94,6 +97,7 @@ public class FragmentSearch extends FragmentCommon{
                         JSONArray jsonArray = jsonObject.getJSONArray("rows");
                         for(int i = 0;i<jsonArray.length();i++){
                          JSONObject objectRoom = (JSONObject) jsonArray.get(i);
+                         String id = objectRoom.getString("id");
                          String name = objectRoom.getString("name");
                          String type = objectRoom.getString("type");
                          JSONArray arrayImage = objectRoom.getJSONArray("images");
@@ -106,6 +110,7 @@ public class FragmentSearch extends FragmentCommon{
                          String address = objectRoom.getString("address");
                          String price = objectRoom.getString("price");
                          RoomInfo info = new RoomInfo();
+                         info.setId(id);
                          info.setAddress(address);
                          info.setNameRoom(name);
                          info.setPrice(price);
@@ -115,14 +120,15 @@ public class FragmentSearch extends FragmentCommon{
                         }
                         LinearLayoutManager manager = new LinearLayoutManager(getContext());
                         recyclerView.setLayoutManager(manager);
-                        listRoomAdapter = new ListRoomAdapter(getContext(),roomInfoList);
+                        listRoomAdapter = new ListRoomAdapter(getContext(),roomInfoList,iLogicSaveRoom);
                         recyclerView.setAdapter(listRoomAdapter);
+                        listRoomAdapter.notifyDataSetChanged();
                     } catch (IOException e) {
                         e.printStackTrace();
                         Toast.makeText(act, "Đã có lỗi sảy ra khi lấy danh sách phòng", Toast.LENGTH_SHORT).show();
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(act, "Đã có lỗi sảy ra khi lấy danh sách phòng", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(act, "Đã có lỗi sảy ra khi lấy danh sách phòng", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -168,5 +174,34 @@ public class FragmentSearch extends FragmentCommon{
                 mapFragment.show(getFragmentManager(),"fragment_map");
                 break;
         }
+    }
+
+    @Override
+    public void saveRoom(String id) {
+        if(AppUtils.haveNetworkConnection(getActivity())){
+            fileService = NetworkController.upload();
+            Call<ResponseBody> call = fileService.saveRoom("Bearer "+ AppUtils.getToken(getActivity()),id);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if(response.isSuccessful()){
+                        listRoomAdapter.notifyDataSetChanged();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(getActivity(), "Có lỗi sảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else{
+            Toast.makeText(getActivity(), "Đéo có mạng", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    public void unSaveRoom(String id) {
+        saveRoom(id);
     }
 }

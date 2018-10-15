@@ -1,9 +1,12 @@
 package com.example.dell.appcuxa.CuxaAPI;
 
 import com.example.dell.appcuxa.FileInfo;
+import com.example.dell.appcuxa.ObjectModels.ObjectListByOption;
 import com.example.dell.appcuxa.ObjectModels.RoomObject;
 import com.example.dell.appcuxa.ObjectModels.RoomSearch;
+import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchResult;
+import com.example.dell.appcuxa.ObjectModels.SavedRoom;
 import com.example.dell.appcuxa.ObjectModels.UserModel;
 
 import java.util.List;
@@ -45,6 +48,10 @@ public interface CuXaAPI {
     Call<ResponseBody> getAllUtilities(@Query("sort") String sort);
 
     @GET("rooms")
+    Call<ObjectListByOption> getMyRooms(@Header("Authorization") String authHeader,
+                                        @Header("Content-Type") String content_type,
+                                        @Query("landlord") String landlord);
+    @GET("rooms")
     Call<ResponseBody> getListTop(@Header("Authorization") String authHeader,@Header("Content-Type") String content_type);
 
     @POST("rooms")
@@ -52,4 +59,14 @@ public interface CuXaAPI {
 
     @POST("rooms/search")
     Call<RoomSearchResult> searchRoom(@Header("Authorization") String authHeader, @Body RoomSearch room);
+
+    @DELETE("rooms/{id}")
+    Call<ResponseBody> deleteRoom(@Header("Authorization") String authHeader, @Path("id") String id );
+
+    @GET("rooms/{id}/save")
+    Call<ResponseBody> saveRoom(@Header("Authorization") String authHeader,
+                                       /* @Header("Content-Type") String content_type,*/
+                                        @Path("id") String id);
+    @GET("rooms/saved")
+    Call<SavedRoom[]> getLstSavedRoom(@Header("Authorization") String authHeader);
 }

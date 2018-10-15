@@ -26,13 +26,19 @@ public class CheckBoxAdapter extends BaseAdapter {
     public         LayoutInflater mInflater;
     List<UtilityObject> utilityObjects;
     Context context;
+    String[] selected;
 
     public CheckBoxAdapter(List<UtilityObject> utilityObjects, Context context) {
         this.utilityObjects = utilityObjects;
         this.context = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
-
+    public CheckBoxAdapter(List<UtilityObject> utilityObjects, Context context,String[] selected) {
+        this.utilityObjects = utilityObjects;
+        this.context = context;
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.selected = selected;
+    }
     @Override
     public int getCount() {
         return utilityObjects.size();
@@ -67,6 +73,13 @@ public class CheckBoxAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.checkbox.setText(utilityObjects.get(i).name);
+        if(selected!=null){
+            for(int a = 0;a<selected.length;a++){
+                if(selected[a].equals(utilityObjects.get(i).getId())){
+                    holder.checkbox.setChecked(true);
+                }
+            }
+        }
 
         if(i ==1){
             holder.checkbox.setCompoundDrawablesWithIntrinsicBounds(null,null,context.getResources().getDrawable( R.drawable.ic_wifi ),null);

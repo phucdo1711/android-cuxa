@@ -45,7 +45,7 @@
 
 
             <LinearLayout
-                android:id="@+id/layout_myroom"
+                android:id="@+id/layout_noti"
                 android:weightSum="10"
                 android:orientation="horizontal"
                 android:background="@drawable/background_border"
@@ -68,7 +68,7 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
             <LinearLayout
-                android:id="@+id/layout_coupon"
+                android:id="@+id/layout_dieukhoan"
                 android:weightSum="10"
                 android:background="@drawable/background_border"
                 android:layout_width="fill_parent"

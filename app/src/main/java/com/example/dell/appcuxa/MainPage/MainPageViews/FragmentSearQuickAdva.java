@@ -25,13 +25,19 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.dell.appcuxa.CustomeView.RobBoldText;
+import com.example.dell.appcuxa.CuxaAPI.CuXaAPI;
+import com.example.dell.appcuxa.CuxaAPI.NetworkController;
 import com.example.dell.appcuxa.MainPage.Adapter.AdapterSearchResultRoom;
 import com.example.dell.appcuxa.MainPage.Adapter.PlaceAutoCompleteAdapter;
+import com.example.dell.appcuxa.MainPage.MainPageViews.Interface.ILogicSaveRoom;
 import com.example.dell.appcuxa.ObjectModels.ObjectListByOption;
+import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchResult;
 import com.example.dell.appcuxa.R;
+import com.example.dell.appcuxa.Utils.AppUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.GeoDataClient;
@@ -43,7 +49,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentSearQuickAdva extends DialogFragment implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class FragmentSearQuickAdva extends DialogFragment implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener,ILogicSaveRoom {
     private View mMainView;
     ImageView imgBack;
     AutoCompleteTextView edtSearchContent;
@@ -54,6 +65,7 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
     RobBoldText tvTypeResult;
     RadioButton rdPrice;
     RadioGroup rgLocation;
+    CuXaAPI fileService;
     ObjectListByOption priceOption = new ObjectListByOption();
     ObjectListByOption locationOption = new ObjectListByOption();
     boolean a = false;
@@ -62,6 +74,7 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
     NestedScrollView nstViewInfo;
     RecyclerView rcHint;
     RecyclerView rcHistory;
+    ILogicSaveRoom iLogicSaveRoom;
     GoogleApiClient mGoogleApiClient;
     PlaceAutoCompleteAdapter placeAutoCompleteAdapter;
     protected GeoDataClient mGeoDataClient;
@@ -88,6 +101,7 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
                 .addApi(Places.PLACE_DETECTION_API)
                 .enableAutoManage(getActivity(), this)
                 .build();*/
+      iLogicSaveRoom = this;
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         listSearchResult.setLayoutManager(manager);
         mGeoDataClient = Places.getGeoDataClient(getContext(), null);
@@ -124,7 +138,7 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
         if (locationOption.count != null && Integer.valueOf(locationOption.count) > 0) {
             tvNumResult.setText(locationOption.count);
             tvTypeResult.setText("về phạm vi");
-            AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(),locationOption);
+            AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(),locationOption,iLogicSaveRoom);
             listSearchResult.setAdapter(adapterSearchResultRoom);
             adapterSearchResultRoom.notifyDataSetChanged();
         }
@@ -135,7 +149,7 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
                     if (locationOption.count != null && Integer.valueOf(priceOption.count) > 0) {
                         tvNumResult.setText(priceOption.count);
                         tvTypeResult.setText("về giá");
-                        AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(),priceOption);
+                        AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(),priceOption,iLogicSaveRoom);
                         listSearchResult.setAdapter(adapterSearchResultRoom);
                         adapterSearchResultRoom.notifyDataSetChanged();
                     }
@@ -149,7 +163,7 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
                     if (locationOption.count != null && Integer.valueOf(locationOption.count) > 0) {
                         tvNumResult.setText(locationOption.count);
                         tvTypeResult.setText("về phạm vi");
-                        AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(),locationOption);
+                        AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(),locationOption,iLogicSaveRoom);
                         listSearchResult.setAdapter(adapterSearchResultRoom);
                         adapterSearchResultRoom.notifyDataSetChanged();
                     }
@@ -240,5 +254,36 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
         priceOption = result.objectByPrice;
     }
 
+    @Override
+    public void saveRoom(String id) {
+        if(AppUtils.haveNetworkConnection(getActivity())){
+            fileService = NetworkController.upload();
+            Call<ResponseBody> call = fileService.saveRoom("Bearer "+ AppUtils.getToken(getActivity()),id);
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if(response.isSuccessful()){
+                        //do nothing
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(getActivity(), "Có lỗi sảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else{
+            Toast.makeText(getActivity(), "Đéo có mạng", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    /**
+     * Gọi lại api để chuyển trạng thái
+     */
+    @Override
+    public void unSaveRoom(String id) {
+        saveRoom(id);
+    }
 }
 

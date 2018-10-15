@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_dangphong"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:elevation="4dp"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/imgBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/ripple_item"
+            android:src="@drawable/ic_back" />
+
+        <com.example.dell.appcuxa.CustomeView.RobBoldText
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:gravity="center"
+            android:text="Điều khoản"
+            android:textColor="@color/black" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/black"
+        android:elevation="2dp" />
+
+    <FrameLayout
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.github.ybq.android.spinkit.SpinKitView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/spin_kit"
+            style="@style/SpinKitView.Large.Circle"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            app:SpinKit_Color="@color/orange" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:layout_height="match_parent">
+               <com.example.dell.appcuxa.CustomeView.RobLightText
+                   android:layout_marginTop="10dp"
+                   android:layout_marginRight="16dp"
+                   android:layout_marginLeft="16dp"
+                   android:layout_width="match_parent"
+                   android:textColor="@color/black"
+                   android:text="Bạn phải tuân thủ mọi chính sách đã cung cấp cho bạn trong phạm vi Dịch vụ.
+
+Không được sử dụng trái phép Dịch vụ của chúng tôi. Ví dụ: không được gây trở ngại cho Dịch vụ của chúng tôi hoặc tìm cách truy cập chúng bằng phương pháp nào đó không thông qua giao diện và hướng dẫn mà chúng tôi cung cấp. Bạn chỉ có thể sử dụng Dịch vụ của chúng tôi theo như được luật pháp cho phép, bao gồm cả các luật và quy định hiện hành về quản lý xuất khẩu và tái xuất khẩu. Chúng tôi có thể tạm ngừng hoặc ngừng cung cấp Dịch vụ của chúng tôi cho bạn nếu bạn không tuân thủ các điều khoản hoặc chính sách của chúng tôi hoặc nếu chúng tôi đang điều tra hành vi bị nghi ngờ là sai phạm.
+
+Việc bạn sử dụng Dịch vụ của chúng tôi không có nghĩa là bạn được sở hữu bất cứ các quyền sở hữu trí tuệ nào đối với Dịch vụ của chúng tôi hoặc nội dung mà bạn truy cập. Bạn không được sử dụng nội dung từ Dịch vụ của chúng tôi trừ khi bạn được chủ sở hữu nội dung đó cho phép hoặc được luật pháp cho phép. Các điều khoản này không cấp cho bạn quyền sử dụng bất kỳ thương hiệu hoặc lôgô nào được sử dụng trong Dịch vụ của chúng tôi. Không được xóa, che khuất hoặc thay đổi bất kỳ thông báo pháp lý nào được hiển thị trong hoặc kèm theo Dịch vụ của chúng tôi.
+
+Dịch vụ của chúng tôi hiển thị một số nội dung không phải của Google. Chỉ một mình đối tượng cung cấp sẽ chịu trách nhiệm về nội dung này. Chúng tôi có thể xem xét nội dung để xác định xem nội dung đó có bất hợp pháp hoặc vi phạm chính sách của chúng tôi hay không, và chúng tôi có thể xóa hoặc từ chối hiển thị nội dung mà chúng tôi có lý do chính đáng để tin rằng nội dung đó vi phạm chính sách của chúng tôi hoặc luật pháp. Tuy nhiên, điều đó không nhất thiết có nghĩa là chúng tôi sẽ xem xét nội dung, do vậy bạn đừng cho rằng chúng tôi sẽ làm như vậy.
+
+Liên quan đến việc bạn sử dụng Dịch vụ, chúng tôi có thể gửi cho bạn các thông báo dịch vụ, thông báo quản trị và thông tin khác. Bạn có thể chọn không nhận một số thông báo này.
+
+Một số các Dịch vụ của chúng tôi có sẵn trên các thiết bị di động. Không sử dụng các Dịch vụ đó theo cách khiến bạn bị mất tập trung và ngăn cản bạn tuân thủ các luật về an toàn hoặc giao thông."
+                   android:layout_height="match_parent" />
+
+            </android.support.v4.widget.NestedScrollView>
+        </LinearLayout>
+    </FrameLayout>
+
+
+
+</LinearLayout>

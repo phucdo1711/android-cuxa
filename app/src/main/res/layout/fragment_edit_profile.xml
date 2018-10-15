@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_dangphong"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:elevation="4dp"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/imgBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/ripple_item"
+            android:src="@drawable/ic_back" />
+
+        <com.example.dell.appcuxa.CustomeView.RobBoldText
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:gravity="center"
+            android:text="Chỉnh sửa"
+            android:textColor="@color/black" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/black"
+        android:elevation="2dp" />
+
+    <FrameLayout
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.github.ybq.android.spinkit.SpinKitView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/spin_kit"
+            style="@style/SpinKitView.Large.Circle"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            app:SpinKit_Color="@color/orange" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="100dp"
+                        android:id="@+id/imgAvatar"
+                        android:layout_marginTop="10dp"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@drawable/default_image"
+                        android:layout_height="100dp" />
+                    <com.example.dell.appcuxa.CustomeView.RobLightText
+                        android:layout_width="match_parent"
+                        android:id="@+id/tvChangeImage"
+                        android:layout_marginTop="5dp"
+                        android:textColor="#0585d6"
+                        android:text="Thay ảnh đại diện"
+                        android:gravity="center"
+                        android:layout_height="wrap_content" />
+                    <com.example.dell.appcuxa.CustomeView.RobBoldText
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:text="Họ và tên"
+                        android:textColor="@color/black"
+                        android:layout_height="wrap_content" />
+                    <com.example.dell.appcuxa.CustomeView.RobEditText
+                        android:layout_width="match_parent"
+                        android:hint="Điền vào đây"
+                        android:id="@+id/edtName"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="5dp"
+                        android:layout_height="wrap_content" />
+                    <LinearLayout
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="10">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="5"
+                            android:orientation="vertical">
+
+                            <com.example.dell.appcuxa.CustomeView.RobBoldText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Ngày sinh"
+                                android:textColor="@color/black" />
+
+                            <com.example.dell.appcuxa.CustomeView.RobLightText
+                                android:id="@+id/edtBirthday"
+                                android:layout_marginTop="16dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:drawablePadding="10dp"
+                                android:drawableRight="@drawable/ic_down_arrow"
+                                android:focusable="false"
+                                android:hint="dd/MM/yyyy"
+                                android:textSize="14sp" />
+                            <View android:layout_height="1dp" android:layout_marginTop="1dp" android:layout_width="match_parent" android:background="@color/black"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_marginLeft="15dp"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="5"
+                            android:orientation="vertical">
+
+                            <com.example.dell.appcuxa.CustomeView.RobBoldText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Giới tính"
+                                android:textColor="@color/black" />
+
+                            <com.example.dell.appcuxa.CustomeView.RobLightText
+                                android:id="@+id/edtGender"
+                                android:layout_marginTop="16dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:drawablePadding="10dp"
+                                android:drawableRight="@drawable/ic_down_arrow"
+                                android:focusable="false"
+                                android:hint="Giới tính"
+                                android:textSize="14sp" />
+                            <View android:layout_height="1dp" android:layout_marginTop="1dp" android:layout_width="match_parent" android:background="@color/black"/>
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+                    <com.example.dell.appcuxa.CustomeView.RobBoldText
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:text="Nơi ở hiện tại"
+                        android:textColor="@color/black"
+                        android:layout_height="wrap_content" />
+                    <com.example.dell.appcuxa.CustomeView.RobEditText
+                        android:layout_width="match_parent"
+                        android:hint="Điền vào đây"
+                        android:id="@+id/edtCurAddress"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="5dp"
+                        android:layout_height="wrap_content" />
+                    <com.example.dell.appcuxa.CustomeView.RobBoldText
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:text="Đang học tại"
+                        android:textColor="@color/black"
+                        android:layout_height="wrap_content" />
+                    <com.example.dell.appcuxa.CustomeView.RobEditText
+                        android:layout_width="match_parent"
+                        android:hint="Điền vào đây"
+                        android:id="@+id/edtCurSchool"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="5dp"
+                        android:layout_height="wrap_content" />
+                    <com.example.dell.appcuxa.CustomeView.RobBoldText
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:text="Địa chỉ email"
+                        android:textColor="@color/black"
+                        android:layout_height="wrap_content" />
+                    <com.example.dell.appcuxa.CustomeView.RobEditText
+                        android:layout_width="match_parent"
+                        android:hint="Điền vào đây"
+                        android:id="@+id/edtEmail"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="5dp"
+                        android:layout_height="wrap_content" />
+                    <com.example.dell.appcuxa.CustomeView.RobBoldText
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:text="Số điện thoại"
+                        android:textColor="@color/black"
+                        android:layout_height="wrap_content" />
+                    <com.example.dell.appcuxa.CustomeView.RobEditText
+                        android:layout_width="match_parent"
+                        android:hint="Điền vào đây"
+                        android:textColor="@color/black"
+                        android:id="@+id/edtPhoneNo"
+                        android:layout_marginTop="5dp"
+                        android:layout_height="wrap_content" />
+                    <com.example.dell.appcuxa.CustomeView.RobBoldText
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:text="CMND"
+                        android:textColor="@color/black"
+                        android:layout_height="wrap_content" />
+                    <com.example.dell.appcuxa.CustomeView.RobEditText
+                        android:layout_width="match_parent"
+                        android:hint="Điền vào đây"
+                        android:id="@+id/edtCMND"
+                        android:textColor="@color/black"
+                        android:layout_marginTop="5dp"
+                        android:layout_height="wrap_content" />
+
+                    <com.example.dell.appcuxa.CustomeView.RobButton
+                        android:layout_width="match_parent"
+                        android:id="@+id/btnSave"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginLeft="30dp"
+                        android:text="Lưu lại"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/bg_butto_feedback"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:layout_marginBottom="15dp"
+                        android:layout_height="40dp" />
+                </LinearLayout>
+
+            </android.support.v4.widget.NestedScrollView>
+        </LinearLayout>
+    </FrameLayout>
+
+
+
+</LinearLayout>

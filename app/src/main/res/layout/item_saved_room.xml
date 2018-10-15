@@ -37,7 +37,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="200dp" />
                     <CheckBox
-                        android:visibility="gone"
                         android:layout_marginLeft="15dp"
                         android:gravity="center"
                         android:button="@drawable/custome_checkbox_save"
@@ -46,6 +45,7 @@
                         android:id="@+id/imgSave"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="10dp"
+                        android:checked="true"
                         android:layout_height="wrap_content" />
                     <me.relex.circleindicator.CircleIndicator
                         android:id="@+id/indicator"
@@ -68,32 +68,61 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <com.example.dell.appcuxa.CustomeView.RobLightText
-                        android:id="@+id/tvPurpose"
-                        tools:text="Tìm người thuê trọ"
-                        android:layout_width="0dp"
-                        android:layout_weight="6"
-                        android:layout_height="wrap_content" />
-                    <com.example.dell.appcuxa.CustomeView.RobLightText
-                        android:id="@+id/tvPrice"
-                        android:gravity="end"
-                        tools:text="6tr2/phòng"
-                        android:layout_width="0dp"
-                        android:layout_weight="4"
-                        android:layout_height="wrap_content" />
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:weightSum="10"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="0dp"
+                            android:layout_weight="8"
+                            android:layout_height="wrap_content">
+                            <com.example.dell.appcuxa.CustomeView.RobBoldText
+                                android:id="@+id/tvName"
+                                android:layout_marginTop="2dp"
+                                tools:text="Tìm người thuê trọ"
+                                android:textSize="17sp"
+                                android:textColor="@color/black"
+                                android:layout_width="wrap_content"
+                                android:layout_weight="6"
+                                android:layout_height="wrap_content" />
+                            <com.example.dell.appcuxa.CustomeView.RobLightText
+                                android:layout_marginTop="2dp"
+                                android:id="@+id/tvAddress"
+                                android:textColor="@color/black"
+                                android:drawablePadding="5dp"
+                                android:drawableLeft="@drawable/ic_placeholder"
+                                tools:text="Nguyễn Trãi, quận Thanh Xuân, Hà Nội"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                            <com.example.dell.appcuxa.CustomeView.RobLightText
+                                android:textColor="@color/black"
+                                android:layout_marginTop="2dp"
+                                android:drawablePadding="5dp"
+                                android:drawableLeft="@drawable/ic_money"
+                                android:id="@+id/tvMoney"
+                                tools:text="6tr/tháng"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="2"
+                            android:layout_marginRight="10dp"
+                            android:layout_height="70dp">
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:layout_marginLeft="15dp"
+                                android:src="@drawable/default_image"
+                                android:id="@+id/imgAvatar"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
                 </LinearLayout>
-                <com.example.dell.appcuxa.CustomeView.RobBoldText
-                    android:textColor="@color/black"
-                    android:textSize="17sp"
-                    android:id="@+id/tvName"
-                    tools:text="Cho thuê căn 32m2 giá rẻ"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                <com.example.dell.appcuxa.CustomeView.RobLightText
-                    android:id="@+id/tvAddress"
-                    tools:text="Nguyễn Trãi, quận Thanh Xuân, Hà Nội"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+
             </LinearLayout>
         </LinearLayout>
 

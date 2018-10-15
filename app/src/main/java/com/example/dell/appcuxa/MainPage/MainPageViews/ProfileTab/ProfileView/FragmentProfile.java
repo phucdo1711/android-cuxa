@@ -110,6 +110,11 @@ public class FragmentProfile extends Fragment implements View.OnClickListener, I
                 setting.setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogFragmentTheme);
                 setting.show(getFragmentManager(),"fragment_setting");
                 break;
+            case R.id.imgEditprofile:
+                FragmentEditProfile fragmentEditProfile = new FragmentEditProfile();
+                fragmentEditProfile.setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogFragmentTheme);
+                fragmentEditProfile.show(getFragmentManager(),"fragment_edit_profile");
+                break;
         }
     }
 

@@ -3,6 +3,7 @@ package com.example.dell.appcuxa.Utils;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,21 +20,15 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.ByteArrayOutputStream;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class AppUtils {
     public static final int REQUEST_CAMERA = 11;
     public static final int ERROR_DIALOG_REQUEST = 9001;
     public static final String TAG = "CUXA";
     public static final int PICK_IMAGE_1 = 1;
     public static final int PICK_IMAGE_2 = 2;
-    public static final int PICK_IMAGE_3 = 3;
-    public static final int PICK_IMAGE_4 = 4;
-    public static final int PICK_IMAGE_5 = 5;
-    public static final int PICK_IMAGE_6 = 6;
-
-    public static final int PICK_IMAGE_7 = 7;
-    public static final int PICK_IMAGE_8 = 8;
-    public static final int PICK_IMAGE_9 = 9;
-    public static final int PICK_IMAGE_10 = 10;
+    public static SharedPreferences sharedPreferences;
 
     public static int calculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -160,4 +155,17 @@ public class AppUtils {
         }
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
+    public static String getToken(Activity activity){
+        String token = "";
+        sharedPreferences = activity.getSharedPreferences("login_data", MODE_PRIVATE);
+        token = sharedPreferences.getString("token", "");
+        return token;
+    }
+    public static String getIdUser(Activity activity){
+        String id_user = "";
+        sharedPreferences = activity.getSharedPreferences("login_data", MODE_PRIVATE);
+        id_user = sharedPreferences.getString("id_user", "");
+        return id_user;
+    }
+
 }

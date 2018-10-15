@@ -1,96 +1,55 @@
 package com.example.dell.appcuxa.MainPage.MainPageViews.ProfileTab.ProfileView;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
-import android.media.Image;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 
-import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.SparseArray;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.view.inputmethod.EditorInfo;
-import android.widget.CompoundButton;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.dell.appcuxa.CustomeView.MyGridView;
-import com.example.dell.appcuxa.CustomeView.RobAutoCompleteTextView;
-import com.example.dell.appcuxa.CustomeView.RobBoldText;
 import com.example.dell.appcuxa.CustomeView.RobButton;
-import com.example.dell.appcuxa.CustomeView.RobCheckBox;
-import com.example.dell.appcuxa.CustomeView.RobEditText;
-import com.example.dell.appcuxa.CustomeView.RobLightText;
 import com.example.dell.appcuxa.CuxaAPI.CuXaAPI;
 import com.example.dell.appcuxa.CuxaAPI.NetworkController;
-import com.example.dell.appcuxa.MainPage.Adapter.CheckBoxAdapter;
-import com.example.dell.appcuxa.MainPage.Adapter.ImageAdapter;
-import com.example.dell.appcuxa.MainPage.Adapter.PlaceAutoCompleteAdapter;
-import com.example.dell.appcuxa.MainPage.MainPageViews.AddPhotoBottomDialogFragment;
+import com.example.dell.appcuxa.MainPage.Adapter.AdapterMyRoom;
+import com.example.dell.appcuxa.MainPage.MainPageViews.FragmentSearQuickAdva;
 import com.example.dell.appcuxa.MainPage.MainPageViews.FragmentSearchAdvance;
 import com.example.dell.appcuxa.MainPage.MainPageViews.FragmentUpRoom;
-import com.example.dell.appcuxa.MainPage.MainPageViews.Interface.ILogicDeleteImage;
-import com.example.dell.appcuxa.MainPage.MainPageViews.SearchTab.GenderBottomDialog;
-import com.example.dell.appcuxa.MainPage.MainPageViews.SelectedImageAdapter;
-import com.example.dell.appcuxa.ObjectModels.LocationRoom;
-import com.example.dell.appcuxa.ObjectModels.RoomObject;
-import com.example.dell.appcuxa.ObjectModels.UtilityObject;
+import com.example.dell.appcuxa.MainPage.MainPageViews.MainPageActivity;
+import com.example.dell.appcuxa.ObjectModels.ObjectListByOption;
+import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 import com.example.dell.appcuxa.R;
 import com.example.dell.appcuxa.Utils.AppUtils;
 import com.github.ybq.android.spinkit.SpinKitView;
-import com.google.android.gms.location.places.GeoDataClient;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.vision.CameraSource;
-import com.google.android.gms.vision.Detector;
-import com.google.android.gms.vision.barcode.Barcode;
-import com.google.android.gms.vision.barcode.BarcodeDetector;
-import com.google.zxing.qrcode.encoder.QRCode;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.content.Context.MODE_PRIVATE;
 
-
-public class FragmentMyRoom extends DialogFragment implements
-        View.OnClickListener {
-
+public class FragmentMyRoom extends DialogFragment implements AdapterMyRoom.ILogicDeleteRoom,
+        View.OnClickListener{
+    CuXaAPI fileService;
     private View mMainView;
+    AdapterMyRoom adapterMyRoom;
     private RobButton btnCreateNew;
     private ImageView imgBack;
     private RecyclerView rcMyRoom;
+    AdapterMyRoom.ILogicDeleteRoom logicDeleteRoom = this;
+    private SpinKitView progressBar;
 
     public FragmentMyRoom() {
 
@@ -106,6 +65,7 @@ public class FragmentMyRoom extends DialogFragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mMainView = inflater.inflate(R.layout.fragment_my_room, container, false);
         init();
+        getListMyRoom("Bearer "+ AppUtils.getToken(getActivity()),"application/json",AppUtils.getIdUser(getActivity()));
 
         return mMainView;
     }
@@ -132,12 +92,103 @@ public class FragmentMyRoom extends DialogFragment implements
      * Ánh xạ view
      */
     public void init() {
+        progressBar =mMainView.findViewById(R.id.spin_kit);
         btnCreateNew = mMainView.findViewById(R.id.btnCreateNew);
         imgBack = mMainView.findViewById(R.id.imgBack);
         rcMyRoom = mMainView.findViewById(R.id.rvMyRoom);
         imgBack.setOnClickListener(this);
         btnCreateNew.setOnClickListener(this);
 
+    }
+    public void getListMyRoom(String token, String header, String landLord){
+        if(AppUtils.haveNetworkConnection(getContext())){
+            fileService = NetworkController.upload();
+            Call<ObjectListByOption> getMyRooms = fileService.getMyRooms(token,header,landLord);
+            getMyRooms.enqueue(new Callback<ObjectListByOption>() {
+                @Override
+                public void onResponse(Call<ObjectListByOption> call, Response<ObjectListByOption> response) {
+                    if(response.isSuccessful()){
+                        RoomSearchItem[] objectListByOptions = response.body().getLstRoom();
+
+                        List<RoomSearchItem> roomSearchResults;
+                        roomSearchResults =new ArrayList<>(Arrays.asList(objectListByOptions));
+                        adapterMyRoom = new AdapterMyRoom(getContext(),logicDeleteRoom,roomSearchResults);
+                        LinearLayoutManager manager = new LinearLayoutManager(getContext());
+                        rcMyRoom.setLayoutManager(manager);
+                        rcMyRoom.setAdapter(adapterMyRoom);
+                        adapterMyRoom.notifyDataSetChanged();
+                        progressBar.setVisibility(View.GONE);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ObjectListByOption> call, Throwable t) {
+
+                    Toast.makeText(getActivity(), "Có lỗi sảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else{
+            Toast.makeText(getContext(), "Đéo có mạng", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    public void deleteRoom(final String idRoom) {
+        final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+        builder.setTitle("Xóa phòng");
+        builder.setMessage("Bạn có chắc chắn muốn xóa phòng này không?.");
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // do nothing
+            }
+        });
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                progressBar.setVisibility(View.VISIBLE);
+                deleteRoomFunc(idRoom);
+            }
+        });
+        builder.show();
+
+    }
+
+    @Override
+    public void backToEdit(RoomSearchItem info) {
+        FragmentUpRoom fragment = new FragmentUpRoom();
+        //fragmentSearQuickAdva.setCancelable(false);
+        //FragmentUpRoom.roomSearchItem = info;
+        fragment.setDataEdit(info);
+        fragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
+        fragment.show(getFragmentManager(), "fragment_search_advance");
+
+    }
+
+    public void deleteRoomFunc(String id){
+        fileService = NetworkController.upload();
+        Call<ResponseBody> deleteRoom = fileService.deleteRoom("Bearer "+ AppUtils.getToken(getActivity()),id);
+        deleteRoom.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()){
+                    Toast.makeText(getActivity(), "Xóa phòng thành công", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    adapterMyRoom.notifyDataSetChanged();
+                }else{
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getActivity(), "Có lỗi sảy ra: "+response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(getActivity(), "Có lỗi sảy ra", Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
 
 }

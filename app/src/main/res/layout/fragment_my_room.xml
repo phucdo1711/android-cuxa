@@ -41,7 +41,7 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/spin_kit"
             style="@style/SpinKitView.Large.Circle"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center"

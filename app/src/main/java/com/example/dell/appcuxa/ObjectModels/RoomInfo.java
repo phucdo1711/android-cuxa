@@ -9,6 +9,7 @@ public class RoomInfo implements Serializable {
     private String price;
     private String address;
     private String purpose;
+    private String id;
 
     public RoomInfo() {
     }
@@ -19,6 +20,14 @@ public class RoomInfo implements Serializable {
         this.price = price;
         this.address = address;
         this.purpose = purpose;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public List<String> getImage() {

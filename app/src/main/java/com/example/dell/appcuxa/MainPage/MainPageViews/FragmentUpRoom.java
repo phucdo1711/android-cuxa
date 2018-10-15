@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.example.dell.appcuxa.CustomeView.MyGridView;
 import com.example.dell.appcuxa.CustomeView.RobAutoCompleteTextView;
+import com.example.dell.appcuxa.CustomeView.RobBoldText;
 import com.example.dell.appcuxa.CustomeView.RobButton;
 import com.example.dell.appcuxa.CustomeView.RobCheckBox;
 import com.example.dell.appcuxa.CustomeView.RobEditText;
@@ -92,6 +93,7 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
     @BindView(R.id.edtDesc)
     public RobEditText edtDesc;
     public RobCheckBox cbRent;
+    public RobBoldText tvTitle;
     public RobCheckBox cbLiveTogether;
     RobAutoCompleteTextView edtAddress;
     RobEditText edtElecPrice;
@@ -108,6 +110,7 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
     String token = "";
     ImageView imgBack;
     protected GeoDataClient mGeoDataClient;
+    public  RoomSearchItem roomSearchItem;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40,-168),new LatLng(71,136));
     SelectedImageAdapter selectedImageAdapter;
     PlaceAutoCompleteAdapter placeAutoCompleteAdapter;
@@ -127,6 +130,33 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
         mMainView = inflater.inflate(R.layout.fragment_dang_phong, container, false);
         ButterKnife.bind(getActivity());
         init();
+        if(roomSearchItem!=null){
+            String purpose = roomSearchItem.getType();
+            if(purpose.equals("empty")){
+                cbRent.setChecked(true);
+            }else{
+                cbLiveTogether.setChecked(true);
+            }
+            tvTitle.setText("Chỉnh sửa");
+            edtRoomName.setText(roomSearchItem.getName());
+            edtPrice.setText(roomSearchItem.getPrice());
+            edtWaterPrice.setText(roomSearchItem.getWaterPrice()==null?"":roomSearchItem.getWaterPrice());
+            edtElecPrice.setText(roomSearchItem.getElectricityPrice()==null?"":roomSearchItem.getElectricityPrice());
+            edtDienTich.setText(roomSearchItem.getArea()==null?"":roomSearchItem.getArea());
+            edtAddress.setText(roomSearchItem.getAddress()==null?"":roomSearchItem.getAddress());
+           // edtPhoneNo.setText("");
+            edtNumOfPeople.setText("");
+            String gender = "";
+            if(roomSearchItem.getGenderAccepted().equals("both")){
+                gender ="Tất cả";
+            }else if(roomSearchItem.getGenderAccepted().equals("male")){
+                gender = "Nam";
+            }else{
+                gender = "Nữ";
+            }
+            edtGender.setText(roomSearchItem.getGenderAccepted().equals("")?"":gender);
+            edtDesc.setText(roomSearchItem.getDescription()==null?"":roomSearchItem.getDescription());
+        }
         fileService = NetworkController.upload();
         sharedPreferences = getActivity().getSharedPreferences("login_data", MODE_PRIVATE);
         token = sharedPreferences.getString("token", "");
@@ -278,6 +308,7 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
 
 
     public void init() {
+        tvTitle = mMainView.findViewById(R.id.tvTitle);
         edtWaterPrice = mMainView.findViewById(R.id.edtWaterPrice);
         edtElecPrice = mMainView.findViewById(R.id.edtElecPrice);
         edtDesc = mMainView.findViewById(R.id.edtDesc);
@@ -391,9 +422,17 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
                                     new UtilityObject(object.getString("id"),object.getString("name"),object.getString("code"));
                             utilityObjectList.add(utilityObject);
                         }
-                        CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(utilityObjectList,getContext());
-                        gvCheckBox.setAdapter(checkBoxAdapter);
-                        checkBoxAdapter.notifyDataSetChanged();
+                        if(roomSearchItem!=null){
+                            String[] utilitiesSelected = roomSearchItem.getUtilities();
+                            CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(utilityObjectList,getContext(),utilitiesSelected);
+                            gvCheckBox.setAdapter(checkBoxAdapter);
+                            checkBoxAdapter.notifyDataSetChanged();
+                        }else{
+                            CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(utilityObjectList,getContext());
+                            gvCheckBox.setAdapter(checkBoxAdapter);
+                            checkBoxAdapter.notifyDataSetChanged();
+                        }
+
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -445,7 +484,7 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
         if(object ==null){
             Toast.makeText(getActivity(), "Null", Toast.LENGTH_SHORT).show();
         }else{
-            //TODO do something here.
+            roomSearchItem = object;
         }
     }
 
