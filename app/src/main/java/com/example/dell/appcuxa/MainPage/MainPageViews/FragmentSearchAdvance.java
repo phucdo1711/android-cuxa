@@ -1,5 +1,6 @@
 package com.example.dell.appcuxa.MainPage.MainPageViews;
 
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -112,6 +114,16 @@ public class FragmentSearchAdvance extends DialogFragment implements View.OnClic
                 return false;
             }
         });
+        edtAddress.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,int position, long id)
+            {
+                doubleList = geoLocate();
+                Log.d("location", doubleList.toString());
+            }
+
+        });
         return mMainView;
     }
 
@@ -134,6 +146,7 @@ public class FragmentSearchAdvance extends DialogFragment implements View.OnClic
         gvCheckBox = mMainView.findViewById(R.id.gridCheckBox);
         progressBar = mMainView.findViewById(R.id.spin_kit);
         btnSearch.setOnClickListener(this);
+
     }
 
     @Override
@@ -217,21 +230,6 @@ public class FragmentSearchAdvance extends DialogFragment implements View.OnClic
                     searchAdvance.show(getFragmentManager(),"fragment_search_quick_advance");
                     FragmentSearchAdvance.this.dismiss();
 
-                    //RoomSearchResult roomSearchResult = response.body();
-                 /*   try {
-                        JSONObject object = new JSONObject(response.body().string());
-                        JSONObject byLocation = object.getJSONObject("byLocaction");
-                        JSONObject byPrice = new JSONObject("byPrice");
-                        JSONArray lstByLocation = byLocation.getJSONArray("rows");
-                        parseJSonArray(lstByLocation,lstRoomByLocation);
-                        JSONArray lstByPrice = byPrice.getJSONArray("rows");
-                        parseJSonArray(lstByPrice,lstRoomByPrice);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }*/
                 }
             }
 

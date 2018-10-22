@@ -18,6 +18,7 @@ import com.example.dell.appcuxa.CuxaAPI.CuXaAPI;
 import com.example.dell.appcuxa.CuxaAPI.NetworkController;
 import com.example.dell.appcuxa.MainPage.Adapter.AdapterSavedItem;
 import com.example.dell.appcuxa.MainPage.MainPageViews.Interface.ILogicSaveRoom;
+import com.example.dell.appcuxa.MainPage.MainPageViews.Interface.IUnsaveRoomLogic;
 import com.example.dell.appcuxa.ObjectModels.ObjectListByOption;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 import com.example.dell.appcuxa.ObjectModels.SavedRoom;
@@ -34,12 +35,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FragmentSaved extends Fragment implements ILogicSaveRoom {
+public class FragmentSaved extends Fragment implements IUnsaveRoomLogic {
     private View mMainView;
     RobBoldText tvNumSaved;
     RecyclerView lstSaved;
+    int numSaved = 0;
     CuXaAPI cuXaAPI;
-    ILogicSaveRoom iLogicSaveRoom;
+    List<SavedRoom> roomSearchItems;
+    IUnsaveRoomLogic iUnsaveRoom;
     AdapterSavedItem savedItem;
     public FragmentSaved(){
 
@@ -50,7 +53,7 @@ public class FragmentSaved extends Fragment implements ILogicSaveRoom {
         mMainView = inflater.inflate(R.layout.fragment_saved, container, false);
         //imgView = mMainView.findViewById(R.id.imgView);
         initView();
-        iLogicSaveRoom = this;
+        iUnsaveRoom = this;
         cuXaAPI = NetworkController.upload();
         Call<SavedRoom[]> call = cuXaAPI.getLstSavedRoom("Bearer "+ AppUtils.getToken(getActivity()));
         call.enqueue(new Callback<SavedRoom[]>() {
@@ -58,10 +61,11 @@ public class FragmentSaved extends Fragment implements ILogicSaveRoom {
             public void onResponse(Call<SavedRoom[]> call, Response<SavedRoom[]> response) {
                 if(response.isSuccessful()){
                     tvNumSaved.setText(response.body().length+" phòng đã lưu");
+                    numSaved = response.body().length;
                     LinearLayoutManager manager = new LinearLayoutManager(getContext());
                     lstSaved.setLayoutManager(manager);
-                   List<SavedRoom> roomSearchItems =  new ArrayList<>(Arrays.asList(response.body()));
-                   savedItem = new AdapterSavedItem(getContext(),roomSearchItems,iLogicSaveRoom);
+                    roomSearchItems =  new ArrayList<>(Arrays.asList(response.body()));
+                   savedItem = new AdapterSavedItem(getContext(),roomSearchItems,iUnsaveRoom);
                    lstSaved.setAdapter(savedItem);
                 }
             }
@@ -81,14 +85,17 @@ public class FragmentSaved extends Fragment implements ILogicSaveRoom {
     }
 
     @Override
-    public void saveRoom(String id) {
+    public void unSaveRoom(final SavedRoom room) {
         if(AppUtils.haveNetworkConnection(getActivity())){
             cuXaAPI = NetworkController.upload();
-            Call<ResponseBody> call = cuXaAPI.saveRoom("Bearer "+ AppUtils.getToken(getActivity()),id);
+            Call<ResponseBody> call = cuXaAPI.saveRoom("Bearer "+ AppUtils.getToken(getActivity()),room.getId());
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if(response.isSuccessful()){
+                        numSaved = numSaved - 1;
+                        tvNumSaved.setText(numSaved+" phòng đã lưu");
+                        roomSearchItems.remove(room);
                         savedItem.notifyDataSetChanged();
                     }
                 }
@@ -101,12 +108,6 @@ public class FragmentSaved extends Fragment implements ILogicSaveRoom {
         }else{
             Toast.makeText(getActivity(), "Đéo có mạng", Toast.LENGTH_SHORT).show();
         }
-
-    }
-
-    @Override
-    public void unSaveRoom(String id) {
-       saveRoom(id);
     }
 }
 

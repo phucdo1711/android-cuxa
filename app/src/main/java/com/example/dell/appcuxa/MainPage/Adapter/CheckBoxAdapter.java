@@ -24,9 +24,10 @@ import java.util.List;
 
 public class CheckBoxAdapter extends BaseAdapter {
     public         LayoutInflater mInflater;
-    List<UtilityObject> utilityObjects;
-    Context context;
-    String[] selected;
+    private List<UtilityObject> utilityObjects;
+    private boolean enable = false;
+    private Context context;
+    private String[] selected;
 
     public CheckBoxAdapter(List<UtilityObject> utilityObjects, Context context) {
         this.utilityObjects = utilityObjects;
@@ -36,6 +37,13 @@ public class CheckBoxAdapter extends BaseAdapter {
     public CheckBoxAdapter(List<UtilityObject> utilityObjects, Context context,String[] selected) {
         this.utilityObjects = utilityObjects;
         this.context = context;
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.selected = selected;
+    }
+    public CheckBoxAdapter(List<UtilityObject> utilityObjects, Context context,String[] selected,boolean enable) {
+        this.utilityObjects = utilityObjects;
+        this.context = context;
+        this.enable = enable;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.selected = selected;
     }
@@ -73,6 +81,10 @@ public class CheckBoxAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.checkbox.setText(utilityObjects.get(i).name);
+        if(enable){
+            holder.checkbox.setEnabled(false);
+
+        }
         if(selected!=null){
             for(int a = 0;a<selected.length;a++){
                 if(selected[a].equals(utilityObjects.get(i).getId())){

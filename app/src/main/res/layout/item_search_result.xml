@@ -9,7 +9,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.v7.widget.CardView
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="1dp"
         app:cardCornerRadius="3dp"
         app:cardElevation="1dp"
         android:layout_width="match_parent"
@@ -28,14 +28,17 @@
                     android:gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
                     <android.support.v4.view.ViewPager
-                        android:gravity="center"
-                        android:scaleType="centerCrop"
-                        android:adjustViewBounds="true"
                         android:id="@+id/imgHinh"
-                        android:cropToPadding="true"
                         android:layout_width="match_parent"
-                        android:layout_height="200dp" />
+                        android:layout_height="200dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:adjustViewBounds="true"
+                        android:cropToPadding="true"
+                        android:gravity="center"
+                        android:scaleType="centerCrop" />
                     <me.relex.circleindicator.CircleIndicator
                         android:id="@+id/indicator"
                         android:layout_marginTop="152dp"
@@ -79,17 +82,19 @@
                             <com.example.dell.appcuxa.CustomeView.RobLightText
                                 android:layout_marginTop="2dp"
                                 android:id="@+id/tvAddress"
+                                android:gravity="center_vertical"
                                 android:textColor="@color/black"
                                 android:drawablePadding="5dp"
-                                android:drawableLeft="@drawable/ic_placeholder"
+                                android:drawableLeft="@drawable/ic_location"
                                 tools:text="Nguyễn Trãi, quận Thanh Xuân, Hà Nội"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" />
                             <com.example.dell.appcuxa.CustomeView.RobLightText
                                 android:textColor="@color/black"
                                 android:layout_marginTop="2dp"
+                                android:gravity="center_vertical"
                                 android:drawablePadding="5dp"
-                                android:drawableLeft="@drawable/ic_money"
+                                android:drawableLeft="@drawable/ic_credit_card"
                                 android:id="@+id/tvMoney"
                                 tools:text="6tr/tháng"
                                 android:layout_width="match_parent"

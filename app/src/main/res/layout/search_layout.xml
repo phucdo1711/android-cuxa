@@ -25,23 +25,24 @@ android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:gravity="center"
-            android:orientation="horizontal"
-            android:weightSum="10">
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:weightSum="10"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginLeft="16dp"
-                android:paddingLeft="10dp"
-                android:layout_weight="7"
+                android:layout_marginRight="16dp"
                 android:background="@drawable/bg_search_layout"
                 android:elevation="4dp"
                 android:gravity="center">
 
                 <ImageView
+                    android:layout_weight="1.5"
                     android:background="@drawable/ripple_item"
                     android:id="@+id/imgBack"
-                    android:layout_width="40dp"
+                    android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_back"
                   />
@@ -50,29 +51,20 @@ android:background="@color/white"
                     android:layout_marginRight="5dp"
                     android:imeOptions="actionSearch"
                     android:id="@+id/edtSearch"
-                    android:layout_width="match_parent"
+                    android:layout_weight="7"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:backgroundTint="#00ffffff"
                     android:hint="Gõ để bắt đầu tìm kiếm"
                     android:textColorHint="@color/black" />
+                <ImageView
+                    android:layout_weight="1.5"
+                    android:id="@+id/imgMap"
+                    android:src="@drawable/ic_map"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5" />
-
-            <com.example.dell.appcuxa.CustomeView.RobButton
-                android:id="@+id/btnSearchAdvance"
-                android:layout_width="0dp"
-                android:layout_height="35dp"
-                android:layout_marginRight="16dp"
-                android:layout_weight="2.5"
-                android:background="@drawable/bg_search_layout"
-                android:elevation="10dp"
-                android:text="Nâng cao"
-                android:textAllCaps="false"
-                android:textColor="@color/black" />
         </LinearLayout
 >
 
@@ -91,13 +83,15 @@ android:background="@color/white"
                 android:layout_height="1dp"
                 android:layout_weight="0.5" />
 
-            <com.example.dell.appcuxa.CustomeView.RobRadioButton
-                android:id="@+id/rdHN"
+            <com.example.dell.appcuxa.CustomeView.RobButton
+                android:id="@+id/btnHN"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:textAllCaps="false"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2.5"
-                android:background="@drawable/bg_radio"
-                android:button="@android:color/transparent"
+                android:background="@drawable/ripple_item"
                 android:textColor="@drawable/change_color_checkbox"
                 android:gravity="center"
                 android:padding="10dp"
@@ -109,12 +103,15 @@ android:background="@color/white"
                 android:layout_height="1dp"
                 android:layout_weight="0.5" />
 
-            <com.example.dell.appcuxa.CustomeView.RobRadioButton
-                android:id="@+id/rdSG"
+            <com.example.dell.appcuxa.CustomeView.RobButton
+                android:id="@+id/btnSG"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:textAllCaps="false"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2.5"
-                android:background="@drawable/bg_radio"
+                android:background="@drawable/ripple_item"
                 android:button="@android:color/transparent"
                 android:gravity="center"
                 android:padding="10dp"
@@ -126,13 +123,15 @@ android:background="@color/white"
                 android:layout_height="1dp"
                 android:layout_weight="0.5" />
 
-            <com.example.dell.appcuxa.CustomeView.RobRadioButton
-                android:id="@+id/rdCurrentLocation"
+            <com.example.dell.appcuxa.CustomeView.RobButton
+                android:id="@+id/btnCurrentLocation"
                 android:layout_width="0dp"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:textAllCaps="false"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:background="@drawable/bg_radio"
-                android:button="@android:color/transparent"
+                android:background="@drawable/ripple_item"
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="Vị trí hiện tại"
@@ -159,7 +158,7 @@ android:background="@color/white"
                 android:id="@+id/rdPhamVi"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_weight="2"
+                android:layout_weight="3"
                 android:background="@drawable/bg_radio"
                 android:button="@android:color/transparent"
                 android:textColor="@drawable/change_color_checkbox"
@@ -172,13 +171,13 @@ android:background="@color/white"
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_weight="0.25" />
+                android:layout_weight="0.5" />
 
             <com.example.dell.appcuxa.CustomeView.RobRadioButton
                 android:id="@+id/rdGiaTien"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_weight="2"
+                android:layout_weight="3"
                 android:background="@drawable/bg_radio"
                 android:button="@android:color/transparent"
                 android:gravity="center"
@@ -189,13 +188,13 @@ android:background="@color/white"
             <View
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_weight="0.25" />
+                android:layout_weight="0.5" />
 
             <com.example.dell.appcuxa.CustomeView.RobRadioButton
                 android:id="@+id/rdTienNghi"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_weight="2.5"
+                android:layout_weight="3"
                 android:background="@drawable/bg_radio"
                 android:button="@android:color/transparent"
                 android:gravity="center"
@@ -203,18 +202,6 @@ android:background="@color/white"
                 android:text="Tiện nghi"
                 android:textColor="@drawable/change_color_checkbox" />
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="0.25" />
-            <Spinner
-                android:background="@drawable/bg_spinner"
-                android:layout_width="0dp"
-                android:layout_weight="2.75"
-                android:padding="10dp"
-                android:layout_height="40dp">
-
-            </Spinner>
         </RadioGroup>
     </LinearLayout>
 

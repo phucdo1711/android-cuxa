@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:fitsSystemWindows="true"
+        >
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:contentScrim="@color/white"
+            app:expandedTitleTextAppearance="@android:color/transparent"
+            android:fitsSystemWindows="true"
+            >
+            <android.support.v7.widget.CardView
+                app:layout_collapseMode="parallax"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardElevation="0dp">
+                <RelativeLayout
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <android.support.v4.view.ViewPager
+                        android:id="@+id/imgHinh"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:adjustViewBounds="true"
+                        android:cropToPadding="true"
+                        android:gravity="center"
+                        android:scaleType="centerCrop" />
+
+                    <me.relex.circleindicator.CircleIndicator
+                        android:id="@+id/indicator"
+                        android:layout_marginTop="152dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"/>
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                app:titleTextColor="@color/black"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:layout_collapseMode="pin">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp">
+                    <ImageView
+                        android:layout_marginLeft="-10dp"
+                        android:id="@+id/imgBackTb"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="8dp"
+                        android:src="@drawable/ic_back" />
+                    <CheckBox
+                        android:id="@+id/imgSaveTb"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="16dp"
+                        android:button="@drawable/custome_checkbox_save"
+                        android:gravity="center" />
+                </RelativeLayout>
+            </android.support.v7.widget.Toolbar>
+
+
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:layout_marginBottom="10dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+        <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_marginStart="10sp"
+            android:layout_marginEnd="10sp"
+            >
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <include layout="@layout/layout_include_detail" />
+        </FrameLayout>
+
+        </FrameLayout>
+       <!-- <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:src="@drawable/default_image"
+                android:layout_width="100dp"
+                android:scaleType="centerCrop"
+                android:layout_height="100dp"
+                app:elevation="6dp"
+                android:id="@+id/imgAvatar"
+                android:layout_marginRight="20dp"
+                android:scrollbarStyle="insideOverlay"
+                app:layout_anchor="@id/app_bar_layout"
+                app:layout_anchorGravity="bottom|right|end"
+                />
+            <include layout="@layout/layout_include_detail" />-->
+       <!-- </FrameLayout>-->
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+
+</android.support.design.widget.CoordinatorLayout>
+

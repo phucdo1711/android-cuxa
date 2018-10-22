@@ -1,12 +1,20 @@
 package com.example.dell.appcuxa.MainPage.MainPageViews;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,12 +36,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dell.appcuxa.CustomeView.RobBoldText;
+import com.example.dell.appcuxa.CustomeView.RobButton;
 import com.example.dell.appcuxa.CuxaAPI.CuXaAPI;
 import com.example.dell.appcuxa.CuxaAPI.NetworkController;
 import com.example.dell.appcuxa.MainPage.Adapter.AdapterSearchResultRoom;
 import com.example.dell.appcuxa.MainPage.Adapter.PlaceAutoCompleteAdapter;
 import com.example.dell.appcuxa.MainPage.MainPageViews.Interface.ILogicSaveRoom;
+import com.example.dell.appcuxa.ObjectModels.LocationRoom;
 import com.example.dell.appcuxa.ObjectModels.ObjectListByOption;
+import com.example.dell.appcuxa.ObjectModels.Price;
+import com.example.dell.appcuxa.ObjectModels.RoomObject;
+import com.example.dell.appcuxa.ObjectModels.RoomSearch;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchResult;
 import com.example.dell.appcuxa.R;
@@ -54,13 +67,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FragmentSearQuickAdva extends DialogFragment implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener,ILogicSaveRoom {
+public class FragmentSearQuickAdva extends DialogFragment implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener, ILogicSaveRoom {
     private View mMainView;
     ImageView imgBack;
     AutoCompleteTextView edtSearchContent;
-    Button btnAdvance;
+    ImageView imgMap;
     RadioButton rdLocation;
     LinearLayout lnResult;
+    RobButton btnHN, btnSG, btnCurrLocation;
     RobBoldText tvNumResult;
     RobBoldText tvTypeResult;
     RadioButton rdPrice;
@@ -78,6 +92,12 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
     GoogleApiClient mGoogleApiClient;
     PlaceAutoCompleteAdapter placeAutoCompleteAdapter;
     protected GeoDataClient mGeoDataClient;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+    double latHN =  21.0277644;
+    double lonHN =  105.8341598;
+    double latHCM = 10.8230989;
+    double lonHCN = 106.62966379999999;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40, -168), new LatLng(71, 136));
 
     public FragmentSearQuickAdva() {
@@ -101,7 +121,8 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
                 .addApi(Places.PLACE_DETECTION_API)
                 .enableAutoManage(getActivity(), this)
                 .build();*/
-      iLogicSaveRoom = this;
+        iLogicSaveRoom = this;
+        fileService = NetworkController.upload();
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         listSearchResult.setLayoutManager(manager);
         mGeoDataClient = Places.getGeoDataClient(getContext(), null);
@@ -138,18 +159,18 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
         if (locationOption.count != null && Integer.valueOf(locationOption.count) > 0) {
             tvNumResult.setText(locationOption.count);
             tvTypeResult.setText("về phạm vi");
-            AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(),locationOption,iLogicSaveRoom);
+            AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(), locationOption, iLogicSaveRoom);
             listSearchResult.setAdapter(adapterSearchResultRoom);
             adapterSearchResultRoom.notifyDataSetChanged();
         }
         rdPrice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
+                if (b) {
                     if (locationOption.count != null && Integer.valueOf(priceOption.count) > 0) {
                         tvNumResult.setText(priceOption.count);
                         tvTypeResult.setText("về giá");
-                        AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(),priceOption,iLogicSaveRoom);
+                        AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(), priceOption, iLogicSaveRoom);
                         listSearchResult.setAdapter(adapterSearchResultRoom);
                         adapterSearchResultRoom.notifyDataSetChanged();
                     }
@@ -159,11 +180,11 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
         rdLocation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
+                if (b) {
                     if (locationOption.count != null && Integer.valueOf(locationOption.count) > 0) {
                         tvNumResult.setText(locationOption.count);
                         tvTypeResult.setText("về phạm vi");
-                        AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(),locationOption,iLogicSaveRoom);
+                        AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(), locationOption, iLogicSaveRoom);
                         listSearchResult.setAdapter(adapterSearchResultRoom);
                         adapterSearchResultRoom.notifyDataSetChanged();
                     }
@@ -187,13 +208,83 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
             case R.id.imgBack:
                 FragmentSearQuickAdva.this.dismiss();
                 break;
-            case R.id.btnSearchAdvance:
-                FragmentSearchAdvance fragment = new FragmentSearchAdvance();
-                //fragmentSearQuickAdva.setCancelable(false);
-                fragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
-                fragment.show(getFragmentManager(), "fragment_search_advance");
+            case R.id.imgMap:
+                GoogleMapFragment mapFragment = new GoogleMapFragment();
+                mapFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
+                mapFragment.show(getFragmentManager(), "fragment_map");
+                break;
+            case R.id.btnHN:
+                searchByLatLon(latHN,lonHN);
+                break;
+            case R.id.btnSG:
+                searchByLatLon(latHCM,lonHCN);
+                break;
+            case R.id.btnCurrentLocation:
+                locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+                }else{
+                    Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    if(location!=null){
+                        searchByLatLon(location.getLatitude(),location.getLongitude());
+                    }
+                }
                 break;
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(grantResults.length>0&& grantResults[0]==PackageManager.PERMISSION_GRANTED){
+            if(ContextCompat.checkSelfPermission(getContext(),Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED){
+                Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                if(location!=null){
+                    searchByLatLon(location.getLatitude(),location.getLongitude());
+                }
+
+            }
+        }
+    }
+
+    private void searchByLatLon(double lat, double lon) {
+        RoomSearch roomObject = new RoomSearch();
+        List<Double> doubles = new ArrayList<>();
+        doubles.add(lon);
+        doubles.add(lat);
+        Double[] latlon = new Double[doubles.size()];
+        latlon = doubles.toArray(latlon);
+        LocationRoom locationRoom = new LocationRoom("Point",latlon);
+        roomObject.setLocation(locationRoom);
+
+        Price price = new Price("0","1000000000");
+        roomObject.setLocation(locationRoom);
+        roomObject.setDistance("10000");
+        roomObject.setPrice(price);
+        Call<RoomSearchResult> searchRoom = fileService.searchRoom("", roomObject);
+
+        searchRoom.enqueue(new Callback<RoomSearchResult>() {
+            @Override
+            public void onResponse(Call<RoomSearchResult> call, Response<RoomSearchResult> response) {
+                if(response.isSuccessful()){
+                    lnResult.setVisibility(View.VISIBLE);
+                    rgLocation.setVisibility(View.GONE);
+                    nstViewInfo.setVisibility(View.GONE);
+                    listSearchResult.setVisibility(View.VISIBLE);
+                    rgOption.setVisibility(View.GONE);
+                    tvNumResult.setText(response.body().getObjectByLocation().getCount());
+                    tvTypeResult.setText("về phạm vi");
+                    AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(), response.body().getObjectByLocation(), iLogicSaveRoom);
+                    listSearchResult.setAdapter(adapterSearchResultRoom);
+                    adapterSearchResultRoom.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RoomSearchResult> call, Throwable t) {
+                Toast.makeText(getContext(), "Có lỗi trong quá trình tìm kiếm, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void geoLocate() {
@@ -213,6 +304,12 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
     }
 
     public void init() {
+        btnHN = mMainView.findViewById(R.id.btnHN);
+        btnSG = mMainView.findViewById(R.id.btnSG);
+        btnCurrLocation = mMainView.findViewById(R.id.btnCurrentLocation);
+        btnHN.setOnClickListener(this);
+        btnSG.setOnClickListener(this);
+        btnCurrLocation.setOnClickListener(this);
         lnResult = mMainView.findViewById(R.id.tvResult);
         tvNumResult = mMainView.findViewById(R.id.tvNumResult);
         tvTypeResult = mMainView.findViewById(R.id.tvTypeResult);
@@ -223,8 +320,8 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
         rgOption = mMainView.findViewById(R.id.rgOption);
         imgBack = mMainView.findViewById(R.id.imgBack);
         edtSearchContent = mMainView.findViewById(R.id.edtSearch);
-        btnAdvance = mMainView.findViewById(R.id.btnSearchAdvance);
-        btnAdvance.setOnClickListener(this);
+        imgMap = mMainView.findViewById(R.id.imgMap);
+        imgMap.setOnClickListener(this);
         rgLocation = mMainView.findViewById(R.id.rgLocation);
         rcHint = mMainView.findViewById(R.id.recHint);
         rcHistory = mMainView.findViewById(R.id.recHistory);
@@ -257,7 +354,6 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
     @Override
     public void saveRoom(String id) {
         if(AppUtils.haveNetworkConnection(getActivity())){
-            fileService = NetworkController.upload();
             Call<ResponseBody> call = fileService.saveRoom("Bearer "+ AppUtils.getToken(getActivity()),id);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override

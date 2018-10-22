@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -183,6 +184,15 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
                     doubleList = geoLocate();
                 }
                 return false;
+            }
+        });
+        edtAddress.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,int position, long id)
+            {
+                doubleList = geoLocate();
+                Log.d("location", doubleList.toString());
             }
         });
 

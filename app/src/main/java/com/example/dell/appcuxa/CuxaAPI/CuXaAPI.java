@@ -52,7 +52,7 @@ public interface CuXaAPI {
                                         @Header("Content-Type") String content_type,
                                         @Query("landlord") String landlord);
     @GET("rooms")
-    Call<ResponseBody> getListTop(@Header("Authorization") String authHeader,@Header("Content-Type") String content_type);
+    Call<ObjectListByOption> getListTop(@Header("Authorization") String authHeader,@Header("Content-Type") String content_type);
 
     @POST("rooms")
     Call<ResponseBody> uploadRoom(@Header("Authorization") String authHeader, @Body RoomObject room);

@@ -102,6 +102,7 @@
                         android:elevation="10dp"
                         android:text="Ở ghép"
                         android:textAllCaps="false"
+                        android:id="@+id/btnLiveTogether"
                         android:background="@drawable/ripple_item"
                         android:layout_width="0dp"
                         android:layout_weight="2.5"

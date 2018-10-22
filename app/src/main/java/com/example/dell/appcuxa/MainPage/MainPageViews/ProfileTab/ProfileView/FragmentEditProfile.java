@@ -1,6 +1,8 @@
 package com.example.dell.appcuxa.MainPage.MainPageViews.ProfileTab.ProfileView;
 
 import android.app.DatePickerDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,10 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.dell.appcuxa.CustomeView.RobButton;
 import com.example.dell.appcuxa.CustomeView.RobEditText;
 import com.example.dell.appcuxa.CustomeView.RobLightText;
+import com.example.dell.appcuxa.MainPage.MainPageViews.AddPhotoBottomDialogFragment;
 import com.example.dell.appcuxa.MainPage.MainPageViews.SearchTab.GenderBottomDialog;
 import com.example.dell.appcuxa.R;
 import com.github.ybq.android.spinkit.SpinKitView;
@@ -21,16 +25,18 @@ import com.github.ybq.android.spinkit.SpinKitView;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class FragmentEditProfile extends DialogFragment implements View.OnClickListener,GenderBottomDialog.ICallBackGender {
+public class FragmentEditProfile extends DialogFragment implements View.OnClickListener,GenderBottomDialog.ICallBackGender,DialogChooseImage.OnChooseReasonListener {
     public View mMainView;
     CircleImageView imgAvatar;
     RobLightText tvChangeImage, tvGender, tvBirthday;
     SpinKitView progressDialog;
     RobEditText edtName, edtCurAddress, edtCurSchool, edtEmail,edtPhoneNo, edtCmnd;
     private ImageView imgBack;
+    public static String idHinh = "";
     RobButton btnSaveChange;
     final Calendar newCalendar = Calendar.getInstance();
     public FragmentEditProfile(){
@@ -77,6 +83,7 @@ public class FragmentEditProfile extends DialogFragment implements View.OnClickL
                 submitChange();
                 break;
             case R.id.tvChangeImage:
+                showBottomDialog();
                 break;
             case R.id.edtGender:
                 GenderBottomDialog genderBottomDialog = new GenderBottomDialog();
@@ -110,5 +117,23 @@ public class FragmentEditProfile extends DialogFragment implements View.OnClickL
         return gender;
     }
 
+    public void showBottomDialog() {
+        DialogChooseImage addPhotoBottomDialogFragment =
+                DialogChooseImage.newInstance();
+        Bundle bundle = new Bundle();
+        bundle.putInt("pos", 9);
 
+        addPhotoBottomDialogFragment.setArguments(bundle);
+        addPhotoBottomDialogFragment.setOnChooseReasonListener(this);
+        addPhotoBottomDialogFragment.show(getActivity().getSupportFragmentManager(),
+                "add_photo_dialog_fragment");
+    }
+
+    @Override
+    public void onChooseReason(List<byte[]> bytes, int pos) {
+        byte[] image = bytes.get(0);
+        Bitmap bmp = BitmapFactory.decodeByteArray(image, 0, image.length);
+        imgAvatar.setImageBitmap(bmp);
+
+    }
 }

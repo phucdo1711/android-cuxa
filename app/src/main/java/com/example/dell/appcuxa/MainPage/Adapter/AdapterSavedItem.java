@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.dell.appcuxa.MainPage.MainPageViews.Interface.ILogicSaveRoom;
+import com.example.dell.appcuxa.MainPage.MainPageViews.Interface.IUnsaveRoomLogic;
 import com.example.dell.appcuxa.ObjectModels.ObjectListByOption;
 import com.example.dell.appcuxa.ObjectModels.RoomInfo;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
@@ -29,12 +30,12 @@ public class AdapterSavedItem extends RecyclerView.Adapter<AdapterSavedItem.View
     private Context context;
     private List<SavedRoom> roomInfos;
     List<String> imageList = new ArrayList<>();
-    ILogicSaveRoom iLogicSaveRoom;
+    IUnsaveRoomLogic iLoginUnsave;
 
-    public AdapterSavedItem(Context context, List<SavedRoom> roomInfos,ILogicSaveRoom iLogicSaveRoom) {
+    public AdapterSavedItem(Context context, List<SavedRoom> roomInfos,IUnsaveRoomLogic iLoginUnsave) {
         this.context = context;
         this.roomInfos = roomInfos;
-        this.iLogicSaveRoom = iLogicSaveRoom;
+        this.iLoginUnsave = iLoginUnsave;
     }
 
     @Override
@@ -61,10 +62,8 @@ public class AdapterSavedItem extends RecyclerView.Adapter<AdapterSavedItem.View
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
-                    iLogicSaveRoom.saveRoom(info.getId());
-                    AdapterSavedItem.this.notifyDataSetChanged();
                 }else{
-                    iLogicSaveRoom.unSaveRoom(info.getId());
+                    iLoginUnsave.unSaveRoom(info);
                     AdapterSavedItem.this.notifyDataSetChanged();
                 }
             }
