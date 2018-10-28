@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -48,10 +49,11 @@ import retrofit2.Response;
 import static android.content.Context.MODE_PRIVATE;
 
 
-public class FragmentSearch extends FragmentCommon implements ILogicSaveRoom,IBackToListTopScreen{
+public class FragmentSearch extends FragmentCommon implements ILogicSaveRoom, IBackToListTopScreen {
     List<RoomInfo> roomInfoList = new ArrayList<>();
     @BindView(R.id.recRoomList)
     public RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeContainer;
     @BindView(R.id.lnQuickSearch)
     RobButton btnUpRoom;
     RobButton btnLiveTogether;
@@ -64,28 +66,53 @@ public class FragmentSearch extends FragmentCommon implements ILogicSaveRoom,IBa
     public LinearLayout edtQuickSearch;
     IBackToListTopScreen iBackToListTopScreen;
     public ListRoomAdapter listRoomAdapter;
-    public FragmentSearch(){
+    List<RoomSearchItem> roomSearchItemList;
+    int size = 0;
+
+    public FragmentSearch() {
 
     }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_search, container, false);
         ButterKnife.bind(mView);
         iLogicSaveRoom = this;
+        fileService = NetworkController.upload();
         btnLiveTogether = mView.findViewById(R.id.btnLiveTogether);
         recyclerView = mView.findViewById(R.id.recRoomList);
         edtQuickSearch = mView.findViewById(R.id.lnQuickSearch);
         btnUpRoom = mView.findViewById(R.id.btnUpRoom);
         btnFindRoom = mView.findViewById(R.id.btnFindRoom);
+        swipeContainer = (SwipeRefreshLayout) mView.findViewById(R.id.swipeContainer);
         lnProgressbar = mView.findViewById(R.id.lnProgressbar);
         iBackToListTopScreen = this;
         btnUpRoom.setOnClickListener(this);
         btnLiveTogether.setOnClickListener(this);
         sharedPreferences = getActivity().getSharedPreferences("login_data", MODE_PRIVATE);
         token = sharedPreferences.getString("token", "");
-        getListTop();
-        if(AppUtils.isServiceOk(getActivity())){
+        if (getUserVisibleHint()) {
+            if (size > 0) {
+                //do nothing
+            } else {
+                loadData();
+            }
+        }
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getListTop();
+            }
+        });
+
+        if (AppUtils.isServiceOk(getActivity())) {
             btnFindRoom.setOnClickListener(this);
         }
         edtQuickSearch.setOnClickListener(this);
@@ -94,27 +121,29 @@ public class FragmentSearch extends FragmentCommon implements ILogicSaveRoom,IBa
     }
 
     private void getListTop() {
-        fileService = NetworkController.upload();
-        Call<ObjectListByOption> getListTop = fileService.getListTop("Bearer "+ token,"application/json");
+        Call<ObjectListByOption> getListTop = fileService.getListTop("Bearer " + token, "application/json");
         getListTop.enqueue(new Callback<ObjectListByOption>() {
             @Override
             public void onResponse(Call<ObjectListByOption> call, Response<ObjectListByOption> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     lnProgressbar.setVisibility(View.GONE);
                     roomInfoList.clear();
-
-                    List<RoomSearchItem> roomSearchItemList = new ArrayList<>(Arrays.asList(response.body().getLstRoom()));
+                    swipeContainer.setRefreshing(false);
+                    roomSearchItemList = new ArrayList<>(Arrays.asList(response.body().getLstRoom()));
+                    size = roomSearchItemList.size();
                     LinearLayoutManager manager = new LinearLayoutManager(getContext());
                     recyclerView.setLayoutManager(manager);
-                    listRoomAdapter = new ListRoomAdapter(getContext(),roomSearchItemList,iLogicSaveRoom,iBackToListTopScreen);
+                    listRoomAdapter = new ListRoomAdapter(getContext(), roomSearchItemList, iLogicSaveRoom, iBackToListTopScreen);
                     recyclerView.setAdapter(listRoomAdapter);
                     listRoomAdapter.notifyDataSetChanged();
                 }
+                swipeContainer.setRefreshing(false);
             }
 
             @Override
             public void onFailure(Call<ObjectListByOption> call, Throwable t) {
                 lnProgressbar.setVisibility(View.GONE);
+                swipeContainer.setRefreshing(false);
             }
         });
     }
@@ -134,18 +163,18 @@ public class FragmentSearch extends FragmentCommon implements ILogicSaveRoom,IBa
     public void onClick(View view) {
         super.onClick(view);
         int id = view.getId();
-        switch (id){
+        switch (id) {
             case R.id.lnQuickSearch:
-               FragmentSearQuickAdva fragmentSearQuickAdva = new FragmentSearQuickAdva();
-               //fragmentSearQuickAdva.setCancelable(false);
+                FragmentSearQuickAdva fragmentSearQuickAdva = new FragmentSearQuickAdva();
+                //fragmentSearQuickAdva.setCancelable(false);
                 fragmentSearQuickAdva.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
-               fragmentSearQuickAdva.show(getFragmentManager(),"fragment_search");
+                fragmentSearQuickAdva.show(getFragmentManager(), "fragment_search");
                 break;
             case R.id.btnUpRoom:
-                FragmentUpRoom fragmentUpRoom= new FragmentUpRoom();
+                FragmentUpRoom fragmentUpRoom = new FragmentUpRoom();
                 //fragmentSearQuickAdva.setCancelable(false);
                 fragmentUpRoom.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
-                fragmentUpRoom.show(getFragmentManager(),"fragment_uproom");
+                fragmentUpRoom.show(getFragmentManager(), "fragment_uproom");
                 break;
             case R.id.btnFindRoom:
 
@@ -155,22 +184,22 @@ public class FragmentSearch extends FragmentCommon implements ILogicSaveRoom,IBa
                 fragmentAd.show(getFragmentManager(), "fragment_search_advance");
                 break;
             case R.id.btnLiveTogether:
-                FragmentFindPeople fragment= new FragmentFindPeople();
+                FragmentFindPeople fragment = new FragmentFindPeople();
                 //fragmentSearQuickAdva.setCancelable(false);
                 fragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
-                fragment.show(getFragmentManager(),"fragment_live_together");
+                fragment.show(getFragmentManager(), "fragment_live_together");
         }
     }
 
     @Override
     public void saveRoom(String id) {
-        if(AppUtils.haveNetworkConnection(getActivity())){
+        if (AppUtils.haveNetworkConnection(getActivity())) {
             fileService = NetworkController.upload();
-            Call<ResponseBody> call = fileService.saveRoom("Bearer "+ AppUtils.getToken(getActivity()),id);
+            Call<ResponseBody> call = fileService.saveRoom("Bearer " + AppUtils.getToken(getActivity()), id);
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    if(response.isSuccessful()){
+                    if (response.isSuccessful()) {
                         listRoomAdapter.notifyDataSetChanged();
                     }
                 }
@@ -180,7 +209,7 @@ public class FragmentSearch extends FragmentCommon implements ILogicSaveRoom,IBa
                     Toast.makeText(getActivity(), "Có lỗi sảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
                 }
             });
-        }else{
+        } else {
             Toast.makeText(getActivity(), "Đéo có mạng", Toast.LENGTH_SHORT).show();
         }
 
@@ -191,12 +220,21 @@ public class FragmentSearch extends FragmentCommon implements ILogicSaveRoom,IBa
         saveRoom(id);
     }
 
+    @Override
+    public void backToScreen(RoomSearchItem room) {
+        //do nothing
+    }
 
     @Override
     public void backToListTopScreen(RoomSearchItem roomInfo) {
         RoomDetailFragment roomDetailFragment = new RoomDetailFragment();
         roomDetailFragment.setObject(roomInfo);
-        roomDetailFragment.setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogFragmentTheme);
-        roomDetailFragment.show(getFragmentManager(),"fragment_detail");
+        roomDetailFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
+        roomDetailFragment.show(getFragmentManager(), "fragment_detail");
     }
+
+    private void loadData() {
+        getListTop();
+    }
+
 }

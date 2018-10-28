@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -44,6 +45,7 @@ public class FragmentMyRoom extends DialogFragment implements AdapterMyRoom.ILog
         View.OnClickListener{
     CuXaAPI fileService;
     private View mMainView;
+    private SwipeRefreshLayout swipeContainer;
     AdapterMyRoom adapterMyRoom;
     private RobButton btnCreateNew;
     List<RoomSearchItem> roomSearchResults;
@@ -67,7 +69,12 @@ public class FragmentMyRoom extends DialogFragment implements AdapterMyRoom.ILog
         mMainView = inflater.inflate(R.layout.fragment_my_room, container, false);
         init();
         getListMyRoom("Bearer "+ AppUtils.getToken(getActivity()),"application/json",AppUtils.getIdUser(getActivity()));
-
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getListMyRoom("Bearer "+ AppUtils.getToken(getActivity()),"application/json",AppUtils.getIdUser(getActivity()));
+            }
+        });
         return mMainView;
     }
 
@@ -93,6 +100,7 @@ public class FragmentMyRoom extends DialogFragment implements AdapterMyRoom.ILog
      * Ánh xạ view
      */
     public void init() {
+        swipeContainer = (SwipeRefreshLayout) mMainView.findViewById(R.id.swipeContainer);
         progressBar =mMainView.findViewById(R.id.spin_kit);
         btnCreateNew = mMainView.findViewById(R.id.btnCreateNew);
         imgBack = mMainView.findViewById(R.id.imgBack);
@@ -119,15 +127,17 @@ public class FragmentMyRoom extends DialogFragment implements AdapterMyRoom.ILog
                         adapterMyRoom.notifyDataSetChanged();
                         progressBar.setVisibility(View.GONE);
                     }
+                    swipeContainer.setRefreshing(false);
                 }
 
                 @Override
                 public void onFailure(Call<ObjectListByOption> call, Throwable t) {
-
+                    swipeContainer.setRefreshing(false);
                     Toast.makeText(getActivity(), "Có lỗi sảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
                 }
             });
         }else{
+            swipeContainer.setRefreshing(false);
             Toast.makeText(getContext(), "Đéo có mạng", Toast.LENGTH_SHORT).show();
         }
 

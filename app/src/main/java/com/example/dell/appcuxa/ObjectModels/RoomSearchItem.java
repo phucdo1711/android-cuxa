@@ -49,6 +49,15 @@ public class RoomSearchItem {
     public String createdAt;
     @SerializedName("updatedAt")
     public String updatedAt;
+    @SerializedName("isSaved")
+    public Boolean isSaved;
+
+    public void setSaved(Boolean saved) {
+        isSaved = saved;
+    }
+    public Boolean getIsSaved(){
+        return isSaved;
+    }
 
     public String getId() {
         return id;

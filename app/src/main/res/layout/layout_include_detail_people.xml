@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginBottom="20dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+
+
+            <android.support.v7.widget.CardView
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardElevation="5dp"
+                app:cardUseCompatPadding="true"
+
+                >
+
+                <LinearLayout
+                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:id="@+id/imgShowUp"
+                        android:src="@drawable/ic_up_arrow"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp" />
+                    <LinearLayout
+                        android:weightSum="10"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <com.example.dell.appcuxa.CustomeView.RobBoldText
+                            android:layout_width="0dp"
+                            android:id="@+id/tvName"
+                            android:layout_weight="8"
+                            android:layout_marginTop="10dp"
+                            android:textColor="@color/black"
+                            android:textSize="30sp"
+                            android:text="Nguyễn Văn A, Nam"
+                            android:layout_height="wrap_content" />
+                        <com.example.dell.appcuxa.CustomeView.RobBoldText
+                            android:layout_width="0dp"
+                            android:layout_weight="2"
+                            android:layout_marginTop="10dp"
+                            android:textColor="@color/black"
+                            android:textSize="20sp"
+                            android:text="20 tuổi"
+                            android:gravity="end"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:weightSum="10"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <com.example.dell.appcuxa.CustomeView.RobBoldText
+                            android:layout_width="0dp"
+                            android:layout_weight="4"
+                            android:layout_marginTop="10dp"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:text="Đang học tại"
+                            android:layout_height="wrap_content" />
+                        <com.example.dell.appcuxa.CustomeView.RobLightText
+                            android:layout_width="0dp"
+                            android:layout_weight="6"
+                            android:layout_marginTop="10dp"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:text="Hanoi University"
+                            android:gravity="end"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:weightSum="10"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <com.example.dell.appcuxa.CustomeView.RobBoldText
+                            android:layout_width="0dp"
+                            android:layout_weight="4"
+                            android:layout_marginTop="10dp"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:text="Quê quán"
+                            android:layout_height="wrap_content" />
+                        <com.example.dell.appcuxa.CustomeView.RobLightText
+                            android:layout_width="0dp"
+                            android:layout_weight="6"
+                            android:layout_marginTop="10dp"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:text="Hà Nội"
+                            android:gravity="end"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                    <com.example.dell.appcuxa.CustomeView.RobBoldText
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:textColor="@color/black"
+                        android:text="Mô tả về bản thân"
+                        android:textSize="16sp"
+                        android:layout_height="wrap_content" />
+                    <com.example.dell.appcuxa.CustomeView.RobLightText
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:textColor="@color/black"
+                        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris in quam sed dui tincidunt aliquet. Morbi nec dapibus arcu. Vivamus tincidunt nisl eu nisi tempor, non maximus dui viverra. Nulla eleifend varius aliquet. Quisque non commodo ligula, dapibus imperdiet turpis."
+                        android:textSize="16sp"
+                        android:layout_height="wrap_content" />
+                    <LinearLayout
+                        android:weightSum="10"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <com.example.dell.appcuxa.CustomeView.RobBoldText
+                            android:layout_width="0dp"
+                            android:layout_weight="4"
+                            android:layout_marginTop="10dp"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:text="Mức giá"
+                            android:layout_height="wrap_content" />
+                        <com.example.dell.appcuxa.CustomeView.RobLightText
+                            android:layout_width="0dp"
+                            android:layout_weight="6"
+                            android:layout_marginTop="10dp"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:text="0 VNĐ - 6 triệu VNĐ "
+                            android:gravity="end"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:weightSum="10"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <com.example.dell.appcuxa.CustomeView.RobBoldText
+                            android:layout_width="0dp"
+                            android:layout_weight="4"
+                            android:layout_marginTop="10dp"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:text="Khu vực tìm kiếm"
+                            android:layout_height="wrap_content" />
+                        <com.example.dell.appcuxa.CustomeView.RobLightText
+                            android:layout_width="0dp"
+                            android:layout_weight="6"
+                            android:layout_marginTop="10dp"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:text="Nguyễn Trãi, Thanh Xuân, HN"
+                            android:gravity="end"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                        <com.example.dell.appcuxa.CustomeView.RobBoldText
+                            android:layout_width="match_parent"
+                            android:layout_marginTop="10dp"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:text="Tiện nghi"
+                            android:layout_height="wrap_content" />
+                    <com.example.dell.appcuxa.CustomeView.MyGridView
+                        android:id="@+id/gridCheckBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:clickable="false"
+                        android:gravity="center"
+                        android:numColumns="3"
+                        android:stretchMode="columnWidth">
+                    </com.example.dell.appcuxa.CustomeView.MyGridView>
+
+
+
+                    <com.example.dell.appcuxa.CustomeView.RobButton
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/bg_butto_feedback"
+                        android:layout_marginLeft="30dp"
+                        android:textColor="@color/white"
+                        android:textAllCaps="false"
+                        android:layout_marginRight="30dp"
+                        android:text="Nhắn tin ngay"
+                        android:layout_height="40dp" />
+                </LinearLayout>
+
+
+            </android.support.v7.widget.CardView>
+            <!--  <de.hdodenhof.circleimageview.CircleImageView
+                  android:layout_width="100dp"
+                  android:src="@drawable/default_image"
+                  android:layout_height="100dp" />-->
+
+        </FrameLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+</LinearLayout>

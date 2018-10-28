@@ -19,6 +19,7 @@ import com.example.dell.appcuxa.MainPage.MainPageViews.Interface.ILogicSaveRoom;
 import com.example.dell.appcuxa.ObjectModels.RoomInfo;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 import com.example.dell.appcuxa.R;
+import com.example.dell.appcuxa.Utils.AppUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public class ListRoomAdapter extends RecyclerView.Adapter<ListRoomAdapter.ViewHo
         slideImageAdapter.notifyDataSetChanged();
         holder.circleIndicator.setViewPager(holder.imgHinh);
         holder.tvAddress.setText(info.getAddress()==null?"":info.getAddress());
-        holder.tvPrice.setText(info.getAddress()==null?"":info.getPrice()+" đ");
+        holder.tvPrice.setText(info.getAddress()==null?"": AppUtils.formatMoney2(info.getPrice())+" đ");
         holder.tvName.setText(info.getAddress()==null?"":info.getName());
         holder.cbSave.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

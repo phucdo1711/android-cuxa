@@ -19,6 +19,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.ByteArrayOutputStream;
+import java.text.DecimalFormat;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -161,11 +162,32 @@ public class AppUtils {
         token = sharedPreferences.getString("token", "");
         return token;
     }
+    public static String getToken(Context activity){
+        String token = "";
+        sharedPreferences = activity.getSharedPreferences("login_data", MODE_PRIVATE);
+        token = sharedPreferences.getString("token", "");
+        return token;
+    }
     public static String getIdUser(Activity activity){
         String id_user = "";
         sharedPreferences = activity.getSharedPreferences("login_data", MODE_PRIVATE);
         id_user = sharedPreferences.getString("id_user", "");
         return id_user;
+    }
+    public static String formatMoney2(String input) {
+        if (input.trim().equals("")) {
+            return "";
+        }
+        try {
+            Double value = Double.parseDouble(input);
+            DecimalFormat formatter = new DecimalFormat("#,###,###.####");
+            return formatter.format(value);
+//            String[] split = formatter.format(value).split("\\.");
+//            return split[0].replaceAll(",", ".") + (split.length > 1 ? "," + split[1] : "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return input;
     }
 
 }

@@ -28,10 +28,20 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface CuXaAPI {
+    /**
+     * Đăng nhập FB
+     * @param token
+     * @return
+     */
     @FormUrlEncoded
     @POST("auth/facebook")
     Call<UserModel> getInfoUserByFacebook(@Field("access_token") String token);
 
+    /**
+     * Đăng nhập Google
+     * @param token
+     * @return
+     */
     @FormUrlEncoded
     @POST("auth/google")
     Call<UserModel> getInfoUserByGoogle(@Field("access_token") String token);
@@ -41,9 +51,20 @@ public interface CuXaAPI {
     //Call<List<FileInfo>> postImage(@Header("Authorization") String authHeader, @Part MultipartBody.Part... files);
     Call<ResponseBody> postImage(@Header("Authorization") String authHeader, @Part MultipartBody.Part[] files);
 
+    /**
+     * Truyền id ảnh vào link để xóa
+     * @param authHeader
+     * @param id
+     * @return
+     */
     @DELETE("images/{id}")
     Call<ResponseBody> deleteImage(@Header("Authorization") String authHeader, @Path("id") String id );
 
+    /**
+     * Lấy ra dữ liệu của tiện nghi
+     * @param sort
+     * @return
+     */
     @GET("utilities")
     Call<ResponseBody> getAllUtilities(@Query("sort") String sort);
 
@@ -53,6 +74,9 @@ public interface CuXaAPI {
                                         @Query("landlord") String landlord);
     @GET("rooms")
     Call<ObjectListByOption> getListTop(@Header("Authorization") String authHeader,@Header("Content-Type") String content_type);
+
+    @GET("rooms")
+    Call<ObjectListByOption> getPeople(@Header("Authorization") String authHeader, @Query("type") String type);
 
     @POST("rooms")
     Call<ResponseBody> uploadRoom(@Header("Authorization") String authHeader, @Body RoomObject room);

@@ -215,7 +215,7 @@ android:background="@color/white"
         <com.example.dell.appcuxa.CustomeView.RobBoldText
             android:textColor="@color/black"
             android:textSize="18sp"
-            android:text="10"
+            android:text="0"
             android:id="@+id/tvNumResult"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -237,7 +237,25 @@ android:background="@color/white"
     <android.support.v7.widget.RecyclerView
         android:layout_marginTop="10dp"
         android:background="@color/white"
-        android:id="@+id/listSearchResult"
+        android:id="@+id/listSearchResultPV"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        android:id="@+id/listSearchResultPrice"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        android:id="@+id/listSearchResultTN"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

@@ -15,6 +15,11 @@
         android:elevation="4dp"
         app:title="Update Information"
         tools:targetApi="lollipop">-->
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipeContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -42,6 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="46dp" />
     </LinearLayout>
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -73,7 +79,7 @@
                         android:layout_height="30dp"
                         android:layout_marginTop="55dp"
                         android:layout_gravity="center"
-                        app:SpinKit_Color="@color/orange" />
+                        app:SpinKit_Color="@color/diep_color" />
                 </LinearLayout>
                 <com.example.dell.appcuxa.CustomeView.RobBoldText
                     android:textColor="#000000"
@@ -91,9 +97,10 @@
                         android:layout_marginLeft="3sp"
                         android:elevation="10dp"
                         android:text="Tìm phòng"
+                        android:textColor="@color/white"
                         android:id="@+id/btnFindRoom"
                         android:textAllCaps="false"
-                        android:background="@drawable/ripple_item"
+                        android:background="@drawable/ripple_button"
                         android:layout_width="0dp"
                         android:layout_weight="2.5"
                         android:layout_height="35dp" />
@@ -103,8 +110,9 @@
                         android:text="Ở ghép"
                         android:textAllCaps="false"
                         android:id="@+id/btnLiveTogether"
-                        android:background="@drawable/ripple_item"
+                        android:background="@drawable/ripple_button"
                         android:layout_width="0dp"
+                        android:textColor="@color/white"
                         android:layout_weight="2.5"
                         android:layout_height="35dp" />
                     <View android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent"/>
@@ -114,7 +122,8 @@
                         android:text="Đăng phòng"
                         android:id="@+id/btnUpRoom"
                         android:textAllCaps="false"
-                        android:background="@drawable/ripple_item"
+                        android:textColor="@color/white"
+                        android:background="@drawable/ripple_button"
                         android:layout_width="0dp"
                         android:layout_weight="2.5"
                         android:layout_height="35dp" />
@@ -136,9 +145,9 @@
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
     </LinearLayout>
-
 </FrameLayout>
 
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
 

@@ -1,5 +1,6 @@
 package com.example.dell.appcuxa.MainPage.MainPageViews;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
@@ -225,6 +226,7 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
                 break;
             case R.id.imgBack:
                 FragmentUpRoom.this.dismiss();
+                imageBytes.clear();
                 break;
             case R.id.btnUpRoom:
                 break;
@@ -304,6 +306,7 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(getActivity(), "Upload thành công", Toast.LENGTH_SHORT).show();
                     imageBytes.clear();
+                    imageHinhId.clear();
                     FragmentUpRoom.this.dismiss();
                 }
             }
@@ -498,5 +501,11 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
         }
     }
 
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        imageBytes.clear();
+        imageHinhId.clear();
+    }
 }
 

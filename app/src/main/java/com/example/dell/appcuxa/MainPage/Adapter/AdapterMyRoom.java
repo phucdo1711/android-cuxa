@@ -17,6 +17,7 @@ import com.example.dell.appcuxa.MainPage.MainPageViews.Interface.ISendBackToEdit
 import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 
 import com.example.dell.appcuxa.R;
+import com.example.dell.appcuxa.Utils.AppUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public class AdapterMyRoom extends RecyclerView.Adapter<AdapterMyRoom.ViewHolder
         String image = info.getImages()[0].getSrc();
         Picasso.get().load(image).into(holder.imgHinh);
         holder.tvAddress.setText(info.getAddress()==null?"":info.getAddress());
-        holder.tvPrice.setText(info.getPrice()==null?"":info.getPrice()+" đ");
+        holder.tvPrice.setText(info.getPrice()==null?"": AppUtils.formatMoney2(info.getPrice())+" đ");
         holder.tvPurpose.setText("NHÀ CHUNG");
         holder.btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override

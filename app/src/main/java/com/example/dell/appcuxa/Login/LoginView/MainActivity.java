@@ -221,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             edit.putString("token",userModel.getToken());
             edit.putString("id_user",userModel.getUserObject().getId());
             edit.putString("name",userModel.getUserObject().getName());
+            edit.putString("image_avatar",userModel.getUserObject().getPicture());
             edit.commit();
             updateUI(userModel);
         }

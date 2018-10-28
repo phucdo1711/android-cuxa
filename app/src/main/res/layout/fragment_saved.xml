@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:gravity="center_vertical"
-        android:weightSum="10"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/main_tabs"
         android:layout_width="match_parent"
-        android:layout_height="60dp">
-        <com.example.dell.appcuxa.CustomeView.RobBoldText
-            android:layout_width="0dp"
-            android:id="@+id/tvNumSaved"
-            android:layout_marginLeft="16dp"
-            android:text="Đã lưu"
-            android:layout_weight="6"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:id="@+id/lstSaved"
-        android:layout_height="match_parent">
+        android:layout_height="50dp"
+        android:background="@color/white"
+        app:tabSelectedTextColor="@color/diep_color"
+        app:tabTextColor="#0e0e0e">
 
-    </android.support.v7.widget.RecyclerView>
+    </android.support.design.widget.TabLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/main_tabPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff">
+
+    </android.support.v4.view.ViewPager>
 
 </LinearLayout>

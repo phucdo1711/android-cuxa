@@ -1,6 +1,7 @@
 package com.example.dell.appcuxa.MainPage.Adapter;
 
 import android.content.Context;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,12 +14,15 @@ import android.widget.TextView;
 
 import com.example.dell.appcuxa.MainPage.MainPageViews.Interface.ILogicSaveRoom;
 import com.example.dell.appcuxa.MainPage.MainPageViews.Interface.IUnsaveRoomLogic;
+import com.example.dell.appcuxa.MainPage.MainPageViews.RoomDetailFragment;
 import com.example.dell.appcuxa.ObjectModels.ObjectListByOption;
 import com.example.dell.appcuxa.ObjectModels.RoomInfo;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchResult;
 import com.example.dell.appcuxa.ObjectModels.SavedRoom;
 import com.example.dell.appcuxa.R;
+import com.example.dell.appcuxa.Utils.AppUtils;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,15 +61,21 @@ public class AdapterSavedItem extends RecyclerView.Adapter<AdapterSavedItem.View
         slideImageAdapter.notifyDataSetChanged();
         holder.circleIndicator.setViewPager(holder.imgHinh);
         holder.tvAddress.setText(info.getAddress()==null?"":info.getAddress());
-        holder.tvPrice.setText(info.getPrice()==null?"":info.getPrice()+" đ");
+        holder.tvPrice.setText(info.getPrice()==null?"": AppUtils.formatMoney2(info.getPrice())+" đ");
         holder.imgSave.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
+                if(b){//do nothing
                 }else{
                     iLoginUnsave.unSaveRoom(info);
                     AdapterSavedItem.this.notifyDataSetChanged();
                 }
+            }
+        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iLoginUnsave.backToSavedScreen(info);
             }
         });
     }

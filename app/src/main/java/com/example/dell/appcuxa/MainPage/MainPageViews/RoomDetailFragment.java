@@ -39,8 +39,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -115,14 +117,20 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
        /* progressDialog = mMainView.findViewById(R.id.spin_kit);
         progressDialog.setVisibility(View.GONE);*/
        tvContentDesc.setText(roomSearchItem.getDescription());
-       // Picasso.get().load(roomSearchItem.getLandLord().getPicture()).placeholder(R.drawable.default_image).into(imgAvatar);
+       Picasso.get().load(roomSearchItem.getLandLord().getPicture()).placeholder(R.drawable.default_image).into(imgAvatar);
        tvName.setText(roomSearchItem.getName());
-       tvArea.setText("Diện tích: "+ roomSearchItem.getArea());
+       tvArea.setText("Diện tích: "+ roomSearchItem.getArea()+" m2");
        toolbar.setTitle(roomSearchItem.getName());
-       tvPrice.setText(roomSearchItem.getPrice()+" đ");
+       tvPrice.setText(AppUtils.formatMoney2(roomSearchItem.getPrice())+" đ");
        tvNumOfPpl.setText("Số người cho thuê: "+roomSearchItem.getAmountOfTenant()+" người");
        tvNameLandLord.setText(roomSearchItem.getLandLord().getName());
        tvLocation.setText(roomSearchItem.getAddress());
+       Boolean isSaved = roomSearchItem.getIsSaved();
+       if(isSaved!=null&& isSaved==true){
+           cbSave.setChecked(true);
+       }else {
+           cbSave.setChecked(false);
+       }
 
        List<String> lstString = new ArrayList<>();
        for(int i = 0;i<roomSearchItem.getImages().length;i++){
@@ -180,25 +188,33 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
                 }
                 break;
             case R.id.imgSaveTb:
-                saveOrUnsave();
+                saveOrUnsave(cbSave.isChecked());
                 break;
         }
     }
 
-    private void saveOrUnsave() {
+    private void saveOrUnsave(final boolean saveOrUnsave) {
         if(AppUtils.haveNetworkConnection(getActivity())){
             Call<ResponseBody> call = fileService.saveRoom("Bearer "+ AppUtils.getToken(getActivity()),roomSearchItem.getId());
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                     if(response.isSuccessful()){
-                        cbSave.setChecked(true);
+                        if(saveOrUnsave){ // nếu nó đã check thì thành công sẽ là uncheck
+                            cbSave.setChecked(false);
+                        }else{
+                            cbSave.setChecked(true);
+                        }
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    cbSave.setChecked(false);
+                    if(saveOrUnsave){
+                        cbSave.setChecked(true);
+                    }else{
+                        cbSave.setChecked(false);
+                    }
                     Toast.makeText(getActivity(), "Có lỗi sảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
                 }
             });

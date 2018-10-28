@@ -101,19 +101,6 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
 
             }
         });
-
-    /*     //Disable ViewPager Swipe
-
-       viewPager.setOnTouchListener(new View.OnTouchListener()
-        {
-            @Override
-            public boolean onTouch(View v, MotionEvent event)
-            {
-                return true;
-            }
-        });
-*/
-
         setupViewPager(viewPager);
 
     }
@@ -168,6 +155,8 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         adapter.addFragment(fragmentNoti);
         adapter.addFragment(fragmentProfile);
         viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(5);
+        adapter.notifyDataSetChanged();
     }
 
     @Override

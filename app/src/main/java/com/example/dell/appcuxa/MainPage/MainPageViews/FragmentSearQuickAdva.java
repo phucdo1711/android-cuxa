@@ -78,13 +78,15 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
     RobBoldText tvNumResult;
     RobBoldText tvTypeResult;
     RadioButton rdPrice;
+    RadioButton rdTienNghi;
     RadioGroup rgLocation;
     CuXaAPI fileService;
     ObjectListByOption priceOption = new ObjectListByOption();
     ObjectListByOption locationOption = new ObjectListByOption();
+    ObjectListByOption tienNghiOption = new ObjectListByOption();
     boolean a = false;
     RadioGroup rgOption;
-    RecyclerView listSearchResult;
+    RecyclerView listSearchResultPV, recPrice,recTienNghi;
     NestedScrollView nstViewInfo;
     RecyclerView rcHint;
     RecyclerView rcHistory;
@@ -98,6 +100,7 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
     double lonHN =  105.8341598;
     double latHCM = 10.8230989;
     double lonHCN = 106.62966379999999;
+    AdapterSearchResultRoom adapterSearchResultRoom;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40, -168), new LatLng(71, 136));
 
     public FragmentSearQuickAdva() {
@@ -124,7 +127,11 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
         iLogicSaveRoom = this;
         fileService = NetworkController.upload();
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        listSearchResult.setLayoutManager(manager);
+        LinearLayoutManager manager1 = new LinearLayoutManager(getContext());
+        LinearLayoutManager manager2 = new LinearLayoutManager(getContext());
+        listSearchResultPV.setLayoutManager(manager);
+        recTienNghi.setLayoutManager(manager1);
+        recPrice.setLayoutManager(manager2);
         mGeoDataClient = Places.getGeoDataClient(getContext(), null);
         placeAutoCompleteAdapter = new PlaceAutoCompleteAdapter(getContext(), mGeoDataClient, LAT_LNG_BOUNDS, null);
         edtSearchContent.setAdapter(placeAutoCompleteAdapter);
@@ -148,30 +155,33 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
             rgOption.setVisibility(View.VISIBLE);
             rgLocation.setVisibility(View.GONE);
             nstViewInfo.setVisibility(View.GONE);
-            listSearchResult.setVisibility(View.VISIBLE);
+            listSearchResultPV.setVisibility(View.VISIBLE);
         } else {
             lnResult.setVisibility(View.GONE);
             rgOption.setVisibility(View.GONE);
             rgLocation.setVisibility(View.VISIBLE);
             nstViewInfo.setVisibility(View.VISIBLE);
-            listSearchResult.setVisibility(View.GONE);
+            listSearchResultPV.setVisibility(View.GONE);
         }
         if (locationOption.count != null && Integer.valueOf(locationOption.count) > 0) {
             tvNumResult.setText(locationOption.count);
             tvTypeResult.setText("về phạm vi");
-            AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(), locationOption, iLogicSaveRoom);
-            listSearchResult.setAdapter(adapterSearchResultRoom);
+            adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(), locationOption, iLogicSaveRoom,fileService);
+            listSearchResultPV.setAdapter(adapterSearchResultRoom);
             adapterSearchResultRoom.notifyDataSetChanged();
         }
         rdPrice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
+                    recPrice.setVisibility(View.VISIBLE);
+                    listSearchResultPV.setVisibility(View.GONE);
+                    recTienNghi.setVisibility(View.GONE);
                     if (locationOption.count != null && Integer.valueOf(priceOption.count) > 0) {
                         tvNumResult.setText(priceOption.count);
                         tvTypeResult.setText("về giá");
-                        AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(), priceOption, iLogicSaveRoom);
-                        listSearchResult.setAdapter(adapterSearchResultRoom);
+                        AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(), priceOption, iLogicSaveRoom,fileService);
+                        recPrice.setAdapter(adapterSearchResultRoom);
                         adapterSearchResultRoom.notifyDataSetChanged();
                     }
                 }
@@ -181,12 +191,35 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
+                    recPrice.setVisibility(View.GONE);
+                    listSearchResultPV.setVisibility(View.VISIBLE);
+                    recTienNghi.setVisibility(View.GONE);
                     if (locationOption.count != null && Integer.valueOf(locationOption.count) > 0) {
                         tvNumResult.setText(locationOption.count);
                         tvTypeResult.setText("về phạm vi");
-                        AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(), locationOption, iLogicSaveRoom);
-                        listSearchResult.setAdapter(adapterSearchResultRoom);
+                        adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(), locationOption, iLogicSaveRoom,fileService);
+                        listSearchResultPV.setAdapter(adapterSearchResultRoom);
                         adapterSearchResultRoom.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
+        rdTienNghi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    recPrice.setVisibility(View.GONE);
+                    listSearchResultPV.setVisibility(View.GONE);
+                    recTienNghi.setVisibility(View.VISIBLE);
+                    if (tienNghiOption.count != null && Integer.valueOf(locationOption.count) > 0) {
+                        tvNumResult.setText(locationOption.count);
+                        tvTypeResult.setText("về tiện nghi");
+                        AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(), locationOption, iLogicSaveRoom,fileService);
+                        recTienNghi.setAdapter(adapterSearchResultRoom);
+                        adapterSearchResultRoom.notifyDataSetChanged();
+                    }else{
+                        tvNumResult.setText("0");
+                        tvTypeResult.setText("về tiện nghi");
                     }
                 }
             }
@@ -270,12 +303,12 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
                     lnResult.setVisibility(View.VISIBLE);
                     rgLocation.setVisibility(View.GONE);
                     nstViewInfo.setVisibility(View.GONE);
-                    listSearchResult.setVisibility(View.VISIBLE);
+                    listSearchResultPV.setVisibility(View.VISIBLE);
                     rgOption.setVisibility(View.GONE);
                     tvNumResult.setText(response.body().getObjectByLocation().getCount());
                     tvTypeResult.setText("về phạm vi");
-                    AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(), response.body().getObjectByLocation(), iLogicSaveRoom);
-                    listSearchResult.setAdapter(adapterSearchResultRoom);
+                    AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(), response.body().getObjectByLocation(), iLogicSaveRoom,fileService);
+                    listSearchResultPV.setAdapter(adapterSearchResultRoom);
                     adapterSearchResultRoom.notifyDataSetChanged();
                 }
             }
@@ -314,9 +347,12 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
         tvNumResult = mMainView.findViewById(R.id.tvNumResult);
         tvTypeResult = mMainView.findViewById(R.id.tvTypeResult);
         rdLocation = mMainView.findViewById(R.id.rdPhamVi);
+        rdTienNghi = mMainView.findViewById(R.id.rdTienNghi);
         rdPrice = mMainView.findViewById(R.id.rdGiaTien);
         nstViewInfo = mMainView.findViewById(R.id.viewInfo);
-        listSearchResult = mMainView.findViewById(R.id.listSearchResult);
+        listSearchResultPV = mMainView.findViewById(R.id.listSearchResultPV);
+        recPrice = mMainView.findViewById(R.id.listSearchResultPrice);
+        recTienNghi = mMainView.findViewById(R.id.listSearchResultTN);
         rgOption = mMainView.findViewById(R.id.rgOption);
         imgBack = mMainView.findViewById(R.id.imgBack);
         edtSearchContent = mMainView.findViewById(R.id.edtSearch);
@@ -349,12 +385,13 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
     public void lstSearchShop(RoomSearchResult result) {
         locationOption = result.objectByLocation;
         priceOption = result.objectByPrice;
+        tienNghiOption = new ObjectListByOption();
     }
 
     @Override
-    public void saveRoom(String id) {
+    public void saveRoom(RoomSearchItem item) {
         if(AppUtils.haveNetworkConnection(getActivity())){
-            Call<ResponseBody> call = fileService.saveRoom("Bearer "+ AppUtils.getToken(getActivity()),id);
+            Call<ResponseBody> call = fileService.saveRoom("Bearer "+ AppUtils.getToken(getActivity()),item.getId());
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -378,8 +415,33 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
      * Gọi lại api để chuyển trạng thái
      */
     @Override
-    public void unSaveRoom(String id) {
-        saveRoom(id);
+    public void unSaveRoom(RoomSearchItem roomSearchItem) {
+        if(AppUtils.haveNetworkConnection(getActivity())){
+            Call<ResponseBody> call = fileService.saveRoom("Bearer "+ AppUtils.getToken(getActivity()),roomSearchItem.getId());
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if(response.isSuccessful()){
+                        //do nothing
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(getActivity(), "Có lỗi sảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else{
+            Toast.makeText(getActivity(), "Đéo có mạng", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void backToScreen(RoomSearchItem room) {
+        RoomDetailFragment roomDetailFragment = new RoomDetailFragment();
+        roomDetailFragment.setObject(room);
+        roomDetailFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
+        roomDetailFragment.show(getFragmentManager(), "fragment_detail");
     }
 }
 

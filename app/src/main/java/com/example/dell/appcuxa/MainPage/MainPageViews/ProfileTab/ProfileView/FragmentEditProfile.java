@@ -21,6 +21,7 @@ import com.example.dell.appcuxa.MainPage.MainPageViews.AddPhotoBottomDialogFragm
 import com.example.dell.appcuxa.MainPage.MainPageViews.SearchTab.GenderBottomDialog;
 import com.example.dell.appcuxa.R;
 import com.github.ybq.android.spinkit.SpinKitView;
+import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -47,7 +48,6 @@ public class FragmentEditProfile extends DialogFragment implements View.OnClickL
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mMainView = inflater.inflate(R.layout.fragment_edit_profile, container, false);
         init();
-
         return mMainView;
     }
 

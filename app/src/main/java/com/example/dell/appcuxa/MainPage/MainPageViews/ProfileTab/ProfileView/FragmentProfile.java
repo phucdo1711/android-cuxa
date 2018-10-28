@@ -24,6 +24,7 @@ import com.example.dell.appcuxa.MainPage.MainPageViews.Interface.ISendBackToEdit
 import com.example.dell.appcuxa.MainPage.MainPageViews.MainPageActivity;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 import com.example.dell.appcuxa.R;
+import com.squareup.picasso.Picasso;
 
 import static android.content.Context.MODE_PRIVATE;
 

@@ -22,6 +22,7 @@ public class NetworkController {
 
     private static Retrofit retrofit = null;
 
+
     public static Retrofit getClient() {
         if (retrofit==null) {
             retrofit = new Retrofit.Builder()
@@ -31,7 +32,10 @@ public class NetworkController {
         }
         return retrofit;
     }
-
+    /**
+     * Thư viện nhận api
+     * @return
+     */
     public static CuXaAPI upload() {
         if (cuXaAPI == null) {
             Gson gson = new GsonBuilder()
