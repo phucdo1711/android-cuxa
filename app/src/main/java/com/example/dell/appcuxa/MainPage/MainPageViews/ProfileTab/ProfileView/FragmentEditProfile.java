@@ -17,9 +17,13 @@ import android.widget.Toast;
 import com.example.dell.appcuxa.CustomeView.RobButton;
 import com.example.dell.appcuxa.CustomeView.RobEditText;
 import com.example.dell.appcuxa.CustomeView.RobLightText;
+import com.example.dell.appcuxa.CuxaAPI.CuXaAPI;
+import com.example.dell.appcuxa.CuxaAPI.NetworkController;
 import com.example.dell.appcuxa.MainPage.MainPageViews.AddPhotoBottomDialogFragment;
 import com.example.dell.appcuxa.MainPage.MainPageViews.SearchTab.GenderBottomDialog;
+import com.example.dell.appcuxa.ObjectModels.UpdateUserObj;
 import com.example.dell.appcuxa.R;
+import com.example.dell.appcuxa.Utils.AppUtils;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.squareup.picasso.Picasso;
 
@@ -29,6 +33,10 @@ import java.util.Calendar;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FragmentEditProfile extends DialogFragment implements View.OnClickListener,GenderBottomDialog.ICallBackGender,DialogChooseImage.OnChooseReasonListener {
     public View mMainView;
@@ -37,6 +45,7 @@ public class FragmentEditProfile extends DialogFragment implements View.OnClickL
     SpinKitView progressDialog;
     RobEditText edtName, edtCurAddress, edtCurSchool, edtEmail,edtPhoneNo, edtCmnd;
     private ImageView imgBack;
+    CuXaAPI cuXaAPI;
     public static String idHinh = "";
     RobButton btnSaveChange;
     final Calendar newCalendar = Calendar.getInstance();
@@ -108,7 +117,26 @@ public class FragmentEditProfile extends DialogFragment implements View.OnClickL
     }
 
     private void submitChange() {
+        cuXaAPI = NetworkController.upload();
+        UpdateUserObj updateUserObj = new UpdateUserObj();
+        updateUserObj.setGender("male");
+        updateUserObj.setName(edtName.getText().toString());
+        updateUserObj.setPicture(idHinh);
+        updateUserObj.setPhone(edtPhoneNo.getText().toString());
+        Call<ResponseBody> call = cuXaAPI.updateInfoUser("Bearer "+ AppUtils.getToken(getActivity()),updateUserObj);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()){
 
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
     }
 
     @Override

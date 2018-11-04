@@ -49,7 +49,7 @@ public class AdapterLiveTogether extends RecyclerView.Adapter<AdapterLiveTogethe
         final RoomSearchItem info = roomSearchResults.get(position);
         holder.tvName.setText(info.getName());
         String image = info.getLandLord().getPicture();
-        Picasso.get().load(image).into(holder.imgHinh);
+        Picasso.get().load(image).placeholder(R.drawable.default_image).into(holder.imgHinh);
         holder.tvAddress.setText(info.getAddress()==null?"":info.getAddress());
         holder.tvPrice.setText(info.getPrice()==null?"": AppUtils.formatMoney2(info.getPrice())+" đ");
         holder.itemView.setOnClickListener(new View.OnClickListener() {

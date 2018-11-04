@@ -192,10 +192,10 @@ public class FragmentSearch extends FragmentCommon implements ILogicSaveRoom, IB
     }
 
     @Override
-    public void saveRoom(String id) {
+    public void saveRoom(RoomSearchItem id) {
         if (AppUtils.haveNetworkConnection(getActivity())) {
             fileService = NetworkController.upload();
-            Call<ResponseBody> call = fileService.saveRoom("Bearer " + AppUtils.getToken(getActivity()), id);
+            Call<ResponseBody> call = fileService.saveRoom("Bearer " + AppUtils.getToken(getActivity()), id.getId());
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -216,7 +216,7 @@ public class FragmentSearch extends FragmentCommon implements ILogicSaveRoom, IB
     }
 
     @Override
-    public void unSaveRoom(String id) {
+    public void unSaveRoom(RoomSearchItem id) {
         saveRoom(id);
     }
 

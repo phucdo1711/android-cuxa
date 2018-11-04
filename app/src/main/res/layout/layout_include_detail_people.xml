@@ -197,6 +197,7 @@
                         android:background="@drawable/bg_butto_feedback"
                         android:layout_marginLeft="30dp"
                         android:textColor="@color/white"
+                        android:id="@+id/btnMesNow"
                         android:textAllCaps="false"
                         android:layout_marginRight="30dp"
                         android:text="Nhắn tin ngay"

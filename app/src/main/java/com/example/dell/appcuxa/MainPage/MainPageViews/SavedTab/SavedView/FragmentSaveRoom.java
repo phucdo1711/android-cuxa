@@ -46,7 +46,7 @@ public class FragmentSaveRoom extends Fragment implements IUnsaveRoomLogic {
     int numSaved = 0;
     private SwipeRefreshLayout swipeContainer;
     CuXaAPI cuXaAPI;
-    List<SavedRoom> roomSearchItems;
+    List<RoomSearchItem> roomSearchItems;
     IUnsaveRoomLogic iUnsaveRoom;
     AdapterSavedItem savedItem;
     public FragmentSaveRoom(){
@@ -79,7 +79,7 @@ public class FragmentSaveRoom extends Fragment implements IUnsaveRoomLogic {
     }
 
     @Override
-    public void unSaveRoom(final SavedRoom room) {
+    public void unSaveRoom(final RoomSearchItem room) {
         if(AppUtils.haveNetworkConnection(getActivity())){
             cuXaAPI = NetworkController.upload();
             Call<ResponseBody> call = cuXaAPI.saveRoom("Bearer "+ AppUtils.getToken(getActivity()),room.getId());
@@ -105,29 +105,9 @@ public class FragmentSaveRoom extends Fragment implements IUnsaveRoomLogic {
     }
 
     @Override
-    public void backToSavedScreen(SavedRoom savedRoom) {
+    public void backToSavedScreen(RoomSearchItem savedRoom) {
         RoomDetailFragment roomDetailFragment = new RoomDetailFragment();
-        RoomSearchItem roomSearchItem = new RoomSearchItem();
-        roomSearchItem.setAddress(savedRoom.getAddress());
-        roomSearchItem.setAmountOfTenant(savedRoom.getAmountOfTenant());
-        roomSearchItem.setDescription(savedRoom.getDescription());
-        roomSearchItem.setId(savedRoom.getId());
-        roomSearchItem.setImages(savedRoom.getImageObject());
-        LandLord landLord = new LandLord();
-        landLord.setName(savedRoom.getLandLord());
-        roomSearchItem.setLandLord(landLord);
-        roomSearchItem.setName(savedRoom.getName());
-        roomSearchItem.setGenderAccepted(savedRoom.getGenderAccepted());
-        roomSearchItem.setArea(savedRoom.getArea());
-        List<String> listIdUtilitySaved = new ArrayList<>();
-        for(int i = 0;i<savedRoom.getUtilityObjects().length;i++){
-            listIdUtilitySaved.add(savedRoom.getUtilityObjects()[i].getId());
-        }
-        String[] idUtilities = new String[listIdUtilitySaved.size()];
-        idUtilities = listIdUtilitySaved.toArray(idUtilities);
-        roomSearchItem.setUtilities(idUtilities);
-        roomSearchItem.setPrice(savedRoom.getPrice());
-        roomDetailFragment.setObject(roomSearchItem);
+        roomDetailFragment.setObject(savedRoom);
         roomDetailFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
         roomDetailFragment.show(getFragmentManager(), "fragment_detail");
     }
@@ -141,10 +121,10 @@ public class FragmentSaveRoom extends Fragment implements IUnsaveRoomLogic {
     }
 
     private void loadData() {
-        Call<SavedRoom[]> call = cuXaAPI.getLstSavedRoom("Bearer "+ AppUtils.getToken(getActivity()));
-        call.enqueue(new Callback<SavedRoom[]>() {
+        Call<RoomSearchItem[]> call = cuXaAPI.getLstSavedRoom("Bearer "+ AppUtils.getToken(getActivity()));
+        call.enqueue(new Callback<RoomSearchItem[]>() {
             @Override
-            public void onResponse(Call<SavedRoom[]> call, Response<SavedRoom[]> response) {
+            public void onResponse(Call<RoomSearchItem[]> call, Response<RoomSearchItem[]> response) {
                 if(response.isSuccessful()){
                     tvNumSaved.setText(response.body().length+" phòng đã lưu");
                     numSaved = response.body().length;
@@ -158,7 +138,7 @@ public class FragmentSaveRoom extends Fragment implements IUnsaveRoomLogic {
             }
 
             @Override
-            public void onFailure(Call<SavedRoom[]> call, Throwable t) {
+            public void onFailure(Call<RoomSearchItem[]> call, Throwable t) {
                 Log.d("onFailure: ","cannot get saved room");
                 swipeContainer.setRefreshing(false);
             }

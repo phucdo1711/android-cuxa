@@ -7,6 +7,7 @@ import com.example.dell.appcuxa.ObjectModels.RoomSearch;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchResult;
 import com.example.dell.appcuxa.ObjectModels.SavedRoom;
+import com.example.dell.appcuxa.ObjectModels.UpdateUserObj;
 import com.example.dell.appcuxa.ObjectModels.UserModel;
 
 import java.util.List;
@@ -23,6 +24,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -92,5 +94,10 @@ public interface CuXaAPI {
                                        /* @Header("Content-Type") String content_type,*/
                                         @Path("id") String id);
     @GET("rooms/saved")
-    Call<SavedRoom[]> getLstSavedRoom(@Header("Authorization") String authHeader);
+    Call<RoomSearchItem[]> getLstSavedRoom(@Header("Authorization") String authHeader);
+
+    @GET("rooms/{id}")
+    Call<RoomSearchItem> getRoomById(@Header("Authorization") String authHeader, @Path("id") String id );
+    @PUT("users/me")
+    Call<ResponseBody> updateInfoUser(@Header("Authorization") String authHeader,@Body UpdateUserObj userObj);
 }

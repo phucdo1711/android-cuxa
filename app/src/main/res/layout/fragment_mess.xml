@@ -1,34 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <!--<android.support.design.widget.AppBarLayout
+    >
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:background="@color/black"
-        android:layout_height="?attr/actionBarSize"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="56dp">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbarUpdateProfile"
+        <RelativeLayout
+            android:id="@+id/layout_header"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="#000000"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:title="Update Information" >
-            <android.support.v7.widget.SearchView
-                android:layout_width="match_parent"
-                android:background="#ffffff"
-                android:layout_height="50dp">
+            android:layout_height="match_parent">
 
-            </android.support.v7.widget.SearchView>
-        </android.support.v7.widget.Toolbar>
+            <com.example.dell.appcuxa.CustomeView.RobBoldText
+                android:id="@+id/tv_header"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="Hộp thư đến"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                />
 
+            <ImageView
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:id="@+id/btn_search"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="12dp"
+                android:src="@drawable/ic_search"
+                />
+        </RelativeLayout>
 
-    </android.support.design.widget.AppBarLayout>-->
-    <TextView
-        android:text="mess"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+        <LinearLayout
+            android:id="@+id/layout_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:visibility="gone"
+            >
+
+            <com.example.dell.appcuxa.CustomeView.RobEditText
+                android:id="@+id/edt_search"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bg_search_mess_fragment"
+                android:gravity="center_vertical"
+                android:hint="Tìm kiếm"
+                android:inputType="text"
+                android:paddingLeft="10dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="15sp"
+                />
+
+            <com.example.dell.appcuxa.CustomeView.RobBoldText
+                android:id="@+id/tv_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Hủy"
+                android:textColor="@color/diep_color"
+                android:textSize="16sp"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:elevation="4dp"
+        android:gravity="center">
+
+        <com.example.dell.appcuxa.CustomeView.RobBoldText
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:gravity="center"
+            android:text="Hộp thư đến"
+            android:textColor="@color/black" />
+        <ImageView
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_search"
+            android:layout_width="40dp"
+            android:layout_marginRight="16dp"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+
+    <include layout="@layout/content_chat" />
+
+</android.support.design.widget.CoordinatorLayout>

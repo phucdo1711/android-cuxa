@@ -71,7 +71,7 @@ public class ListRoomAdapter extends RecyclerView.Adapter<ListRoomAdapter.ViewHo
         holder.cbSave.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                iLogicSaveRoom.saveRoom(info.getId());
+                iLogicSaveRoom.saveRoom(info);
             }
         });
         holder.itemView.setOnClickListener(new View.OnClickListener() {

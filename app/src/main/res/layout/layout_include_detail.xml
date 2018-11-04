@@ -262,8 +262,9 @@
                         android:layout_marginLeft="30dp"
                         android:textColor="@color/white"
                         android:textAllCaps="false"
+                        android:id="@+id/btnMesNow"
                         android:layout_marginRight="30dp"
-                        android:text="Đặt thuê phòng ngay"
+                        android:text="Nhắn tin ngay"
                         android:layout_height="40dp" />
                 </LinearLayout>
 

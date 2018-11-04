@@ -32,11 +32,10 @@ import me.relex.circleindicator.CircleIndicator;
 
 public class AdapterSavedItem extends RecyclerView.Adapter<AdapterSavedItem.ViewHolder> {
     private Context context;
-    private List<SavedRoom> roomInfos;
-    List<String> imageList = new ArrayList<>();
+    private List<RoomSearchItem> roomInfos;
     IUnsaveRoomLogic iLoginUnsave;
 
-    public AdapterSavedItem(Context context, List<SavedRoom> roomInfos,IUnsaveRoomLogic iLoginUnsave) {
+    public AdapterSavedItem(Context context, List<RoomSearchItem> roomInfos,IUnsaveRoomLogic iLoginUnsave) {
         this.context = context;
         this.roomInfos = roomInfos;
         this.iLoginUnsave = iLoginUnsave;
@@ -50,16 +49,20 @@ public class AdapterSavedItem extends RecyclerView.Adapter<AdapterSavedItem.View
 
     @Override
     public void onBindViewHolder(final AdapterSavedItem.ViewHolder holder, int position) {
-        final SavedRoom info = roomInfos.get(position);
-        imageList.clear();
-        holder.tvName.setText(info.getName());
-        for(int i = 0;i<info.getImageObject().length;i++){
-            imageList.add(info.getImageObject()[i].getSrc());
+        final RoomSearchItem info = roomInfos.get(position);
+        List<String> imageList = new ArrayList<>();
+
+        holder.tvName.setText((info.getName()==null)?"":info.getName());
+        if(info.getImages()!=null){
+            for(int i = 0;i<info.getImages().length;i++){
+                imageList.add(info.getImages()[i].getSrc());
+            }
         }
         SlideImageAdapter slideImageAdapter = new SlideImageAdapter(context,imageList);
         holder.imgHinh.setAdapter(slideImageAdapter);
         slideImageAdapter.notifyDataSetChanged();
         holder.circleIndicator.setViewPager(holder.imgHinh);
+        Picasso.get().load(info.getLandLord().getPicture()).placeholder(R.drawable.default_image).into(holder.imgAvatar);
         holder.tvAddress.setText(info.getAddress()==null?"":info.getAddress());
         holder.tvPrice.setText(info.getPrice()==null?"": AppUtils.formatMoney2(info.getPrice())+" đ");
         holder.imgSave.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

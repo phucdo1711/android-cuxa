@@ -57,10 +57,13 @@ public class AdapterSearchResultRoom extends RecyclerView.Adapter<AdapterSearchR
         final RoomSearchItem info = roomSearchItemList.get(position);
 
         List<String> imageList = new ArrayList<>();
-         holder.tvName.setText(info.getName());
-            for(int i = 0;i<info.getImages().length;i++){
-                imageList.add(info.getImages()[i].getSrc());
-            }
+         holder.tvName.setText((info.getName()==null)?"":info.getName());
+         if(info.getImages()!=null){
+             for(int i = 0;i<info.getImages().length;i++){
+                 imageList.add(info.getImages()[i].getSrc());
+             }
+         }
+
         SlideImageAdapter slide = new SlideImageAdapter(context,imageList);
         slide.notifyDataSetChanged();
         holder.imgHinh.setAdapter(slide);

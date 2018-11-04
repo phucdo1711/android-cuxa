@@ -10,6 +10,14 @@
     <string name="bottom_sheet_option_remove_photo">Remove Photo</string>
     <string name="below_million">&lt; 1 triệu</string>
     <string name="above_three_millions">&gt; 3 triệu</string>
-    <string name="ip_all_images">所有图片</string>
-    <string name="ip_folder_image_count">共%1$d张</string>
+    <!--Message-->
+    <string name="message_welcome">Welcome to Cư Xá Chat –</string>
+    <plurals name="message_participants">
+        <item quantity="one">there\'s %d participant</item>
+        <item quantity="other">there are %d participants</item>
+    </plurals>
+    <string name="message_user_joined">%s đã tham gia</string>
+    <string name="message_user_left">%s đã rời khỏi cuộc trò chuyện</string>
+    <string name="user_action_typing">is typing</string>
+
 </resources>

@@ -19,6 +19,7 @@ import com.example.dell.appcuxa.CuxaAPI.CuXaAPI;
 import com.example.dell.appcuxa.CuxaAPI.NetworkController;
 import com.example.dell.appcuxa.MainPage.Adapter.CheckBoxAdapter;
 import com.example.dell.appcuxa.MainPage.Adapter.SlideImageAdapter;
+import com.example.dell.appcuxa.MainPage.MainPageViews.MessTab.MessView.FragmentChatRoom;
 import com.example.dell.appcuxa.MainPage.MainPageViews.ProfileTab.ProfileView.FragmentFeedback;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 import com.example.dell.appcuxa.ObjectModels.UtilityObject;
@@ -42,6 +43,7 @@ public class PeopleDetailFragment extends DialogFragment implements View.OnClick
     public View mMainView;
     public RobBoldText tvName;
     CuXaAPI fileService;
+    RobButton btnMesNow;
     List<UtilityObject> utilityObjectList = new ArrayList<>();
     private ImageView imgBack;
     private MyGridView gvCheckBox;
@@ -71,6 +73,8 @@ public class PeopleDetailFragment extends DialogFragment implements View.OnClick
     }
 
     private void init() {
+        btnMesNow = mMainView.findViewById(R.id.btnMesNow);
+        btnMesNow.setOnClickListener(this);
         imgHinh =mMainView.findViewById(R.id.imgHinh);
         circleIndicator = mMainView.findViewById(R.id.indicator);
         gvCheckBox = mMainView.findViewById(R.id.gridCheckBox);
@@ -84,6 +88,12 @@ public class PeopleDetailFragment extends DialogFragment implements View.OnClick
         switch (view.getId()){
             case R.id.imgBackTb:
                 PeopleDetailFragment.this.dismiss();
+                break;
+            case R.id.btnMesNow:
+                FragmentChatRoom myRoom = new FragmentChatRoom();
+                myRoom.dataObject(roomSearchItem);
+                myRoom.setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogFragmentTheme);
+                myRoom.show(getFragmentManager(),"fragment_chat_room");
                 break;
         }
     }

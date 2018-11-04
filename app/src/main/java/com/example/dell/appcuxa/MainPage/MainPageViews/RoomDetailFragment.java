@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -25,7 +26,9 @@ import com.example.dell.appcuxa.CuxaAPI.CuXaAPI;
 import com.example.dell.appcuxa.CuxaAPI.NetworkController;
 import com.example.dell.appcuxa.MainPage.Adapter.CheckBoxAdapter;
 import com.example.dell.appcuxa.MainPage.Adapter.SlideImageAdapter;
+import com.example.dell.appcuxa.MainPage.MainPageViews.MessTab.MessView.FragmentChatRoom;
 import com.example.dell.appcuxa.MainPage.MainPageViews.ProfileTab.ProfileView.FragmentEditProfile;
+import com.example.dell.appcuxa.MainPage.MainPageViews.ProfileTab.ProfileView.FragmentMyRoom;
 import com.example.dell.appcuxa.MainPage.MainPageViews.SearchTab.GenderBottomDialog;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 import com.example.dell.appcuxa.ObjectModels.UtilityObject;
@@ -59,6 +62,7 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
     RoomSearchItem roomSearchItem = new RoomSearchItem();
     CircleImageView imgAvatar;
     SpinKitView progressDialog;
+    RobButton btnMesNow;
     RobBoldText tvNameLandLord;
     List<UtilityObject> utilityObjectList = new ArrayList<>();
     private ImageView imgBack;
@@ -80,8 +84,8 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mMainView = inflater.inflate(R.layout.layout_detail_room, container, false);
-        init();
         fileService = NetworkController.upload();
+        init();
 
         getAllUtilities();
 
@@ -89,6 +93,8 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
     }
 
     private void init() {
+        btnMesNow = mMainView.findViewById(R.id.btnMesNow);
+        btnMesNow.setOnClickListener(this);
         tvNameLandLord = mMainView.findViewById(R.id.tvNameLandLord);
         toolbar = mMainView.findViewById(R.id.toolbar);
         gvCheckBox = mMainView.findViewById(R.id.gridCheckBox);
@@ -96,17 +102,17 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
         tvLocation = mMainView.findViewById(R.id.tvLocation);
         tvSchedule = mMainView.findViewById(R.id.tvSchedule);
         tvPrice = mMainView.findViewById(R.id.tvPrice);
-        tvSmallType= mMainView.findViewById(R.id.tvSmallType);
+        tvSmallType = mMainView.findViewById(R.id.tvSmallType);
         tvNumOfPpl = mMainView.findViewById(R.id.tvNumOfPpl);
         tvArea = mMainView.findViewById(R.id.tvArea);
         tvName = mMainView.findViewById(R.id.tvName);
         tvType = mMainView.findViewById(R.id.tvType);
         imgAvatar = mMainView.findViewById(R.id.imgAvatar);
-        cbSave =mMainView.findViewById(R.id.imgSaveTb);
+        cbSave = mMainView.findViewById(R.id.imgSaveTb);
         imgBack = mMainView.findViewById(R.id.imgBackTb);
         imgBack.setOnClickListener(this);
         imgAvatar = mMainView.findViewById(R.id.imgAvatar);
-        imgHinh =mMainView.findViewById(R.id.imgHinh);
+        imgHinh = mMainView.findViewById(R.id.imgHinh);
         circleIndicator = mMainView.findViewById(R.id.indicator);
         imgUpDown1 = mMainView.findViewById(R.id.imgUpDown1);
         imgUpDown1.setOnClickListener(this);
@@ -116,45 +122,79 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
         imgUpDown2.setOnClickListener(this);
        /* progressDialog = mMainView.findViewById(R.id.spin_kit);
         progressDialog.setVisibility(View.GONE);*/
-       tvContentDesc.setText(roomSearchItem.getDescription());
-       Picasso.get().load(roomSearchItem.getLandLord().getPicture()).placeholder(R.drawable.default_image).into(imgAvatar);
-       tvName.setText(roomSearchItem.getName());
-       tvArea.setText("Diện tích: "+ roomSearchItem.getArea()+" m2");
-       toolbar.setTitle(roomSearchItem.getName());
-       tvPrice.setText(AppUtils.formatMoney2(roomSearchItem.getPrice())+" đ");
-       tvNumOfPpl.setText("Số người cho thuê: "+roomSearchItem.getAmountOfTenant()+" người");
-       tvNameLandLord.setText(roomSearchItem.getLandLord().getName());
-       tvLocation.setText(roomSearchItem.getAddress());
-       Boolean isSaved = roomSearchItem.getIsSaved();
-       if(isSaved!=null&& isSaved==true){
-           cbSave.setChecked(true);
-       }else {
-           cbSave.setChecked(false);
-       }
+        String id = roomSearchItem.getId();
+        Call<RoomSearchItem> getRoomById = fileService.getRoomById("Bearer " + AppUtils.getToken(getActivity()), id);
+        getRoomById.enqueue(new Callback<RoomSearchItem>() {
+            @Override
+            public void onResponse(Call<RoomSearchItem> call, Response<RoomSearchItem> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().getIsSaved() != null)
+                        cbSave.setChecked(response.body().getIsSaved());
+                }
+            }
 
-       List<String> lstString = new ArrayList<>();
-       for(int i = 0;i<roomSearchItem.getImages().length;i++){
-           lstString.add(roomSearchItem.getImages()[i].getSrc());
-       }
-        SlideImageAdapter slideImageAdapter = new SlideImageAdapter(getContext(),lstString);
+            @Override
+            public void onFailure(Call<RoomSearchItem> call, Throwable t) {
+
+            }
+        });
+        tvContentDesc.setText(roomSearchItem.getDescription());
+        Picasso.get().load(roomSearchItem.getLandLord().getPicture()).placeholder(R.drawable.default_image).into(imgAvatar);
+        tvName.setText(roomSearchItem.getName());
+        tvArea.setText("Diện tích: " + roomSearchItem.getArea() + " m2");
+        toolbar.setTitle(roomSearchItem.getName());
+        tvPrice.setText(AppUtils.formatMoney2(roomSearchItem.getPrice()) + " đ");
+        tvNumOfPpl.setText("Số người cho thuê: " + roomSearchItem.getAmountOfTenant() + " người");
+        tvNameLandLord.setText(roomSearchItem.getLandLord().getName());
+        tvLocation.setText(roomSearchItem.getAddress());
+        Boolean isSaved = roomSearchItem.getIsSaved();
+        if (isSaved != null && isSaved == true) {
+            cbSave.setChecked(true);
+        } else {
+            cbSave.setChecked(false);
+        }
+
+        List<String> lstString = new ArrayList<>();
+        for (int i = 0; i < roomSearchItem.getImages().length; i++) {
+            lstString.add(roomSearchItem.getImages()[i].getSrc());
+        }
+        SlideImageAdapter slideImageAdapter = new SlideImageAdapter(getContext(), lstString);
         imgHinh.setAdapter(slideImageAdapter);
         slideImageAdapter.notifyDataSetChanged();
         circleIndicator.setViewPager(imgHinh);
+        Picasso.get().load(roomSearchItem.getLandLord().getPicture()).into(imgAvatar);
+        cbSave.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (!b) {
+                    saveOrUnsave(false);
+                }
+            }
+        });
+
+        cbSave.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    saveOrUnsave(true);
+                }
+            }
+        });
 
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.imgBackTb:
                 RoomDetailFragment.this.dismiss();
                 break;
             case R.id.imgUpDown1:
-                if(!isShow1){
+                if (!isShow1) {
                     isShow1 = true;
                     imgUpDown1.setImageDrawable(getResources().getDrawable(R.drawable.ic_down_arrow));
                     tvContentDesc.setVisibility(View.GONE);
-                }else{
+                } else {
                     isShow1 = false;
                     imgUpDown1.setImageDrawable(getResources().getDrawable(R.drawable.ic_up_arrow));
                     tvContentDesc.setVisibility(View.VISIBLE);
@@ -162,13 +202,13 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
 
                 break;
             case R.id.imgUpDown2:
-                if(!isShow2){
+                if (!isShow2) {
                     isShow2 = true;
                     imgUpDown2.setImageDrawable(getResources().getDrawable(R.drawable.ic_down_arrow));
                     tvSmallType.setVisibility(View.GONE);
                     tvArea.setVisibility(View.GONE);
                     tvNumOfPpl.setVisibility(View.GONE);
-                }else{
+                } else {
                     isShow2 = false;
                     imgUpDown2.setImageDrawable(getResources().getDrawable(R.drawable.ic_up_arrow));
                     tvSmallType.setVisibility(View.VISIBLE);
@@ -177,11 +217,11 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
                 }
                 break;
             case R.id.imgUpDown3:
-                if(!isShow3){
+                if (!isShow3) {
                     isShow3 = true;
                     imgUpDown3.setImageDrawable(getResources().getDrawable(R.drawable.ic_down_arrow));
                     gvCheckBox.setVisibility(View.GONE);
-                }else{
+                } else {
                     isShow3 = false;
                     imgUpDown3.setImageDrawable(getResources().getDrawable(R.drawable.ic_up_arrow));
                     gvCheckBox.setVisibility(View.VISIBLE);
@@ -190,51 +230,58 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
             case R.id.imgSaveTb:
                 saveOrUnsave(cbSave.isChecked());
                 break;
+            case R.id.btnMesNow:
+                FragmentChatRoom myRoom = new FragmentChatRoom();
+                myRoom.dataObject(roomSearchItem);
+                myRoom.setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogFragmentTheme);
+                myRoom.show(getFragmentManager(),"fragment_chat_room");
+                break;
         }
     }
 
     private void saveOrUnsave(final boolean saveOrUnsave) {
-        if(AppUtils.haveNetworkConnection(getActivity())){
-            Call<ResponseBody> call = fileService.saveRoom("Bearer "+ AppUtils.getToken(getActivity()),roomSearchItem.getId());
+        if (AppUtils.haveNetworkConnection(getActivity())) {
+            Call<ResponseBody> call = fileService.saveRoom("Bearer " + AppUtils.getToken(getActivity()), roomSearchItem.getId());
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                    if(response.isSuccessful()){
-                        if(saveOrUnsave){ // nếu nó đã check thì thành công sẽ là uncheck
-                            cbSave.setChecked(false);
-                        }else{
+                    if (response.isSuccessful()) {
+                        if (saveOrUnsave) { // nếu nó đã check thì thành công sẽ là uncheck
                             cbSave.setChecked(true);
+                        } else {
+                            cbSave.setChecked(false);
                         }
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    if(saveOrUnsave){
+                    if (saveOrUnsave) {
                         cbSave.setChecked(true);
-                    }else{
+                    } else {
                         cbSave.setChecked(false);
                     }
                     Toast.makeText(getActivity(), "Có lỗi sảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
                 }
             });
-        }else{
+        } else {
             Toast.makeText(getActivity(), "Đéo có mạng", Toast.LENGTH_SHORT).show();
             cbSave.setChecked(false);
         }
     }
 
-    public RoomSearchItem setObject(RoomSearchItem roomSearchItem){
+    public RoomSearchItem setObject(RoomSearchItem roomSearchItem) {
         this.roomSearchItem = roomSearchItem;
         return roomSearchItem;
     }
-    public void getAllUtilities(){
+
+    public void getAllUtilities() {
         //progressBar.setVisibility(View.VISIBLE);
         Call<ResponseBody> call = fileService.getAllUtilities("code");
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     //progressBar.setVisibility(View.GONE);
                     try {
                         JSONObject jsonObject = new JSONObject(response.body().string());
@@ -243,16 +290,16 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
                         for (int i = 0; i < 12; i++) {
                             JSONObject object = jsonArray.getJSONObject(i);
                             UtilityObject utilityObject =
-                                    new UtilityObject(object.getString("id"),object.getString("name"),object.getString("code"));
+                                    new UtilityObject(object.getString("id"), object.getString("name"), object.getString("code"));
                             utilityObjectList.add(utilityObject);
                         }
-                        if(roomSearchItem!=null){
+                        if (roomSearchItem != null) {
                             String[] utilitiesSelected = roomSearchItem.getUtilities();
-                            CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(utilityObjectList,getContext(),utilitiesSelected,true);
+                            CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(utilityObjectList, getContext(), utilitiesSelected, true);
                             gvCheckBox.setAdapter(checkBoxAdapter);
                             checkBoxAdapter.notifyDataSetChanged();
-                        }else{
-                            CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(utilityObjectList,getContext());
+                        } else {
+                            CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(utilityObjectList, getContext());
                             gvCheckBox.setAdapter(checkBoxAdapter);
                             checkBoxAdapter.notifyDataSetChanged();
                         }
