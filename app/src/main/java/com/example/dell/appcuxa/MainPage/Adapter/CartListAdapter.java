@@ -19,11 +19,13 @@ import com.example.dell.appcuxa.ObjectModels.Item;
 import com.example.dell.appcuxa.R;
 import com.google.android.gms.vision.text.Line;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.MyViewHolder> {
     private Context context;
     private List<Item> cartList;
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView name, description, price;
@@ -85,5 +87,10 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.MyView
         cartList.add(position, item);
         // notify item added by position
         notifyItemInserted(position);
+    }
+    public void setFilter(List<Item> items) {
+        cartList = new ArrayList<>();
+        cartList.addAll(items);
+        notifyDataSetChanged();
     }
 }
