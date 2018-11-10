@@ -119,7 +119,10 @@ public class FragmentEditProfile extends DialogFragment implements View.OnClickL
     private void submitChange() {
         cuXaAPI = NetworkController.upload();
         UpdateUserObj updateUserObj = new UpdateUserObj();
-        updateUserObj.setGender("male");
+        updateUserObj.setGender(tvGender.getText().toString());
+        updateUserObj.setBirth(AppUtils.getCurrentUTC(AppUtils.parseStringToDate(tvBirthday.getText().toString())));
+        updateUserObj.setIdCard(edtCmnd.getText().toString());
+        updateUserObj.setSchool(edtCurSchool.getText().toString());
         updateUserObj.setName(edtName.getText().toString());
         updateUserObj.setPicture(idHinh);
         updateUserObj.setPhone(edtPhoneNo.getText().toString());
@@ -128,7 +131,7 @@ public class FragmentEditProfile extends DialogFragment implements View.OnClickL
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if(response.isSuccessful()){
-
+                    Toast.makeText(getActivity(), "Lưu thành công", Toast.LENGTH_SHORT).show();
                 }
             }
 

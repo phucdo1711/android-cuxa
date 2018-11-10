@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -33,12 +34,23 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.example.dell.appcuxa.Application.ChatApplication;
 import com.example.dell.appcuxa.CustomeView.RobBoldText;
 import com.example.dell.appcuxa.CustomeView.RobEditText;
+import com.example.dell.appcuxa.CuxaAPI.CuXaAPI;
+import com.example.dell.appcuxa.CuxaAPI.NetworkController;
 import com.example.dell.appcuxa.MainPage.Adapter.CartListAdapter;
 import com.example.dell.appcuxa.MainPage.Adapter.RecyclerItemTouchHelper;
+import com.example.dell.appcuxa.MainPage.MainPageViews.MainPageActivity;
+import com.example.dell.appcuxa.MainPage.MainPageViews.MessTab.MessView.Interface.CallbackChatRoom;
+import com.example.dell.appcuxa.MainPage.MainPageViews.ProfileTab.ProfileView.FragmentMyRoom;
+import com.example.dell.appcuxa.ObjectModels.ChatRoomObj;
 import com.example.dell.appcuxa.ObjectModels.Item;
+import com.example.dell.appcuxa.ObjectModels.MessageItem;
+import com.example.dell.appcuxa.ObjectModels.ObjectChat;
 import com.example.dell.appcuxa.R;
 import com.example.dell.appcuxa.Utils.AppUtils;
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.Ack;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -46,19 +58,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.internal.Utils;
+import retrofit2.Call;
+import retrofit2.Callback;
 
-public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener,View.OnClickListener{
+public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener,View.OnClickListener,CallbackChatRoom{
     private View mMainView;
     ImageView imgView;
-    List<Item> cartList;
+    List<ObjectChat> cartList;
     RecyclerView recyclerView;
 
     View mLayoutHeader;
-
+    CallbackChatRoom callbackChatRoom;
     View mLayoutSearch;
     RobBoldText tvCancel;
     ImageView btnSearch;
@@ -73,6 +88,7 @@ public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.Re
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mMainView = inflater.inflate(R.layout.fragment_mess, container, false);
         recyclerView = mMainView.findViewById(R.id.recycler_view);
+        callbackChatRoom = this;
         coordinatorLayout = mMainView.findViewById(R.id.coordinator_layout);
         mLayoutSearch = mMainView.findViewById(R.id.layout_search);
         mLayoutHeader = mMainView.findViewById(R.id.layout_header);
@@ -80,16 +96,47 @@ public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.Re
         btnSearch = mMainView.findViewById(R.id.btn_search);
         mEdtSearch = mMainView.findViewById(R.id.edt_search);
         cartList = new ArrayList<>();
-        mAdapter = new CartListAdapter(getActivity(), cartList);
+        mAdapter = new CartListAdapter(getActivity(), cartList,this);
         btnSearch.setOnClickListener(this);
         tvCancel.setOnClickListener(this);
-
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(mAdapter);
+        ((MainPageActivity) getActivity()).getmSocket().connect();
+        ((MainPageActivity) getActivity()).getmSocket().emit("join_room", "5be325191919985d1197cf",new Emitter.Listener() {
 
+            @Override
+            public void call(final Object... args) {
+                String res = (String) args[0];
+                Log.d("sadgsdf",args.toString());
+                Toast.makeText(getActivity(), res, Toast.LENGTH_SHORT).show();
+            }
+        });
+        ((MainPageActivity)getActivity()).getmSocket().on("on_message", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+            JSONObject object = (JSONObject) args[0];
+                try {
+                    String content = object.getString("content");
+                    Log.d("sdfsdf",content);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        //getLstChatRoom();
+        // /* Gson gson = new Gson();  TODO
+        //        String json = gson.toJson(new MessageItem("5be18babd57ea32482ea2d52","text","địt mẹ Phúc"));
+        //        JSONObject jsonObject = null;
+        //        try {
+        //            jsonObject = new JSONObject(json);
+        //        } catch (JSONException e) {
+        //            e.printStackTrace();
+        //        }
+        //        ((MainPageActivity)getActivity()).getmSocket().emit("send_message",jsonObject);*/
         mEdtSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -98,11 +145,11 @@ public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.Re
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    mAdapter = new CartListAdapter(getActivity(), cartList);
+                    mAdapter = new CartListAdapter(getActivity(), cartList,callbackChatRoom);
                     recyclerView.setAdapter(mAdapter);
                     String newText = s.toString().toLowerCase();
-                    List<Item> items = new ArrayList<>();
-                    for (Item shop : cartList) {
+                    List<ObjectChat> items = new ArrayList<>();
+                    for (ObjectChat shop : cartList) {
                         String name = shop.getName().toLowerCase();
                         if (name.contains(newText)) {
                             items.add(shop);
@@ -117,6 +164,7 @@ public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.Re
 
             }
         });
+
 
 
         // adding item touch helper
@@ -153,6 +201,29 @@ public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.Re
         return mMainView;
     }
 
+    private void getLstChatRoom() {
+        CuXaAPI cuXaAPI = NetworkController.upload();
+        Call<ChatRoomObj> lstChatRoom = cuXaAPI.getLstChatRoom("Bearer "+AppUtils.getToken(getActivity()));
+        lstChatRoom.enqueue(new Callback<ChatRoomObj>() {
+            @Override
+            public void onResponse(Call<ChatRoomObj> call, retrofit2.Response<ChatRoomObj> response) {
+                if(response.isSuccessful()){
+                    ChatRoomObj roomObj = response.body();
+                    ObjectChat[] objectChat = roomObj.getRows();
+                    ArrayList<ObjectChat> lstObject = new ArrayList<>(Arrays.asList(objectChat));
+                    cartList.addAll(lstObject);
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ChatRoomObj> call, Throwable t) {
+
+            }
+        });
+    }
+
+
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
             if (viewHolder instanceof CartListAdapter.MyViewHolder) {
@@ -160,7 +231,7 @@ public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.Re
                 String name = cartList.get(viewHolder.getAdapterPosition()).getName();
 
                 // backup of removed item for undo purpose
-                final Item deletedItem = cartList.get(viewHolder.getAdapterPosition());
+                final ObjectChat deletedItem = cartList.get(viewHolder.getAdapterPosition());
                 final int deletedIndex = viewHolder.getAdapterPosition();
 
                 // remove the item from recycler view
@@ -183,86 +254,7 @@ public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.Re
 
     }
     private void prepareCart() {
-
-        String json = "[{\n" +
-                "\t\t\"id\": 1,\n" +
-                "\t\t\"name\": \"Salmon Teriyaki\",\n" +
-                "\t\t\"description\": \"Roasted salon dumped in soa sauce and mint\",\n" +
-                "\t\t\"price\": 140,\n" +
-                "\t\t\"thumbnail\": \"https://api.androidhive.info/images/food/1.jpg\"\n" +
-                "\t},\n" +
-                "\t{\n" +
-                "\t\t\"id\": 2,\n" +
-                "\t\t\"name\": \"Grilled Mushroom and Vegetables\",\n" +
-                "\t\t\"description\": \"Spcie grills mushrooms, cucumber, apples and lot more\",\n" +
-                "\t\t\"price\": 150,\n" +
-                "\t\t\"thumbnail\": \"https://api.androidhive.info/images/food/2.jpg\"\n" +
-                "\t},\n" +
-                "\t{\n" +
-                "\t\t\"id\": 3,\n" +
-                "\t\t\"name\": \"Chicken Overload Meal\",\n" +
-                "\t\t\"description\": \"Grilled chicken & tandoori chicken in masala curry\",\n" +
-                "\t\t\"price\": 185,\n" +
-                "\t\t\"thumbnail\": \"https://api.androidhive.info/images/food/3.jpg\"\n" +
-                "\t},\n" +
-                "\t{\n" +
-                "\t\t\"id\": 4,\n" +
-                "\t\t\"name\": \"Chinese Egg Fry\",\n" +
-                "\t\t\"description\": \"Exotic eggs Fried served steaming hot\",\n" +
-                "\t\t\"price\": 250,\n" +
-                "\t\t\"thumbnail\": \"https://api.androidhive.info/images/food/4.jpg\"\n" +
-                "\t},\n" +
-                "\t{\n" +
-                "\t\t\"id\": 5,\n" +
-                "\t\t\"name\": \"Chicken Wraps\",\n" +
-                "\t\t\"description\": \"Grilled chicken tikka rool wrapped\",\n" +
-                "\t\t\"price\": 140,\n" +
-                "\t\t\"thumbnail\": \"https://api.androidhive.info/images/food/5.jpg\"\n" +
-                "\t},\n" +
-                "\t{\n" +
-                "\t\t\"id\": 6,\n" +
-                "\t\t\"name\": \"Veggie Delight\",\n" +
-                "\t\t\"description\": \"Loads of veggies with olives\",\n" +
-                "\t\t\"price\": 230,\n" +
-                "\t\t\"thumbnail\": \"https://api.androidhive.info/images/food/6.jpg\"\n" +
-                "\t},\n" +
-                " \t{\n" +
-                "\t\t\"id\": 7,\n" +
-                "\t\t\"name\": \"Seafood Combo\",\n" +
-                "\t\t\"description\": \"combo of prawns, scallop, sliced fish, calanmari, potato fries\",\n" +
-                "\t\t\"price\": 330,\n" +
-                "\t\t\"thumbnail\": \"https://api.androidhive.info/images/food/7.jpg\"\n" +
-                "\t},\n" +
-                "\t{\n" +
-                "\t\t\"id\": 8,\n" +
-                "\t\t\"name\": \"Full Tandoori\",\n" +
-                "\t\t\"description\": \"Chicken roated with lip smacking mayo dressing\",\n" +
-                "\t\t\"price\": 430,\n" +
-                "\t\t\"thumbnail\": \"https://api.androidhive.info/images/food/8.jpg\"\n" +
-                "\t}\n" +
-                "]";
-        List<Item> items = new ArrayList<>();
-        try {
-            JSONArray jsonArray = new JSONArray(json);
-            for(int i = 0;i<jsonArray.length();i++){
-                JSONObject object = jsonArray.getJSONObject(i);
-                int id = object.getInt("id");
-                String name = object.getString("name");
-                String descri = object.getString("description");
-                double price = object.getDouble("price");
-                String thumbnail = object.getString("thumbnail");
-                Item item = new Item(id,name,descri,price,thumbnail);
-                items.add(item);
-            }
-            cartList.addAll(items);
-
-            // refreshing recycler view
-            mAdapter.notifyDataSetChanged();
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
+        getLstChatRoom();
     }
     private void gotoSearch() {
         Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.push_right_out);
@@ -337,6 +329,15 @@ public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.Re
             default:
                 break;
         }
+    }
+
+    @Override
+    public void CallBackRoomChat(ObjectChat objectChat) {
+        FragmentChatRoom myRoom = new FragmentChatRoom();
+        myRoom.setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogFragmentTheme);
+        myRoom.setObject(objectChat, getActivity());
+        myRoom.show(getFragmentManager(),"fragment_chat_room");
+
     }
 }
 

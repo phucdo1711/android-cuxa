@@ -28,7 +28,7 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <TextView
+                <com.example.dell.appcuxa.CustomeView.RobLightText
                     android:layout_marginTop="@dimen/dp_16"
                     android:background="@drawable/chat_from_friend"
                     android:padding="10dp"

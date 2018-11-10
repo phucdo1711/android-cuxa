@@ -9,7 +9,10 @@ import android.view.ViewGroup;
 
 import com.example.dell.appcuxa.CustomeView.RobLightText;
 import com.example.dell.appcuxa.ObjectModels.Message;
+import com.example.dell.appcuxa.ObjectModels.MessageItem;
 import com.example.dell.appcuxa.R;
+import com.example.dell.appcuxa.Utils.AppUtils;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -17,16 +20,18 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageRoomChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public Context context;
-    public List<Message> lstMess;
+    public List<MessageItem> lstMess;
+    public String avatFriend;
     public View view;
 
-    public MessageRoomChatAdapter(Context context, List<Message> lstMess) {
+    public MessageRoomChatAdapter(Context context, List<MessageItem> lstMess,String avatFriend) {
         this.context = context;
         this.lstMess = lstMess;
+        this.avatFriend = avatFriend;
     }
 
     class ViewHolderUser extends RecyclerView.ViewHolder {
-        RobLightText tvContentChatUser;
+        public RobLightText tvContentChatUser;
         RobLightText tvTimeUserSent;
         public ViewHolderUser(View itemView){
             super(itemView);
@@ -67,12 +72,12 @@ public class MessageRoomChatAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
 
-        if (viewType == 10) {
+        if (viewType == 1) {
             LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
             view = inflater.inflate(R.layout.item_chat_from_user, viewGroup, false);
             return new ViewHolderUser(view);
 
-        } else if (viewType == 20) {
+        } else if (viewType == 2) {
             LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
             view = inflater.inflate(R.layout.item_chat_from_other_user, viewGroup, false);
             return new ViewHolderFriend(view);
@@ -83,8 +88,29 @@ public class MessageRoomChatAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        Message message = lstMess.get(i);
-
+        final MessageItem message = lstMess.get(i);
+        if(viewHolder.getItemViewType()==1){
+            final ViewHolderUser viewHolderUser = (ViewHolderUser) viewHolder;
+            viewHolderUser.tvContentChatUser.setText(message.getContent()==null?"":message.getContent());
+            viewHolderUser.tvContentChatUser.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    viewHolderUser.tvTimeUserSent.setVisibility(View.VISIBLE);
+                    viewHolderUser.tvTimeUserSent.setText(AppUtils.parseDateFromWS(message.getCreatedAt()));
+                }
+            });
+        }else{
+            final ViewHolderFriend viewHolderFriend = (ViewHolderFriend) viewHolder;
+            viewHolderFriend.tvContentChatFriend.setText(message.getContent()==null?"":message.getContent());
+            Picasso.get().load(avatFriend).placeholder(R.drawable.default_image).into(viewHolderFriend.imgAvatar);
+            viewHolderFriend.tvContentChatFriend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    viewHolderFriend.tvTimeFriendSent.setVisibility(View.VISIBLE);
+                    viewHolderFriend.tvTimeFriendSent.setText(AppUtils.parseDateFromWS(message.getCreatedAt()));
+                }
+            });
+        }
     }
 
     @Override
@@ -94,11 +120,15 @@ public class MessageRoomChatAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemViewType(int position) {
-        int viewType = -1;
         /**
-         * ĐIều kiện để chia bên.
+         * 1: User gửi tin nhắn
+         * 2: Bạn gửi tin nhắn
          */
-        return super.getItemViewType(position);
+        MessageItem messageItem = lstMess.get(position);
+        if(AppUtils.getToken(context).equals(messageItem.getUserObject().getId())){
+            return 1;
+        }
+        return 2;
 
     }
 }

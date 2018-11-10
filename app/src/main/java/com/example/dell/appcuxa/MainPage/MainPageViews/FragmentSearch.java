@@ -94,6 +94,7 @@ public class FragmentSearch extends FragmentCommon implements ILogicSaveRoom, IB
         swipeContainer = (SwipeRefreshLayout) mView.findViewById(R.id.swipeContainer);
         lnProgressbar = mView.findViewById(R.id.lnProgressbar);
         iBackToListTopScreen = this;
+
         btnUpRoom.setOnClickListener(this);
         btnLiveTogether.setOnClickListener(this);
         sharedPreferences = getActivity().getSharedPreferences("login_data", MODE_PRIVATE);
@@ -116,8 +117,31 @@ public class FragmentSearch extends FragmentCommon implements ILogicSaveRoom, IB
             btnFindRoom.setOnClickListener(this);
         }
         edtQuickSearch.setOnClickListener(this);
+        //getInfoMe();
 
         return mView;
+    }
+
+    private void getInfoMe() {
+        Call<ResponseBody> getMe = fileService.getInfoMe("Bearer " + token);
+        getMe.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    JSONObject object = new JSONObject(response.body().string());
+                    String phone = object.getString("phone");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
     }
 
     private void getListTop() {

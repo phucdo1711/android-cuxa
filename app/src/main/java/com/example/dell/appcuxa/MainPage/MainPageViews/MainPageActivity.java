@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.example.dell.appcuxa.Application.ChatApplication;
 import com.example.dell.appcuxa.CustomeView.NonSwipeableViewPager;
 import com.example.dell.appcuxa.Login.LoginView.MainActivity;
 import com.example.dell.appcuxa.MainPage.Adapter.ViewPagerAdapter;
@@ -25,6 +26,12 @@ import com.example.dell.appcuxa.MainPage.MainPageViews.NotiTab.NotiView.Fragment
 import com.example.dell.appcuxa.MainPage.MainPageViews.ProfileTab.ProfileView.FragmentProfile;
 import com.example.dell.appcuxa.MainPage.MainPageViews.SavedTab.SavedView.FragmentSaved;
 import com.example.dell.appcuxa.R;
+import com.example.dell.appcuxa.Utils.AppUtils;
+import com.example.dell.appcuxa.Utils.Constants;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
+
+import java.net.URISyntaxException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +49,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     MenuItem prevMenuItem;
+    public Socket mSocket;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +57,14 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         ButterKnife.bind(this);
         sharedPreferences = getSharedPreferences("login_data",MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        //mBottomNav.setItemIconSize(110);
+        {
+            try {
+                mSocket = IO.socket(Constants.CHAT_SERVER_URL+ AppUtils.getToken(this));
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        mSocket.connect();
         mBottomNav.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -103,6 +118,9 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         });
         setupViewPager(viewPager);
 
+    }
+    public Socket getmSocket(){
+        return mSocket;
     }
 
     @Override
