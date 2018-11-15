@@ -2,7 +2,9 @@ package com.example.dell.appcuxa.ObjectModels;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ObjectChat {
+import java.io.Serializable;
+
+public class ObjectChat implements Serializable{
     @SerializedName("id")
     private String id;
     @SerializedName("users")

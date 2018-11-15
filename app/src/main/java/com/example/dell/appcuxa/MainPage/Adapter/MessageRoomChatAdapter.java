@@ -24,7 +24,7 @@ public class MessageRoomChatAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public String avatFriend;
     public View view;
 
-    public MessageRoomChatAdapter(Context context, List<MessageItem> lstMess,String avatFriend) {
+    public MessageRoomChatAdapter(Context context, List<MessageItem> lstMess, String avatFriend) {
         this.context = context;
         this.lstMess = lstMess;
         this.avatFriend = avatFriend;
@@ -33,7 +33,8 @@ public class MessageRoomChatAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     class ViewHolderUser extends RecyclerView.ViewHolder {
         public RobLightText tvContentChatUser;
         RobLightText tvTimeUserSent;
-        public ViewHolderUser(View itemView){
+
+        public ViewHolderUser(View itemView) {
             super(itemView);
             tvContentChatUser = itemView.findViewById(R.id.tvUserMessage);
             tvTimeUserSent = itemView.findViewById(R.id.tvUserTimeText);
@@ -44,7 +45,6 @@ public class MessageRoomChatAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     tvTimeUserSent.setVisibility(View.VISIBLE);
                 }
             });
-
         }
     }
 
@@ -52,6 +52,7 @@ public class MessageRoomChatAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         public RobLightText tvTimeFriendSent;
         public RobLightText tvContentChatFriend;
         public CircleImageView imgAvatar;
+
         public ViewHolderFriend(View itemView) {
             super(itemView);
             tvTimeFriendSent = itemView.findViewById(R.id.tvTimeFriendSent);
@@ -61,10 +62,13 @@ public class MessageRoomChatAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             tvContentChatFriend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    tvContentChatFriend.setVisibility(View.VISIBLE);
+                    if (view.getVisibility() == View.VISIBLE) {
+                        tvContentChatFriend.setVisibility(View.GONE);
+                    } else {
+                        tvContentChatFriend.setVisibility(View.VISIBLE);
+                    }
                 }
             });
-
         }
     }
 
@@ -89,9 +93,9 @@ public class MessageRoomChatAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
         final MessageItem message = lstMess.get(i);
-        if(viewHolder.getItemViewType()==1){
+        if (viewHolder.getItemViewType() == 1) {
             final ViewHolderUser viewHolderUser = (ViewHolderUser) viewHolder;
-            viewHolderUser.tvContentChatUser.setText(message.getContent()==null?"":message.getContent());
+            viewHolderUser.tvContentChatUser.setText(message.getContent() == null ? "" : message.getContent());
             viewHolderUser.tvContentChatUser.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -99,9 +103,9 @@ public class MessageRoomChatAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     viewHolderUser.tvTimeUserSent.setText(AppUtils.parseDateFromWS(message.getCreatedAt()));
                 }
             });
-        }else{
+        } else {
             final ViewHolderFriend viewHolderFriend = (ViewHolderFriend) viewHolder;
-            viewHolderFriend.tvContentChatFriend.setText(message.getContent()==null?"":message.getContent());
+            viewHolderFriend.tvContentChatFriend.setText(message.getContent() == null ? "" : message.getContent());
             Picasso.get().load(avatFriend).placeholder(R.drawable.default_image).into(viewHolderFriend.imgAvatar);
             viewHolderFriend.tvContentChatFriend.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -125,10 +129,9 @@ public class MessageRoomChatAdapter extends RecyclerView.Adapter<RecyclerView.Vi
          * 2: Bạn gửi tin nhắn
          */
         MessageItem messageItem = lstMess.get(position);
-        if(AppUtils.getToken(context).equals(messageItem.getUserObject().getId())){
+        if (AppUtils.getIdUser(context).equals(messageItem.getUserObject().getId())) {
             return 1;
         }
         return 2;
-
     }
 }

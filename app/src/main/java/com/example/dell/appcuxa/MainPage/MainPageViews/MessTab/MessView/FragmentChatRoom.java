@@ -23,6 +23,7 @@ import com.example.dell.appcuxa.CustomeView.RobEditText;
 import com.example.dell.appcuxa.CustomeView.RobLightText;
 import com.example.dell.appcuxa.CuxaAPI.CuXaAPI;
 import com.example.dell.appcuxa.CuxaAPI.NetworkController;
+import com.example.dell.appcuxa.Login.LoginView.MainActivity;
 import com.example.dell.appcuxa.MainPage.Adapter.MessageAdapter;
 import com.example.dell.appcuxa.MainPage.Adapter.MessageRoomChatAdapter;
 import com.example.dell.appcuxa.MainPage.MainPageViews.MainPageActivity;
@@ -34,7 +35,9 @@ import com.example.dell.appcuxa.ObjectModels.ObjectChat;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 import com.example.dell.appcuxa.R;
 import com.example.dell.appcuxa.Utils.AppUtils;
+import com.example.dell.appcuxa.Utils.Constants;
 import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
@@ -42,6 +45,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -74,10 +78,44 @@ public class FragmentChatRoom extends DialogFragment implements View.OnClickList
     private ImageView imgBack;
     private RobLightText tvBegin;
     String avatarFriend = "";
-    RoomSearchItem roomSearchItem;
-
+    private Activity activity;
+    List<MessageItem> chats = new ArrayList<>();
+    MessageRoomChatAdapter adapter;
+    public Socket mSocket;
     public FragmentChatRoom() {
 
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        {
+            try {
+                mSocket = IO.socket(Constants.CHAT_SERVER_URL+ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjViOTE4NGI5MTQ3NzVmNzRmOTgxNjg0NCIsImlhdCI6MTU0MTk0MjY4NH0.4hlQffEnJQmZq_Pxe7LPh9wCNqunXXcbjC8Fq-wvAKU");
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        mSocket.connect();
+        mSocket.on("connect", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Log.d("aaaaaaa","Connected");
+                mSocket.on("on_message", new Emitter.Listener() {
+                    @Override
+                    public void call(Object... args) {
+                        JSONObject object = (JSONObject) args[0];
+                        Log.d("data_object",object.toString()+" - "+args.toString());
+                        try {
+                            String content = object.getString("content");
+                            Log.d("sdfsdf",content);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        });
     }
 
     @Nullable
@@ -89,9 +127,16 @@ public class FragmentChatRoom extends DialogFragment implements View.OnClickList
             @Override
             public void call(Object... args) {
                 JSONObject object = (JSONObject) args[0];
+                Log.d("data_object",object.toString()+" - "+args.toString());
                 try {
                     String content = object.getString("content");
-                    Log.d("sdfsdf", content);
+                    String chatRoom = object.getString("chatRoom");
+                    String type = object.getString("type");
+                    MessageItem messageItem = new MessageItem(chatRoom,type,content);
+                    chats.add(messageItem);
+                    adapter.notifyDataSetChanged();
+                    scrollToBottom();
+                    Log.d("sdfsdf",content);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -99,29 +144,7 @@ public class FragmentChatRoom extends DialogFragment implements View.OnClickList
         });
         init();
         setHasOptionsMenu(true);
-        ((MainPageActivity) getActivity()).getmSocket().connect();
-     /*   ChatApplication app = (ChatApplication) getActivity().getApplication();
-        mSocket = app.getSocket();
-        mSocket.on("new message", onNewMessage);
-        mSocket.on("user joined", onUserJoined);
-        mSocket.on("user left", onUserLeft);
-        mSocket.on("typing", onTyping);
-        mSocket.on("stop typing", onStopTyping);
-        mSocket.connect();*/
 
-        if (roomSearchItem != null) {
-            Picasso.get().load(roomSearchItem.getLandLord().getPicture()).into(imgAvatar);
-            tvNameUserChat.setText(roomSearchItem.getLandLord().getName());
-        }
-        if (chatObject != null) {
-            for (int i = 0; i < chatObject.getUsers().length; i++) {
-                if (!chatObject.getUsers()[i].getId().equals(AppUtils.getIdUser(getActivity()))) {
-                    avatarFriend = chatObject.getUsers()[i].getPicture();
-                    Picasso.get().load(chatObject.getUsers()[i].getPicture()).placeholder(R.drawable.default_image).into(imgAvatar);
-                    tvNameUserChat.setText(chatObject.getUsers()[i].getName());
-                }
-            }
-        }
 
         return mMainView;
     }
@@ -174,11 +197,6 @@ public class FragmentChatRoom extends DialogFragment implements View.OnClickList
         }
     }
 
-    public RoomSearchItem dataObject(RoomSearchItem roomSearchItem) {
-        this.roomSearchItem = roomSearchItem;
-        return roomSearchItem;
-    }
-
     // This event fires 1st, before creation of fragment or any views
     // The onAttach method is called when the Fragment instance is associated with an Activity.
     // This does not mean the Activity is fully initialized.
@@ -191,210 +209,6 @@ public class FragmentChatRoom extends DialogFragment implements View.OnClickList
         }
     }
 
-    private Emitter.Listener onConnect = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (!isConnected) {
-                        Log.d(TAG, "connect");
-                        isConnected = true;
-                    }
-                }
-            });
-        }
-    };
-    private Emitter.Listener onDisconnect = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.i(TAG, "diconnected");
-                    isConnected = false;
-                }
-            });
-        }
-    };
-
-    private Emitter.Listener onConnectError = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.e(TAG, "Error connecting");
-                }
-            });
-        }
-    };
-    private Emitter.Listener onNewMessage = new Emitter.Listener() {
-        @Override
-        public void call(final Object... args) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    JSONObject data = (JSONObject) args[0];
-                    String username;
-                    String message;
-                    try {
-                        username = data.getString("username");
-                        message = data.getString("message");
-                    } catch (JSONException e) {
-                        Log.e(TAG, e.getMessage());
-                        return;
-                    }
-
-                    removeTyping(username);
-                    addMessage(username, message);
-                }
-            });
-        }
-    };
-
-    private Emitter.Listener onUserJoined = new Emitter.Listener() {
-        @Override
-        public void call(final Object... args) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    JSONObject data = (JSONObject) args[0];
-                    String username;
-                    int numUsers;
-                    try {
-                        username = data.getString("username");
-                        numUsers = data.getInt("numUsers");
-                    } catch (JSONException e) {
-                        Log.e(TAG, e.getMessage());
-                        return;
-                    }
-
-                    addLog(getResources().getString(R.string.message_user_joined, username));
-                    addParticipantsLog(numUsers);
-                }
-            });
-        }
-    };
-
-    private Emitter.Listener onUserLeft = new Emitter.Listener() {
-        @Override
-        public void call(final Object... args) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    JSONObject data = (JSONObject) args[0];
-                    String username;
-                    int numUsers;
-                    try {
-                        username = data.getString("username");
-                        numUsers = data.getInt("numUsers");
-                    } catch (JSONException e) {
-                        Log.e(TAG, e.getMessage());
-                        return;
-                    }
-
-                    addLog(getResources().getString(R.string.message_user_left, username));
-                    addParticipantsLog(numUsers);
-                    removeTyping(username);
-                }
-            });
-        }
-    };
-
-    private Emitter.Listener onTyping = new Emitter.Listener() {
-        @Override
-        public void call(final Object... args) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    JSONObject data = (JSONObject) args[0];
-                    String username;
-                    try {
-                        username = data.getString("username");
-                    } catch (JSONException e) {
-                        Log.e(TAG, e.getMessage());
-                        return;
-                    }
-                    addTyping(username);
-                }
-            });
-        }
-    };
-
-    private Emitter.Listener onStopTyping = new Emitter.Listener() {
-        @Override
-        public void call(final Object... args) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    JSONObject data = (JSONObject) args[0];
-                    String username;
-                    try {
-                        username = data.getString("username");
-                    } catch (JSONException e) {
-                        Log.e(TAG, e.getMessage());
-                        return;
-                    }
-                    removeTyping(username);
-                }
-            });
-        }
-    };
-
-    private Runnable onTypingTimeout = new Runnable() {
-        @Override
-        public void run() {
-            if (!mTyping) return;
-
-            mTyping = false;
-            //mSocket.emit("stop typing");
-        }
-    };
-
-    private void addMessage(String username, String message) {
-        mMessages.add(new Message.Builder(Message.TYPE_MESSAGE)
-                .username(username).message(message).build());
-        mAdapter.notifyItemInserted(mMessages.size() - 1);
-        scrollToBottom();
-    }
-
-    private void addTyping(String username) {
-        mMessages.add(new Message.Builder(Message.TYPE_ACTION)
-                .username(username).build());
-        mAdapter.notifyItemInserted(mMessages.size() - 1);
-        scrollToBottom();
-    }
-
-    private void removeTyping(String username) {
-        for (int i = mMessages.size() - 1; i >= 0; i--) {
-            Message message = mMessages.get(i);
-            if (message.getType() == Message.TYPE_ACTION && message.getUsername().equals(username)) {
-                mMessages.remove(i);
-                mAdapter.notifyItemRemoved(i);
-            }
-        }
-    }
-
-   /* private void attemptSend() {
-        if (null == roomSearchItem.getLandLord().getName()) return;
-        if (!mSocket.connected()) return;
-
-        mTyping = false;
-
-        String message = edtChatContent.getText().toString().trim();
-        if (TextUtils.isEmpty(message)) {
-            edtChatContent.requestFocus();
-            return;
-        }
-
-        edtChatContent.setText("");
-        addMessage(roomSearchItem.getLandLord().getName(), message);
-
-        // perform the sending message attempt.
-        mSocket.emit("new message", message);
-    }*/
-
     private void addLog(String message) {
         mMessages.add(new Message.Builder(Message.TYPE_LOG)
                 .message(message).build());
@@ -402,17 +216,22 @@ public class FragmentChatRoom extends DialogFragment implements View.OnClickList
         scrollToBottom();
     }
 
-    private void addParticipantsLog(int numUsers) {
-        addLog(getResources().getQuantityString(R.plurals.message_participants, numUsers, numUsers));
-    }
-
     private void scrollToBottom() {
         mMessagesView.scrollToPosition(mAdapter.getItemCount() - 1);
     }
 
-
     public ObjectChat setObject(ObjectChat objectChat, Activity activity) {
+        this.activity = activity;
         this.chatObject = objectChat;
+        ((MainPageActivity) activity).getmSocket().emit("join_room", objectChat.getId(),new Emitter.Listener() {
+
+            @Override
+            public void call(final Object... args) {
+                String res = (String) args[0];
+                Log.d("sadgsdf",args.toString());
+                Toast.makeText(getActivity(), res, Toast.LENGTH_SHORT).show();
+            }
+        });
         CuXaAPI cuXaAPI = NetworkController.upload();
         Call<ChatObject> call = cuXaAPI.getListMess("Bearer " + AppUtils.getToken(activity), objectChat.getId());
         call.enqueue(new Callback<ChatObject>() {
@@ -420,13 +239,13 @@ public class FragmentChatRoom extends DialogFragment implements View.OnClickList
             public void onResponse(Call<ChatObject> call, Response<ChatObject> response) {
                 if (response.isSuccessful()) {
                     ChatObject chatObject = response.body();
-                    List<MessageItem> chats = new ArrayList<>(Arrays.asList(chatObject.getMessageItems()));
+                    chats = new ArrayList<>(Arrays.asList(chatObject.getMessageItems()));
                     if (chats.size() > 0) {
                         tvBegin.setVisibility(View.GONE);
                     } else {
                         tvBegin.setVisibility(View.VISIBLE);
                     }
-                    MessageRoomChatAdapter adapter = new MessageRoomChatAdapter(getContext(), chats, avatarFriend);
+                    adapter = new MessageRoomChatAdapter(getContext(), chats, avatarFriend);
                     LinearLayoutManager manager = new LinearLayoutManager(getContext());
                     manager.setReverseLayout(true);
                     mMessagesView.setLayoutManager(manager);

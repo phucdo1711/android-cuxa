@@ -18,6 +18,13 @@ public class MessageItem extends ObjectCommon {
         this.chatRoom = chatRoom;
     }
 
+    public MessageItem(UserObject userObject, String type, String content, String chatRoom) {
+        this.userObject = userObject;
+        this.type = type;
+        this.content = content;
+        this.chatRoom = chatRoom;
+    }
+
     public UserObject getUserObject() {
         return userObject;
     }

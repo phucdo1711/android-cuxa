@@ -182,6 +182,12 @@ public class AppUtils {
         id_user = sharedPreferences.getString("id_user", "");
         return id_user;
     }
+    public static String getIdUser(Context context){
+        String id_user = "";
+        sharedPreferences = context.getSharedPreferences("login_data", MODE_PRIVATE);
+        id_user = sharedPreferences.getString("id_user", "");
+        return id_user;
+    }
     public static String formatMoney2(String input) {
         if (input.trim().equals("")) {
             return "";

@@ -3,7 +3,9 @@ package com.example.dell.appcuxa.CuxaAPI;
 import com.example.dell.appcuxa.FileInfo;
 import com.example.dell.appcuxa.ObjectModels.ChatObject;
 import com.example.dell.appcuxa.ObjectModels.ChatRoomObj;
+import com.example.dell.appcuxa.ObjectModels.ObjectChat;
 import com.example.dell.appcuxa.ObjectModels.ObjectListByOption;
+import com.example.dell.appcuxa.ObjectModels.RoomCreatedObj;
 import com.example.dell.appcuxa.ObjectModels.RoomObject;
 import com.example.dell.appcuxa.ObjectModels.RoomSearch;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
@@ -111,4 +113,7 @@ public interface CuXaAPI {
 
     @GET("chat-rooms/{id}")
     Call<ChatObject> getListMess(@Header("Authorization")String authHeader, @Path("id")String id);
+
+    @POST("chat-rooms")
+    Call<ObjectChat> createRoom(@Header("Authorization")String authHeader, @Body RoomCreatedObj roomCreatedObj);
 }

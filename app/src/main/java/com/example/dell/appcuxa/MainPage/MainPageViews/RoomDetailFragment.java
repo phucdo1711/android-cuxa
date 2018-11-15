@@ -30,6 +30,8 @@ import com.example.dell.appcuxa.MainPage.MainPageViews.MessTab.MessView.Fragment
 import com.example.dell.appcuxa.MainPage.MainPageViews.ProfileTab.ProfileView.FragmentEditProfile;
 import com.example.dell.appcuxa.MainPage.MainPageViews.ProfileTab.ProfileView.FragmentMyRoom;
 import com.example.dell.appcuxa.MainPage.MainPageViews.SearchTab.GenderBottomDialog;
+import com.example.dell.appcuxa.ObjectModels.ObjectChat;
+import com.example.dell.appcuxa.ObjectModels.RoomCreatedObj;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 import com.example.dell.appcuxa.ObjectModels.UtilityObject;
 import com.example.dell.appcuxa.R;
@@ -231,10 +233,26 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
                 saveOrUnsave(cbSave.isChecked());
                 break;
             case R.id.btnMesNow:
-                FragmentChatRoom myRoom = new FragmentChatRoom();
-                myRoom.dataObject(roomSearchItem);
-                myRoom.setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogFragmentTheme);
-                myRoom.show(getFragmentManager(),"fragment_chat_room");
+                String idUser = roomSearchItem.getLandLord().getId();
+                String name = roomSearchItem.getName();
+                RoomCreatedObj obj = new RoomCreatedObj(idUser,name);
+                Call<ObjectChat> createRoom = fileService.createRoom("Bearer "+AppUtils.getToken(getActivity()),obj);
+                createRoom.enqueue(new Callback<ObjectChat>() {
+                    @Override
+                    public void onResponse(Call<ObjectChat> call, Response<ObjectChat> response) {
+                        if(response.isSuccessful()){
+                            FragmentChatRoom myRoom = new FragmentChatRoom();
+                            myRoom.setObject(response.body(),getActivity());
+                            myRoom.setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogFragmentTheme);
+                            myRoom.show(getFragmentManager(),"fragment_chat_room");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ObjectChat> call, Throwable t) {
+
+                    }
+                });
                 break;
         }
     }

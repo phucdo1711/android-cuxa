@@ -242,14 +242,6 @@ public class FragmentSearchAdvance extends DialogFragment implements View.OnClic
 
     }
 
-    private void parseJSonArray(JSONArray lstByLocation, List<RoomInfo> lstRoom) throws JSONException {
-        for(int i = 0;i<lstByLocation.length();i++){
-            JSONObject object = (JSONObject) lstByLocation.get(i);
-            String name = object.getString("name");
-            String price = object.getString("price");
-            //String address = object.get
-        }
-    }
 
     public void getAllUtilities(){
         progressBar.setVisibility(View.VISIBLE);

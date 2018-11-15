@@ -1,5 +1,6 @@
 package com.example.dell.appcuxa.MainPage.MainPageViews.MessTab.MessView;
 
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.example.dell.appcuxa.Application.ChatApplication;
+import com.example.dell.appcuxa.ChatActivity;
 import com.example.dell.appcuxa.CustomeView.RobBoldText;
 import com.example.dell.appcuxa.CustomeView.RobEditText;
 import com.example.dell.appcuxa.CuxaAPI.CuXaAPI;
@@ -104,16 +106,8 @@ public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.Re
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(mAdapter);
-        ((MainPageActivity) getActivity()).getmSocket().connect();
-        ((MainPageActivity) getActivity()).getmSocket().emit("join_room", "5be325191919985d1197cf",new Emitter.Listener() {
+       /* ((MainPageActivity) getActivity()).getmSocket().connect();
 
-            @Override
-            public void call(final Object... args) {
-                String res = (String) args[0];
-                Log.d("sadgsdf",args.toString());
-                Toast.makeText(getActivity(), res, Toast.LENGTH_SHORT).show();
-            }
-        });
         ((MainPageActivity)getActivity()).getmSocket().on("on_message", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -126,7 +120,7 @@ public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.Re
                 }
             }
         });
-
+*/
         //getLstChatRoom();
         // /* Gson gson = new Gson();  TODO
         //        String json = gson.toJson(new MessageItem("5be18babd57ea32482ea2d52","text","địt mẹ Phúc"));
@@ -333,10 +327,13 @@ public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.Re
 
     @Override
     public void CallBackRoomChat(ObjectChat objectChat) {
-        FragmentChatRoom myRoom = new FragmentChatRoom();
+        Intent intent = new Intent(getActivity(), ChatActivity.class);
+        intent.putExtra("object",objectChat);
+        startActivity(intent);
+       /* FragmentChatRoom myRoom = new FragmentChatRoom();
         myRoom.setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogFragmentTheme);
         myRoom.setObject(objectChat, getActivity());
-        myRoom.show(getFragmentManager(),"fragment_chat_room");
+        myRoom.show(getFragmentManager(),"fragment_chat_room");*/
 
     }
 }

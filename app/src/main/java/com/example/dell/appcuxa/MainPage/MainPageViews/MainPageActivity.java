@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.dell.appcuxa.Application.ChatApplication;
 import com.example.dell.appcuxa.CustomeView.NonSwipeableViewPager;
@@ -28,8 +29,12 @@ import com.example.dell.appcuxa.MainPage.MainPageViews.SavedTab.SavedView.Fragme
 import com.example.dell.appcuxa.R;
 import com.example.dell.appcuxa.Utils.AppUtils;
 import com.example.dell.appcuxa.Utils.Constants;
+import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 
@@ -59,12 +64,18 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         editor = sharedPreferences.edit();
         {
             try {
-                mSocket = IO.socket(Constants.CHAT_SERVER_URL+ AppUtils.getToken(this));
+                mSocket = IO.socket(Constants.CHAT_SERVER_URL+ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjViOTE4NGI5MTQ3NzVmNzRmOTgxNjg0NCIsImlhdCI6MTU0MTk0MjY4NH0.4hlQffEnJQmZq_Pxe7LPh9wCNqunXXcbjC8Fq-wvAKU");
             } catch (URISyntaxException e) {
                 throw new RuntimeException(e);
             }
         }
         mSocket.connect();
+        mSocket.on("connect", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Log.d("aaaaaaabc","Connected");
+            }
+        });
         mBottomNav.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -184,4 +195,11 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
             fragment.onActivityResult(requestCode, resultCode, data);
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mSocket.close();
+    }
+
 }
