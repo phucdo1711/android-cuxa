@@ -12,6 +12,16 @@ public class MessageItem extends ObjectCommon {
     @SerializedName("chatRoom")
     public String chatRoom;
 
+    public boolean isTimeSeen;
+
+    public boolean isTimeSeen() {
+        return isTimeSeen;
+    }
+
+    public void setTimeSeen(boolean timeSeen) {
+        isTimeSeen = timeSeen;
+    }
+
     public MessageItem(String chatRoom, String type, String content) {
         this.type = type;
         this.content = content;

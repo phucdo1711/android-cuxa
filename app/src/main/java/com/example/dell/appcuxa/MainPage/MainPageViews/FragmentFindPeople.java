@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -34,10 +35,13 @@ public class FragmentFindPeople extends DialogFragment implements View.OnClickLi
     private ImageView imgBack;
     RecyclerView lstPeople;
     CuXaAPI cuXaAPI;
+    SwipeRefreshLayout swipeRefreshLayout;
     IBackToListTopScreen iBackToListTopScreen;
-    public FragmentFindPeople(){
+
+    public FragmentFindPeople() {
 
     }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -45,10 +49,17 @@ public class FragmentFindPeople extends DialogFragment implements View.OnClickLi
         init();
         iBackToListTopScreen = this;
         getSomeFriend();
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getSomeFriend();
+            }
+        });
         return mMainView;
     }
 
     private void init() {
+        swipeRefreshLayout = mMainView.findViewById(R.id.swipeContainer);
         imgBack = mMainView.findViewById(R.id.imgBack);
         lstPeople = mMainView.findViewById(R.id.lstPeople);
         imgBack.setOnClickListener(this);
@@ -56,7 +67,7 @@ public class FragmentFindPeople extends DialogFragment implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.imgBack:
                 FragmentFindPeople.this.dismiss();
                 break;
@@ -64,29 +75,30 @@ public class FragmentFindPeople extends DialogFragment implements View.OnClickLi
     }
 
     public void getSomeFriend() {
-        if(AppUtils.haveNetworkConnection(getContext())){
+        if (AppUtils.haveNetworkConnection(getContext())) {
 
             cuXaAPI = NetworkController.upload();
-            Call<ObjectListByOption> getListOGhep = cuXaAPI.getPeople("Bearer "+ AppUtils.getToken(getActivity()),"graft");
+            Call<ObjectListByOption> getListOGhep = cuXaAPI.getPeople("Bearer " + AppUtils.getToken(getActivity()), "graft");
             getListOGhep.enqueue(new Callback<ObjectListByOption>() {
                 @Override
                 public void onResponse(Call<ObjectListByOption> call, Response<ObjectListByOption> response) {
-                    if(response.isSuccessful()){
+                    if (response.isSuccessful()) {
                         ObjectListByOption people = response.body();
                         RecyclerView.LayoutManager manager = new GridLayoutManager(getContext(), 2);
                         lstPeople.setLayoutManager(manager);
-                        AdapterLiveTogether adapterLiveTogether = new AdapterLiveTogether(getContext(), Arrays.asList(people.getLstRoom()),iBackToListTopScreen);
+                        AdapterLiveTogether adapterLiveTogether = new AdapterLiveTogether(getContext(), Arrays.asList(people.getLstRoom()), iBackToListTopScreen);
                         lstPeople.setAdapter(adapterLiveTogether);
                         adapterLiveTogether.notifyDataSetChanged();
                     }
+                    swipeRefreshLayout.setRefreshing(false);
                 }
 
                 @Override
                 public void onFailure(Call<ObjectListByOption> call, Throwable t) {
-
+                    swipeRefreshLayout.setRefreshing(false);
                 }
             });
-        }else{
+        } else {
             Toast.makeText(getActivity(), "Không có kết nối mạng", Toast.LENGTH_SHORT).show();
         }
     }

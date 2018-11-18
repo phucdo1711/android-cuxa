@@ -112,7 +112,7 @@ public interface CuXaAPI {
     Call<ChatRoomObj> getLstChatRoom(@Header("Authorization") String authHeader);
 
     @GET("chat-rooms/{id}")
-    Call<ChatObject> getListMess(@Header("Authorization")String authHeader, @Path("id")String id);
+    Call<ChatObject> getListMess(@Header("Authorization")String authHeader, @Path("id")String id, @Query("limit")int limit, @Query("page") long page);
 
     @POST("chat-rooms")
     Call<ObjectChat> createRoom(@Header("Authorization")String authHeader, @Body RoomCreatedObj roomCreatedObj);

@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import io.paperdb.Paper;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -87,7 +88,16 @@ public class FragmentSearchAdvance extends DialogFragment implements View.OnClic
         ButterKnife.bind(getActivity());
         init();
         fileService = NetworkController.upload();
-        getAllUtilities();
+        if(null==Paper.book().read("utilities")){
+            getAllUtilities();
+            progressBar.setVisibility(View.GONE);
+        }else{
+            utilityObjectList = Paper.book().read("utilities");
+            CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(utilityObjectList,getContext());
+            gvCheckBox.setAdapter(checkBoxAdapter);
+            checkBoxAdapter.notifyDataSetChanged();
+        }
+
         resetRadioButton();
         mGeoDataClient = Places.getGeoDataClient(getContext(), null);
         placeAutoCompleteAdapter = new PlaceAutoCompleteAdapter(getContext(),mGeoDataClient,LAT_LNG_BOUNDS,null);
@@ -261,6 +271,7 @@ public class FragmentSearchAdvance extends DialogFragment implements View.OnClic
                                     new UtilityObject(object.getString("id"),object.getString("name"),object.getString("code"));
                             utilityObjectList.add(utilityObject);
                         }
+                        Paper.book().write("utilities", utilityObjectList);
                         CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(utilityObjectList,getContext());
                         gvCheckBox.setAdapter(checkBoxAdapter);
                         checkBoxAdapter.notifyDataSetChanged();

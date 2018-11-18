@@ -41,6 +41,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.paperdb.Paper;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -77,6 +78,7 @@ public class FragmentSearch extends FragmentCommon implements ILogicSaveRoom, IB
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        Paper.init(getContext());
     }
 
     @Nullable
@@ -97,8 +99,17 @@ public class FragmentSearch extends FragmentCommon implements ILogicSaveRoom, IB
 
         btnUpRoom.setOnClickListener(this);
         btnLiveTogether.setOnClickListener(this);
+
         sharedPreferences = getActivity().getSharedPreferences("login_data", MODE_PRIVATE);
         token = sharedPreferences.getString("token", "");
+        if(Paper.book().read("listTop")!=null){
+            roomSearchItemList = Paper.book().read("listTop");
+            LinearLayoutManager manager = new LinearLayoutManager(getContext());
+            recyclerView.setLayoutManager(manager);
+            listRoomAdapter = new ListRoomAdapter(getContext(), roomSearchItemList, iLogicSaveRoom, iBackToListTopScreen);
+            recyclerView.setAdapter(listRoomAdapter);
+            listRoomAdapter.notifyDataSetChanged();
+        }
         if (getUserVisibleHint()) {
             if (size > 0) {
                 //do nothing
@@ -155,6 +166,8 @@ public class FragmentSearch extends FragmentCommon implements ILogicSaveRoom, IB
                     swipeContainer.setRefreshing(false);
                     roomSearchItemList = new ArrayList<>(Arrays.asList(response.body().getLstRoom()));
                     size = roomSearchItemList.size();
+                    Paper.book().delete("listTop");
+                    Paper.book().write("listTop", roomSearchItemList);
                     LinearLayoutManager manager = new LinearLayoutManager(getContext());
                     recyclerView.setLayoutManager(manager);
                     listRoomAdapter = new ListRoomAdapter(getContext(), roomSearchItemList, iLogicSaveRoom, iBackToListTopScreen);

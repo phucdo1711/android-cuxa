@@ -66,15 +66,22 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recChat"
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/refreshLayout"
                 android:layout_marginBottom="50dp"
                 android:layout_width="match_parent"
-                android:layout_gravity="center"
                 android:layout_height="match_parent">
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recChat"
+                    android:layout_marginBottom="50dp"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_height="match_parent">
 
 
-            </android.support.v7.widget.RecyclerView>
+                </android.support.v7.widget.RecyclerView>
+            </android.support.v4.widget.SwipeRefreshLayout>
+
             <com.example.dell.appcuxa.CustomeView.RobLightText
                 android:layout_width="match_parent"
                 android:id="@+id/tvBegin"
@@ -83,6 +90,12 @@
                 android:layout_alignParentBottom="true"
                 android:text="Hãy bắt đầu cuộc hội thoại!"
                 android:layout_height="wrap_content" />
+            <View
+                android:background="@color/black"
+                android:layout_marginBottom="50.3dp"
+                android:layout_alignParentBottom="true"
+                android:layout_width="match_parent"
+                android:layout_height="0.3dp"/>
             <LinearLayout
                 android:weightSum="10"
                 android:orientation="horizontal"

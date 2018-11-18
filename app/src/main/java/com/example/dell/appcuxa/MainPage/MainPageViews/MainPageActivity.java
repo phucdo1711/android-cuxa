@@ -62,13 +62,17 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         ButterKnife.bind(this);
         sharedPreferences = getSharedPreferences("login_data",MODE_PRIVATE);
         editor = sharedPreferences.edit();
-        {
-            try {
-                mSocket = IO.socket(Constants.CHAT_SERVER_URL+ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjViOTE4NGI5MTQ3NzVmNzRmOTgxNjg0NCIsImlhdCI6MTU0MTk0MjY4NH0.4hlQffEnJQmZq_Pxe7LPh9wCNqunXXcbjC8Fq-wvAKU");
-            } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
+        String token = AppUtils.getToken(MainPageActivity.this);
+        if(!token.equals("")){
+            {
+                try {
+                    mSocket = IO.socket(Constants.CHAT_SERVER_URL+ token);
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
+
         mSocket.connect();
         mSocket.on("connect", new Emitter.Listener() {
             @Override

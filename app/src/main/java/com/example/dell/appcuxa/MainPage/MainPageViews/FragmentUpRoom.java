@@ -38,6 +38,7 @@ import com.example.dell.appcuxa.MainPage.Adapter.ImageAdapter;
 import com.example.dell.appcuxa.MainPage.Adapter.PlaceAutoCompleteAdapter;
 import com.example.dell.appcuxa.MainPage.MainPageViews.Interface.ILogicDeleteImage;
 import com.example.dell.appcuxa.MainPage.MainPageViews.SearchTab.GenderBottomDialog;
+import com.example.dell.appcuxa.ObjectModels.ImageItem;
 import com.example.dell.appcuxa.ObjectModels.LocationRoom;
 import com.example.dell.appcuxa.ObjectModels.ObjectListByOption;
 import com.example.dell.appcuxa.ObjectModels.RoomObject;
@@ -57,10 +58,12 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.paperdb.Paper;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -102,6 +105,7 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
     RobEditText edtWaterPrice;
     MyGridView gridView;
     public static SpinKitView progressBar;
+    SelectedImageAdapter selectedImageAdapterUpdate;
     Double[] latlon;
     String type = "";
     String genderAccepted = "";
@@ -146,7 +150,6 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
             edtElecPrice.setText(roomSearchItem.getElectricityPrice()==null?"":roomSearchItem.getElectricityPrice());
             edtDienTich.setText(roomSearchItem.getArea()==null?"":roomSearchItem.getArea());
             edtAddress.setText(roomSearchItem.getAddress()==null?"":roomSearchItem.getAddress());
-           // edtPhoneNo.setText("");
             edtNumOfPeople.setText("");
             String gender = "";
             if(roomSearchItem.getGenderAccepted().equals("both")){
@@ -196,14 +199,28 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
                 Log.d("location", doubleList.toString());
             }
         });
-
-        getAllUtilities();
-        if(utilityObjectList!=null){
-            int a = utilityObjectList.size();
-            Log.d("abca",a+"");
+        if(roomSearchItem!=null){
+            btnUpload.setText("Cập nhật");
+            List<ImageItem> lstImages = new ArrayList<>(Arrays.asList(roomSearchItem.getImages()));
+            selectedImageAdapterUpdate = new SelectedImageAdapter(getContext(),this,lstImages);
+            gridView.setAdapter(selectedImageAdapterUpdate);
+            selectedImageAdapterUpdate.notifyDataSetChanged();
         }
-
-        //initWidget();
+        if(Paper.book().read("utilities")!=null){
+            if(roomSearchItem!=null){
+                String[] utilitiesSelected = roomSearchItem.getUtilities();
+                CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(utilityObjectList,getContext(),utilitiesSelected);
+                gvCheckBox.setAdapter(checkBoxAdapter);
+                checkBoxAdapter.notifyDataSetChanged();
+            }else{
+                utilityObjectList = Paper.book().read("utilities");
+                CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(utilityObjectList,getContext());
+                gvCheckBox.setAdapter(checkBoxAdapter);
+                checkBoxAdapter.notifyDataSetChanged();
+            }
+        }else{
+            getAllUtilities();
+        }
         Bundle bundle = getArguments();
         if (bundle != null) {
             int pos = bundle.getInt("position", -1);
@@ -397,25 +414,35 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
 
     @Override
     public void deleteImage(final int pos, String id) {
-        Call<ResponseBody> call = fileService.deleteImage("Bearer " + token,imageHinhId.get(pos) );
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful()){
-                    Toast.makeText(getActivity(), "Xóa thành công", Toast.LENGTH_SHORT).show();
-                    imageBytes.remove(imageBytes.get(pos));
-                    imageHinhId.remove(imageHinhId.get(pos));
-                    selectedImageAdapter.notifyDataSetChanged();
-                }else{
-                    Toast.makeText(getActivity(), "Xóa thất bại", Toast.LENGTH_SHORT).show();
+        /**
+         * Trường hợp chỉnh sửa, khi xóa thì không xóa hẳn mà chỉ bỏ bớt phần tử ra khỏi list
+         * Nếu back(không cập nhật nữa) lại thì dữ liệu sẽ không có gì thay đổi.
+         */
+        if(roomSearchItem==null) {
+            Call<ResponseBody> call = fileService.deleteImage("Bearer " + token, imageHinhId.get(pos));
+            call.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful()) {
+                        Toast.makeText(getActivity(), "Xóa thành công", Toast.LENGTH_SHORT).show();
+                        imageBytes.remove(imageBytes.get(pos));
+                        imageHinhId.remove(imageHinhId.get(pos));
+                        selectedImageAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(getActivity(), "Xóa thất bại", Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Toast.makeText(getActivity(), "Lỗi server", Toast.LENGTH_SHORT).show();
-            }
-        });
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Toast.makeText(getActivity(), "Lỗi server", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }else{
+           /* List<ImageItem> imageItems = new ArrayList<>(Arrays.asList(roomSearchItem.getImages()));
+            imageItems.remove(imageItems.get(pos));
+            selectedImageAdapterUpdate.notifyDataSetChanged();*/
+        }
     }
     public void getAllUtilities(){
         progressBar.setVisibility(View.VISIBLE);

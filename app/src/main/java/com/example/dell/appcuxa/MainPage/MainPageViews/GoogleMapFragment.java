@@ -24,8 +24,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.dell.appcuxa.CustomeView.RobButton;
+import com.example.dell.appcuxa.CuxaAPI.CuXaAPI;
+import com.example.dell.appcuxa.CuxaAPI.NetworkController;
 import com.example.dell.appcuxa.MainPage.Adapter.PlaceAutoCompleteAdapter;
+import com.example.dell.appcuxa.ObjectModels.LocationRoom;
+import com.example.dell.appcuxa.ObjectModels.RoomSearch;
+import com.example.dell.appcuxa.ObjectModels.RoomSearchResult;
 import com.example.dell.appcuxa.R;
+import com.example.dell.appcuxa.Utils.AppUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.GeoDataClient;
@@ -46,6 +53,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class GoogleMapFragment extends DialogFragment implements OnMapReadyCallback, View.OnClickListener {
     private static final String TAG = "GoogleMapFragment";
@@ -58,11 +68,13 @@ public class GoogleMapFragment extends DialogFragment implements OnMapReadyCallb
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final float DEFAULT_ZOOM = 15f;
     private GoogleMap map;
+    RobButton btnSearchMap;
     private ImageView imgBack;
     private ImageView imgMyLocation;
     SupportMapFragment supportMapFragment;
     AutoCompleteTextView edtSearchContent;
     PlaceAutoCompleteAdapter placeAutoCompleteAdapter;
+    LatLng latLong;
     private FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
@@ -112,6 +124,9 @@ public class GoogleMapFragment extends DialogFragment implements OnMapReadyCallb
     }
 
     private void init(View mMainView) {
+        btnSearchMap = mMainView.findViewById(R.id.btnSearchMap);
+        btnSearchMap.setOnClickListener(this);
+        btnSearchMap.setVisibility(View.GONE);
         edtSearchContent = mMainView.findViewById(R.id.edtSearch);
         imgMyLocation = mMainView.findViewById(R.id.imgMyLocation);
         imgBack = mMainView.findViewById(R.id.imgBack);
@@ -177,6 +192,15 @@ public class GoogleMapFragment extends DialogFragment implements OnMapReadyCallb
     public void onMapReady(GoogleMap googleMap) {
         Toast.makeText(getActivity(), "Map is ready", Toast.LENGTH_SHORT).show();
         map = googleMap;
+        map.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                map.clear();
+                map.addMarker(new MarkerOptions().position(latLng));
+                latLong = latLng;
+                btnSearchMap.setVisibility(View.VISIBLE);
+            }
+        });
         if (mLocationPermissionGranted) {
             getDeviceLocation();
             if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -241,6 +265,33 @@ public class GoogleMapFragment extends DialogFragment implements OnMapReadyCallb
                 break;
             case R.id.imgBack:
                 GoogleMapFragment.this.dismiss();
+                break;
+            case R.id.btnSearchMap:
+                CuXaAPI fileService = NetworkController.upload();
+                RoomSearch roomObject = new RoomSearch();
+                Double[] latlon = new Double[]{latLong.latitude,latLong.longitude};
+                LocationRoom locationRoom = new LocationRoom("Point",latlon);
+                roomObject.setLocation(locationRoom);
+                Call<RoomSearchResult> searchRoom = fileService.searchRoom("Bearer "+ AppUtils.getToken(getActivity()), roomObject);
+
+                searchRoom.enqueue(new Callback<RoomSearchResult>() {
+                    @Override
+                    public void onResponse(Call<RoomSearchResult> call, Response<RoomSearchResult> response) {
+                        if(response.isSuccessful()){
+                            FragmentSearQuickAdva searchAdvance = new FragmentSearQuickAdva();
+                            searchAdvance.isFromGoogleMap(true);
+                            searchAdvance.lstSearchShop(response.body());
+                            searchAdvance.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
+                            searchAdvance.show(getFragmentManager(),"fragment_search_quick_advance");
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<RoomSearchResult> call, Throwable t) {
+                        Toast.makeText(getContext(), "Có lỗi trong quá trình tìm kiếm, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+                    }
+                });
                 break;
         }
     }

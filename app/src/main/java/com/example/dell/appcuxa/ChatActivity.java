@@ -1,9 +1,9 @@
 package com.example.dell.appcuxa;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,10 +18,8 @@ import com.example.dell.appcuxa.CustomeView.RobEditText;
 import com.example.dell.appcuxa.CustomeView.RobLightText;
 import com.example.dell.appcuxa.CuxaAPI.CuXaAPI;
 import com.example.dell.appcuxa.CuxaAPI.NetworkController;
-import com.example.dell.appcuxa.MainPage.Adapter.MessageAdapter;
 import com.example.dell.appcuxa.MainPage.Adapter.MessageRoomChatAdapter;
 import com.example.dell.appcuxa.MainPage.MainPageViews.MainPageActivity;
-import com.example.dell.appcuxa.MainPage.MainPageViews.MessTab.MessView.FragmentChatRoom;
 import com.example.dell.appcuxa.ObjectModels.ChatObject;
 import com.example.dell.appcuxa.ObjectModels.Message;
 import com.example.dell.appcuxa.ObjectModels.MessageItem;
@@ -38,16 +36,18 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChatActivity extends AppCompatActivity implements View.OnClickListener{
+public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
     public ImageView btnSendMess;
     ImageView imgAvatar;
     RobEditText edtChatContent;
@@ -62,35 +62,55 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private static final int TYPING_TIMER_LENGTH = 600;
     // private Socket mSocket;
     ObjectChat chat;
+    List<MessageItem> mesList = new ArrayList<>();
     private RecyclerView.Adapter mAdapter;
     private boolean mTyping = false;
     private Handler mTypingHandler = new Handler();
     private Boolean isConnected = true;
     private ImageView imgBack;
     private RobLightText tvBegin;
+    SwipeRefreshLayout refreshLayout;
     String avatarFriend = "";
     private Activity activity;
     List<MessageItem> chats = new ArrayList<>();
     MessageRoomChatAdapter adapter;
     public Socket mSocket;
+    public long page = 1;
+    CuXaAPI cuXaAPI;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_chat_room);
         init();
-        {
-            try {
-                mSocket = IO.socket(Constants.CHAT_SERVER_URL+ "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjViOTE4NGI5MTQ3NzVmNzRmOTgxNjg0NCIsImlhdCI6MTU0MTk0MjY4NH0.4hlQffEnJQmZq_Pxe7LPh9wCNqunXXcbjC8Fq-wvAKU");
-            } catch (URISyntaxException e) {
-                throw new RuntimeException(e);
+        cuXaAPI = NetworkController.upload();
+        String token = AppUtils.getToken(ChatActivity.this);
+        if (token.equals("")) {
+            Log.d("token_chat", "rỗng");
+        } else {
+            {
+                try {
+                    mSocket = IO.socket(Constants.CHAT_SERVER_URL + token);
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                page++;
+                getMessage(page);
+            }
+        });
+
         mSocket.connect();
 
         mSocket.on("connect", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
-                Log.d("on_connect","Connected");
+                Log.d("on_connect", "Connected");
 
             }
         });
@@ -98,81 +118,96 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         mSocket.on("on_message", new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
-                Log.d("on_connect1",args[0].toString());
+                    Log.d("on_connect1", args[0]+"");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         JSONObject object = (JSONObject) args[0];
                         try {
+
                             String content = object.getString("content");
+                            byte[] bytes = content.getBytes("UTF-8"); // Charset to encode into
+                            Log.d("on_connect96",new String(object.getString("content").getBytes("ISO-8859-1"), "UTF-8").replace("\\",""));
                             String chatRoom = object.getString("chatRoom");
                             String type = object.getString("type");
                             String idUser = object.getString("user");
+                            String createdAt = object.getString("createdAt");
                             UserObject userObject = new UserObject();
                             userObject.setId(idUser);
-                            MessageItem messageItem = new MessageItem(userObject,type,content,chatRoom);
-                            chats.add(messageItem);
+                            MessageItem messageItem = new MessageItem(userObject, type, content, chatRoom);
+                            messageItem.setCreatedAt(createdAt);
+                            mesList.add(messageItem);
                             adapter.notifyDataSetChanged();
                             scrollToBottom();
-                            Log.d("sdfsdf",content);
+                            Log.d("sdfsdf", content);
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Log.e("on_connect",e.toString());
+                            Log.e("on_connect", e.toString());
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
                         }
                     }
                 });
-
-
             }
         });
         Intent intent = getIntent();
         chat = (ObjectChat) intent.getSerializableExtra("object");
-        if(chat!=null){
-            mSocket.emit("join_room", "5be82db0a5a54f6a33cb15bb");
-            CuXaAPI cuXaAPI = NetworkController.upload();
-            Call<ChatObject> call = cuXaAPI.getListMess("Bearer " + AppUtils.getToken(this), chat.getId());
-            call.enqueue(new Callback<ChatObject>() {
-                @Override
-                public void onResponse(Call<ChatObject> call, Response<ChatObject> response) {
-                    if (response.isSuccessful()) {
-                        ChatObject chatObject = response.body();
-                        chats = new ArrayList<>(Arrays.asList(chatObject.getMessageItems()));
-                        if (chats.size() > 0) {
-                            tvBegin.setVisibility(View.GONE);
-                        } else {
-                            tvBegin.setVisibility(View.VISIBLE);
-                        }
-                        adapter = new MessageRoomChatAdapter(getApplicationContext(), chats, avatarFriend);
-                        LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
-                        mMessagesView.setLayoutManager(manager);
-                        mMessagesView.setAdapter(adapter);
-                        adapter.notifyDataSetChanged();
-                    }
+        if (chat != null) {
+            mSocket.emit("join_room", chat.getId());
+            getMessage(page);
+            for (int i = 0; i < chat.getUsers().length; i++) {
+                if (!chat.getUsers()[i].getId().equals(AppUtils.getIdUser(this))) {
+                    avatarFriend = chat.getUsers()[i].getPicture();
+                    Picasso.get().load(chat.getUsers()[i].getPicture()).placeholder(R.drawable.default_image).into(imgAvatar);
+                    tvNameUserChat.setText(chat.getUsers()[i].getName());
                 }
-
-                @Override
-                public void onFailure(Call<ChatObject> call, Throwable t) {
-
-                }
-            });
-                for (int i = 0; i < chat.getUsers().length; i++) {
-                    if (!chat.getUsers()[i].getId().equals(AppUtils.getIdUser(this))) {
-                        avatarFriend = chat.getUsers()[i].getPicture();
-                        Picasso.get().load(chat.getUsers()[i].getPicture()).placeholder(R.drawable.default_image).into(imgAvatar);
-                        tvNameUserChat.setText(chat.getUsers()[i].getName());
-                    }
-                }
+            }
         }
-
-
-
     }
+
+    public void getMessage(long page){
+        Call<ChatObject> call = cuXaAPI.getListMess("Bearer " + AppUtils.getToken(this), chat.getId(), Constants.LIMIT_MESSAGE, page);
+        call.enqueue(new Callback<ChatObject>() {
+            @Override
+            public void onResponse(Call<ChatObject> call, Response<ChatObject> response) {
+                if (response.isSuccessful()) {
+                    ChatObject chatObject = response.body();
+                    chats = new ArrayList<>(Arrays.asList(chatObject.getMessageItems()));
+                    Collections.reverse(chats);
+                    if (chats.size() > 0) {
+                        tvBegin.setVisibility(View.GONE);
+                    } else {
+                        tvBegin.setVisibility(View.VISIBLE);
+                    }
+                    if(mesList.size()>0){
+                        mesList.addAll(0,chats);
+                    }else{
+                        mesList.addAll(mesList.size(),chats);
+                    }
+                    adapter = new MessageRoomChatAdapter(getApplicationContext(), mesList, avatarFriend);
+                    LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
+                    mMessagesView.setLayoutManager(manager);
+                    mMessagesView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                    scrollToBottom();
+                }
+                refreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(Call<ChatObject> call, Throwable t) {
+                refreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
     private void scrollToBottom() {
-        mMessagesView.scrollToPosition(chats.size() - 1);
+        mMessagesView.scrollToPosition(mesList.size() - 1);
     }
 
 
     private void init() {
+        refreshLayout = findViewById(R.id.refreshLayout);
         mMessagesView = findViewById(R.id.recChat);
         edtChatContent = findViewById(R.id.edtChatContent);
         btnSendMess = findViewById(R.id.btnSendMess);
@@ -184,17 +219,18 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         imgBack.setOnClickListener(this);
 
     }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgBack:
-                Intent intent = new Intent(this,MainPageActivity.class);
+                Intent intent = new Intent(this, MainPageActivity.class);
                 startActivity(intent);
                 break;
             case R.id.btnSendMess:
-                if(chat!=null){
+                if (chat != null) {
                     String content = edtChatContent.getText().toString().trim();
-                    if(content.length()==0){
+                    if (content.length() == 0) {
                         return;
                     }
                     Gson gson = new Gson();
@@ -205,10 +241,13 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    mSocket.emit("send_message", jsonObject);
+                    if(AppUtils.haveNetworkConnection(getApplicationContext())){
+                        mSocket.emit("send_message", jsonObject);
+                    }else{
+                        Toast.makeText(this, "Kiểm tra lại kết nối mạng", Toast.LENGTH_SHORT).show();
+                    }
                     edtChatContent.setText("");
                 }
-
                 break;
 
         }

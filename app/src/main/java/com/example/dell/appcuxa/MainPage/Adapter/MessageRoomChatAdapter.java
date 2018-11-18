@@ -99,8 +99,14 @@ public class MessageRoomChatAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             viewHolderUser.tvContentChatUser.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    viewHolderUser.tvTimeUserSent.setVisibility(View.VISIBLE);
-                    viewHolderUser.tvTimeUserSent.setText(AppUtils.parseDateFromWS(message.getCreatedAt()));
+                    if(!message.isTimeSeen()){
+                        message.setTimeSeen(true);
+                        viewHolderUser.tvTimeUserSent.setVisibility(View.VISIBLE);
+                        viewHolderUser.tvTimeUserSent.setText(AppUtils.parseDateFromWS(message.getCreatedAt()));
+                    }else{
+                        message.setTimeSeen(false);
+                        viewHolderUser.tvTimeUserSent.setVisibility(View.GONE);
+                    }
                 }
             });
         } else {
@@ -110,8 +116,14 @@ public class MessageRoomChatAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             viewHolderFriend.tvContentChatFriend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    viewHolderFriend.tvTimeFriendSent.setVisibility(View.VISIBLE);
-                    viewHolderFriend.tvTimeFriendSent.setText(AppUtils.parseDateFromWS(message.getCreatedAt()));
+                    if(!message.isTimeSeen()){
+                        message.setTimeSeen(true);
+                        viewHolderFriend.tvTimeFriendSent.setVisibility(View.VISIBLE);
+                        viewHolderFriend.tvTimeFriendSent.setText(AppUtils.parseDateFromWS(message.getCreatedAt()));
+                    }else{
+                        message.setTimeSeen(false);
+                        viewHolderFriend.tvTimeFriendSent.setVisibility(View.GONE);
+                    }
                 }
             });
         }

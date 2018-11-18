@@ -1,5 +1,6 @@
 package com.example.dell.appcuxa.MainPage.MainPageViews;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,19 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
+import com.example.dell.appcuxa.ChatActivity;
 import com.example.dell.appcuxa.CustomeView.MyGridView;
 import com.example.dell.appcuxa.CustomeView.RobBoldText;
 import com.example.dell.appcuxa.CustomeView.RobButton;
-import com.example.dell.appcuxa.CustomeView.RobEditText;
 import com.example.dell.appcuxa.CuxaAPI.CuXaAPI;
 import com.example.dell.appcuxa.CuxaAPI.NetworkController;
 import com.example.dell.appcuxa.MainPage.Adapter.CheckBoxAdapter;
 import com.example.dell.appcuxa.MainPage.Adapter.SlideImageAdapter;
-import com.example.dell.appcuxa.MainPage.MainPageViews.MessTab.MessView.FragmentChatRoom;
-import com.example.dell.appcuxa.MainPage.MainPageViews.ProfileTab.ProfileView.FragmentFeedback;
-import com.example.dell.appcuxa.ObjectModels.ChatObject;
 import com.example.dell.appcuxa.ObjectModels.ObjectChat;
 import com.example.dell.appcuxa.ObjectModels.RoomCreatedObj;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
@@ -102,10 +99,9 @@ public class PeopleDetailFragment extends DialogFragment implements View.OnClick
                     @Override
                     public void onResponse(Call<ObjectChat> call, Response<ObjectChat> response) {
                         if(response.isSuccessful()){
-                            FragmentChatRoom myRoom = new FragmentChatRoom();
-                            myRoom.setObject(response.body(),getActivity());
-                            myRoom.setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogFragmentTheme);
-                            myRoom.show(getFragmentManager(),"fragment_chat_room");
+                            Intent intent = new Intent(getActivity(),ChatActivity.class);
+                            intent.putExtra("object",response.body());
+                            startActivity(intent);
                         }
                     }
 

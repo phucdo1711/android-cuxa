@@ -10,7 +10,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.example.dell.appcuxa.MainPage.MainPageViews.Interface.ILogicDeleteImage;
+import com.example.dell.appcuxa.ObjectModels.ImageItem;
 import com.example.dell.appcuxa.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ public class SelectedImageAdapter extends BaseAdapter {
     List<byte[]> lstByteImage;
     Context context;
     ILogicDeleteImage deleteImage;
+    List<ImageItem> lstLinkImages;
 
 
     public SelectedImageAdapter(List<byte[]> lstByteImage, Context context, ILogicDeleteImage deleteImage) {
@@ -26,14 +29,26 @@ public class SelectedImageAdapter extends BaseAdapter {
         this.deleteImage = deleteImage;
     }
 
+    public SelectedImageAdapter(Context context, ILogicDeleteImage deleteImage, List<ImageItem> lstLinkImages) {
+        this.context = context;
+        this.deleteImage = deleteImage;
+        this.lstLinkImages = lstLinkImages;
+    }
+
     @Override
     public int getCount() {
-        return lstByteImage.size();
+        if(lstByteImage!=null){
+            return lstByteImage.size();
+        }else{
+            return lstLinkImages.size();
+        }
     }
 
     @Override
     public Object getItem(int i) {
+        if(lstByteImage!=null)
         return lstByteImage.get(i);
+        else return lstLinkImages.get(i);
     }
 
     @Override
@@ -61,10 +76,14 @@ public class SelectedImageAdapter extends BaseAdapter {
         }else{
             viewHolder = (ViewHolder) convertView.getTag();
         }
-
-        byte[] imageByte = lstByteImage.get(i);
-         Bitmap bmp = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length);
-        viewHolder.imgHinh.setImageBitmap(bmp);
+        if(lstByteImage!=null){
+            byte[] imageByte = lstByteImage.get(i);
+            Bitmap bmp = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length);
+            viewHolder.imgHinh.setImageBitmap(bmp);
+        }else{
+            String linkImage = lstLinkImages.get(i).getSrc();
+            Picasso.get().load(linkImage).placeholder(R.drawable.default_image).into(viewHolder.imgHinh);
+        }
        viewHolder.imgDelete.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {

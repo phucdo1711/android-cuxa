@@ -85,6 +85,7 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
     ObjectListByOption locationOption = new ObjectListByOption();
     ObjectListByOption tienNghiOption = new ObjectListByOption();
     boolean a = false;
+    boolean isFromGoogleMap = false;
     RadioGroup rgOption;
     RecyclerView listSearchResultPV, recPrice,recTienNghi;
     NestedScrollView nstViewInfo;
@@ -157,11 +158,20 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
             nstViewInfo.setVisibility(View.GONE);
             listSearchResultPV.setVisibility(View.VISIBLE);
         } else {
-            lnResult.setVisibility(View.GONE);
-            rgOption.setVisibility(View.GONE);
-            rgLocation.setVisibility(View.VISIBLE);
-            nstViewInfo.setVisibility(View.VISIBLE);
-            listSearchResultPV.setVisibility(View.GONE);
+            if(isFromGoogleMap){
+                rgOption.setVisibility(View.GONE);
+                rgLocation.setVisibility(View.GONE);
+                nstViewInfo.setVisibility(View.GONE);
+                listSearchResultPV.setVisibility(View.VISIBLE);
+                recPrice.setVisibility(View.GONE);
+                recTienNghi.setVisibility(View.GONE);
+            }else{
+                lnResult.setVisibility(View.GONE);
+                rgOption.setVisibility(View.GONE);
+                rgLocation.setVisibility(View.VISIBLE);
+                nstViewInfo.setVisibility(View.VISIBLE);
+                listSearchResultPV.setVisibility(View.GONE);
+            }
         }
         if (locationOption.count != null && Integer.valueOf(locationOption.count) > 0) {
             tvNumResult.setText(locationOption.count);
@@ -375,6 +385,9 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
      */
     public void isFromSearchResult(boolean isFromSearchResult) {
         a = isFromSearchResult;
+    }
+    public void isFromGoogleMap(boolean isFromGoogleMap){
+        this.isFromGoogleMap = isFromGoogleMap;
     }
 
     /**

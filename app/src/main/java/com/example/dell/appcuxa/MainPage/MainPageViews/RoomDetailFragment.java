@@ -1,10 +1,9 @@
 package com.example.dell.appcuxa.MainPage.MainPageViews;
 
-import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -13,23 +12,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.example.dell.appcuxa.ChatActivity;
 import com.example.dell.appcuxa.CustomeView.MyGridView;
 import com.example.dell.appcuxa.CustomeView.RobBoldText;
 import com.example.dell.appcuxa.CustomeView.RobButton;
-import com.example.dell.appcuxa.CustomeView.RobEditText;
 import com.example.dell.appcuxa.CustomeView.RobLightText;
 import com.example.dell.appcuxa.CuxaAPI.CuXaAPI;
 import com.example.dell.appcuxa.CuxaAPI.NetworkController;
 import com.example.dell.appcuxa.MainPage.Adapter.CheckBoxAdapter;
 import com.example.dell.appcuxa.MainPage.Adapter.SlideImageAdapter;
-import com.example.dell.appcuxa.MainPage.MainPageViews.MessTab.MessView.FragmentChatRoom;
-import com.example.dell.appcuxa.MainPage.MainPageViews.ProfileTab.ProfileView.FragmentEditProfile;
-import com.example.dell.appcuxa.MainPage.MainPageViews.ProfileTab.ProfileView.FragmentMyRoom;
-import com.example.dell.appcuxa.MainPage.MainPageViews.SearchTab.GenderBottomDialog;
 import com.example.dell.appcuxa.ObjectModels.ObjectChat;
 import com.example.dell.appcuxa.ObjectModels.RoomCreatedObj;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
@@ -44,10 +38,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -241,10 +232,10 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
                     @Override
                     public void onResponse(Call<ObjectChat> call, Response<ObjectChat> response) {
                         if(response.isSuccessful()){
-                            FragmentChatRoom myRoom = new FragmentChatRoom();
-                            myRoom.setObject(response.body(),getActivity());
-                            myRoom.setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogFragmentTheme);
-                            myRoom.show(getFragmentManager(),"fragment_chat_room");
+                            Intent intent = new Intent(getActivity(), ChatActivity.class);
+                            intent.putExtra("object",response.body());
+                            startActivity(intent);
+
                         }
                     }
 

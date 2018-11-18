@@ -10,6 +10,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -80,6 +81,7 @@ public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.Re
     RobBoldText tvCancel;
     ImageView btnSearch;
     RobEditText mEdtSearch;
+    SwipeRefreshLayout swipeRefreshLayout;
     private CartListAdapter mAdapter;
     private CoordinatorLayout coordinatorLayout;
     public FragmentMess(){
@@ -91,6 +93,7 @@ public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.Re
         mMainView = inflater.inflate(R.layout.fragment_mess, container, false);
         recyclerView = mMainView.findViewById(R.id.recycler_view);
         callbackChatRoom = this;
+        swipeRefreshLayout = mMainView.findViewById(R.id.swipeContainer);
         coordinatorLayout = mMainView.findViewById(R.id.coordinator_layout);
         mLayoutSearch = mMainView.findViewById(R.id.layout_search);
         mLayoutHeader = mMainView.findViewById(R.id.layout_header);
@@ -106,31 +109,12 @@ public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.Re
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(mAdapter);
-       /* ((MainPageActivity) getActivity()).getmSocket().connect();
-
-        ((MainPageActivity)getActivity()).getmSocket().on("on_message", new Emitter.Listener() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void call(Object... args) {
-            JSONObject object = (JSONObject) args[0];
-                try {
-                    String content = object.getString("content");
-                    Log.d("sdfsdf",content);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+            public void onRefresh() {
+                getLstChatRoom();
             }
         });
-*/
-        //getLstChatRoom();
-        // /* Gson gson = new Gson();  TODO
-        //        String json = gson.toJson(new MessageItem("5be18babd57ea32482ea2d52","text","địt mẹ Phúc"));
-        //        JSONObject jsonObject = null;
-        //        try {
-        //            jsonObject = new JSONObject(json);
-        //        } catch (JSONException e) {
-        //            e.printStackTrace();
-        //        }
-        //        ((MainPageActivity)getActivity()).getmSocket().emit("send_message",jsonObject);*/
         mEdtSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -196,6 +180,7 @@ public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.Re
     }
 
     private void getLstChatRoom() {
+        cartList.clear();
         CuXaAPI cuXaAPI = NetworkController.upload();
         Call<ChatRoomObj> lstChatRoom = cuXaAPI.getLstChatRoom("Bearer "+AppUtils.getToken(getActivity()));
         lstChatRoom.enqueue(new Callback<ChatRoomObj>() {
@@ -207,12 +192,14 @@ public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.Re
                     ArrayList<ObjectChat> lstObject = new ArrayList<>(Arrays.asList(objectChat));
                     cartList.addAll(lstObject);
                     mAdapter.notifyDataSetChanged();
+
                 }
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onFailure(Call<ChatRoomObj> call, Throwable t) {
-
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }
