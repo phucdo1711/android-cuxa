@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,11 +21,14 @@ import com.example.dell.appcuxa.ChatActivity;
 import com.example.dell.appcuxa.CustomeView.MyGridView;
 import com.example.dell.appcuxa.CustomeView.RobBoldText;
 import com.example.dell.appcuxa.CustomeView.RobButton;
+import com.example.dell.appcuxa.CustomeView.RobEditText;
 import com.example.dell.appcuxa.CustomeView.RobLightText;
 import com.example.dell.appcuxa.CuxaAPI.CuXaAPI;
 import com.example.dell.appcuxa.CuxaAPI.NetworkController;
+import com.example.dell.appcuxa.MainPage.Adapter.AdapterComment;
 import com.example.dell.appcuxa.MainPage.Adapter.CheckBoxAdapter;
 import com.example.dell.appcuxa.MainPage.Adapter.SlideImageAdapter;
+import com.example.dell.appcuxa.ObjectModels.CommentContent;
 import com.example.dell.appcuxa.ObjectModels.ObjectChat;
 import com.example.dell.appcuxa.ObjectModels.RoomCreatedObj;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
@@ -39,6 +44,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -49,9 +55,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RoomDetailFragment extends DialogFragment implements View.OnClickListener {
+public class RoomDetailFragment extends DialogFragment implements View.OnClickListener,IBackToDetailRoom {
     public View mMainView;
     Toolbar toolbar;
+    String id = "";
     RoomSearchItem roomSearchItem = new RoomSearchItem();
     CircleImageView imgAvatar;
     SpinKitView progressDialog;
@@ -61,16 +68,21 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
     private ImageView imgBack;
     CuXaAPI fileService;
     RobLightText tvType, tvLocation, tvSchedule, tvPrice, tvContentDesc, tvSmallType, tvArea, tvNumOfPpl;
-    ImageView imgUpDown1, imgUpDown2, imgUpDown3;
+    ImageView imgUpDown1, imgUpDown2, imgUpDown3, imgUpDown4;
     ViewPager imgHinh;
     CircleIndicator circleIndicator;
     RobBoldText tvName;
     MyGridView gvCheckBox;
+    RecyclerView lstCmts;
     RobButton btnSaveChange;
+    IBackToDetailRoom iBackToDetailRoom;
     CheckBox cbSave;
     boolean isShow1 = false;
     boolean isShow2 = false;
     boolean isShow3 = false;
+    boolean isShow4 = false;
+    RobEditText edtCmtContent;
+    ImageView btnSentCmt;
     final Calendar newCalendar = Calendar.getInstance();
 
     @Nullable
@@ -78,6 +90,7 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mMainView = inflater.inflate(R.layout.layout_detail_room, container, false);
         fileService = NetworkController.upload();
+        iBackToDetailRoom = this;
         init();
 
         getAllUtilities();
@@ -86,6 +99,10 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
     }
 
     private void init() {
+        edtCmtContent = mMainView.findViewById(R.id.edtCmtContent);
+        btnSentCmt = mMainView.findViewById(R.id.btnSendCmt);
+        btnSentCmt.setOnClickListener(this);
+        lstCmts = mMainView.findViewById(R.id.lstCmts);
         btnMesNow = mMainView.findViewById(R.id.btnMesNow);
         btnMesNow.setOnClickListener(this);
         tvNameLandLord = mMainView.findViewById(R.id.tvNameLandLord);
@@ -113,9 +130,13 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
         imgUpDown3.setOnClickListener(this);
         imgUpDown2 = mMainView.findViewById(R.id.imgUpDown2);
         imgUpDown2.setOnClickListener(this);
+        imgUpDown4 = mMainView.findViewById(R.id.imgUpDown4);
+        imgUpDown4.setOnClickListener(this);
+
        /* progressDialog = mMainView.findViewById(R.id.spin_kit);
         progressDialog.setVisibility(View.GONE);*/
-        String id = roomSearchItem.getId();
+        id = roomSearchItem.getId();
+        getListComment();
         Call<RoomSearchItem> getRoomById = fileService.getRoomById("Bearer " + AppUtils.getToken(getActivity()), id);
         getRoomById.enqueue(new Callback<RoomSearchItem>() {
             @Override
@@ -220,20 +241,37 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
                     gvCheckBox.setVisibility(View.VISIBLE);
                 }
                 break;
+            case R.id.imgUpDown4:
+                if (!isShow4) {
+                    isShow4 = true;
+                    imgUpDown4.setImageDrawable(getResources().getDrawable(R.drawable.ic_down_arrow));
+                    lstCmts.setVisibility(View.GONE);
+                } else {
+                    isShow4 = false;
+                    imgUpDown4.setImageDrawable(getResources().getDrawable(R.drawable.ic_up_arrow));
+                    lstCmts.setVisibility(View.VISIBLE);
+                }
+                break;
             case R.id.imgSaveTb:
                 saveOrUnsave(cbSave.isChecked());
+                break;
+            case R.id.btnSendCmt:
+                if(!edtCmtContent.getText().toString().trim().equals("")){
+                   String content = edtCmtContent.getText().toString().trim();
+                   sendComment(content);
+                }
                 break;
             case R.id.btnMesNow:
                 String idUser = roomSearchItem.getLandLord().getId();
                 String name = roomSearchItem.getName();
-                RoomCreatedObj obj = new RoomCreatedObj(idUser,name);
-                Call<ObjectChat> createRoom = fileService.createRoom("Bearer "+AppUtils.getToken(getActivity()),obj);
+                RoomCreatedObj obj = new RoomCreatedObj(idUser, name);
+                Call<ObjectChat> createRoom = fileService.createRoom("Bearer " + AppUtils.getToken(getActivity()), obj);
                 createRoom.enqueue(new Callback<ObjectChat>() {
                     @Override
                     public void onResponse(Call<ObjectChat> call, Response<ObjectChat> response) {
-                        if(response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             Intent intent = new Intent(getActivity(), ChatActivity.class);
-                            intent.putExtra("object",response.body());
+                            intent.putExtra("object", response.body());
                             startActivity(intent);
 
                         }
@@ -329,4 +367,53 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
         });
     }
 
+    public void sendComment(String content) {
+        CommentContent commentObject = new CommentContent();
+        commentObject.setContent(content);
+        commentObject.setRoom(id);
+        Call<ResponseBody> sendCmt = fileService.uploadCommentNoParent("Bearer " + AppUtils.getToken(getActivity()), commentObject);
+        sendCmt.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void getListComment() {
+        Call<CommentContent[]> getLstComment = fileService.getListComment("Bearer " + AppUtils.getToken(getActivity()), "5be82cb7a5a54f6a33cb15ba", "createdAt");
+        getLstComment.enqueue(new Callback<CommentContent[]>() {
+            @Override
+            public void onResponse(Call<CommentContent[]> call, Response<CommentContent[]> response) {
+                if (response.isSuccessful()) {
+                    List<CommentContent> commentObjectList = new ArrayList<>(Arrays.asList(response.body()));
+                    AdapterComment adapterComment = new AdapterComment(getContext(),commentObjectList,iBackToDetailRoom, false);
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+                    lstCmts.setLayoutManager(linearLayoutManager);
+                    lstCmts.setAdapter(adapterComment);
+                    adapterComment.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CommentContent[]> call, Throwable t) {
+
+            }
+        });
+    }
+
+    @Override
+    public void sendBackObject(CommentContent commentContent) {
+        FragmentShowMoreCmt fragment = new FragmentShowMoreCmt();
+        fragment.setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogFragmentTheme);
+        fragment.setObject(commentContent);
+        fragment.show(getFragmentManager(),"fragment_showmore_comment");
+    }
 }

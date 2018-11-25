@@ -1,8 +1,8 @@
 package com.example.dell.appcuxa.CuxaAPI;
 
-import com.example.dell.appcuxa.FileInfo;
 import com.example.dell.appcuxa.ObjectModels.ChatObject;
 import com.example.dell.appcuxa.ObjectModels.ChatRoomObj;
+import com.example.dell.appcuxa.ObjectModels.CommentContent;
 import com.example.dell.appcuxa.ObjectModels.ObjectChat;
 import com.example.dell.appcuxa.ObjectModels.ObjectListByOption;
 import com.example.dell.appcuxa.ObjectModels.RoomCreatedObj;
@@ -10,14 +10,10 @@ import com.example.dell.appcuxa.ObjectModels.RoomObject;
 import com.example.dell.appcuxa.ObjectModels.RoomSearch;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchResult;
-import com.example.dell.appcuxa.ObjectModels.SavedRoom;
 import com.example.dell.appcuxa.ObjectModels.UpdateUserObj;
 import com.example.dell.appcuxa.ObjectModels.UserModel;
 
-import java.util.List;
-
 import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -116,4 +112,13 @@ public interface CuXaAPI {
 
     @POST("chat-rooms")
     Call<ObjectChat> createRoom(@Header("Authorization")String authHeader, @Body RoomCreatedObj roomCreatedObj);
+
+    @POST("comments")
+    Call<ResponseBody> uploadCommentNoParent(@Header("Authorization")String authHeader, @Body CommentContent commentObject);
+
+    @POST("comments")
+    Call<ResponseBody> uploadCommentWithParent(@Header("Authorization")String authHeader, @Body CommentContent commentObject);
+
+    @GET("comments")
+    Call<CommentContent[]> getListComment(@Header("Authorization") String authHeader, @Query("room") String idRoom, @Query("sort") String sort);
 }

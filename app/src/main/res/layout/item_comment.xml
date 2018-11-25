@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_marginTop="1dp"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/item_comment"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_marginLeft="5dp"
+            android:layout_width="40dp"
+            android:id="@+id/imgAvatar"
+            android:src="@drawable/default_image"
+            android:layout_height="40dp" />
+        <LinearLayout
+            android:padding="3dp"
+            android:paddingLeft="5dp"
+            android:background="@drawable/item_comment"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.example.dell.appcuxa.CustomeView.RobBoldText
+                android:id="@+id/tvUserParent"
+                android:layout_marginTop="1dp"
+                android:layout_width="wrap_content"
+                android:textColor="@color/black"
+                android:layout_marginLeft="7dp"
+                android:text="Nguyễn Văn Trường"
+                android:layout_height="wrap_content" />
+            <com.example.dell.appcuxa.CustomeView.RobLightText
+                android:layout_width="wrap_content"
+                android:id="@+id/tvContentParent"
+                android:layout_marginLeft="7dp"
+                android:layout_marginBottom="1dp"
+                android:layout_marginTop="1dp"
+                android:text="Phòng này đẹp nè!"
+                android:textColor="@color/black"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+    <com.example.dell.appcuxa.CustomeView.RobBoldText
+        android:layout_width="match_parent"
+        android:layout_marginLeft="55dp"
+        android:id="@+id/tvPreCmtNum"
+        android:visibility="gone"
+        android:text="Xem 7 phản hồi trước"
+        android:layout_height="wrap_content" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/lstCmtChild"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="55dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.RecyclerView>
+</LinearLayout>
