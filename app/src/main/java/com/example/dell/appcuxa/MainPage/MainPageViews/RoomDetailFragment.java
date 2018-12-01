@@ -376,7 +376,7 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-
+                    edtCmtContent.setText("");
                 }
             }
 
@@ -388,7 +388,7 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
     }
 
     public void getListComment() {
-        Call<CommentContent[]> getLstComment = fileService.getListComment("Bearer " + AppUtils.getToken(getActivity()), "5be82cb7a5a54f6a33cb15ba", "createdAt");
+        Call<CommentContent[]> getLstComment = fileService.getListComment("Bearer " + AppUtils.getToken(getActivity()), id, "createdAt");
         getLstComment.enqueue(new Callback<CommentContent[]>() {
             @Override
             public void onResponse(Call<CommentContent[]> call, Response<CommentContent[]> response) {

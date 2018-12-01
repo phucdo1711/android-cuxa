@@ -72,14 +72,16 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
         }
+        if(mSocket!=null){
+            mSocket.connect();
+            mSocket.on("connect", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    Log.d("aaaaaaabc","Connected");
+                }
+            });
+        }
 
-        mSocket.connect();
-        mSocket.on("connect", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Log.d("aaaaaaabc","Connected");
-            }
-        });
         mBottomNav.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override

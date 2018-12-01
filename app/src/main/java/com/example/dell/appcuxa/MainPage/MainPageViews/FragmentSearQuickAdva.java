@@ -173,8 +173,8 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
                 listSearchResultPV.setVisibility(View.GONE);
             }
         }
-        if (locationOption.count != null && Integer.valueOf(locationOption.count) > 0) {
-            tvNumResult.setText(locationOption.count);
+        if (locationOption!=null && null!=locationOption.getCount()&& Integer.valueOf(locationOption.getCount()) > 0) {
+            tvNumResult.setText(locationOption.getCount());
             tvTypeResult.setText("về phạm vi");
             adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(), locationOption, iLogicSaveRoom,fileService);
             listSearchResultPV.setAdapter(adapterSearchResultRoom);

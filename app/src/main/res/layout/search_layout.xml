@@ -4,8 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-android:background="@color/white"
     android:layout_marginTop="10dp"
+    android:background="@color/white"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
     <!-- <android.support.v7.widget.Toolbar
          android:id="@+id/toolbarUpdateProfile"
@@ -28,52 +30,51 @@ android:background="@color/white"
             android:orientation="horizontal">
 
             <LinearLayout
-                android:weightSum="10"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:background="@drawable/bg_search_layout"
                 android:elevation="4dp"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="10">
 
                 <ImageView
-                    android:layout_weight="1.5"
-                    android:background="@drawable/ripple_item"
                     android:id="@+id/imgBack"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/ic_back"
-                  />
+                    android:layout_weight="1.5"
+                    android:background="@drawable/ripple_item"
+                    android:src="@drawable/ic_back" />
 
                 <AutoCompleteTextView
-                    android:layout_marginRight="5dp"
-                    android:imeOptions="actionSearch"
                     android:id="@+id/edtSearch"
-                    android:layout_weight="7"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="7"
                     android:backgroundTint="#00ffffff"
                     android:hint="Gõ để bắt đầu tìm kiếm"
+                    android:imeOptions="actionSearch"
                     android:textColorHint="@color/black" />
+
                 <ImageView
-                    android:layout_weight="1.5"
                     android:id="@+id/imgMap"
-                    android:src="@drawable/ic_map"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:src="@drawable/ic_map" />
             </LinearLayout>
 
-        </LinearLayout
->
+        </LinearLayout>
 
         <RadioGroup
             android:id="@+id/rgLocation"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="16dp"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:weightSum="10">
@@ -85,18 +86,17 @@ android:background="@color/white"
 
             <com.example.dell.appcuxa.CustomeView.RobButton
                 android:id="@+id/btnHN"
-                android:layout_marginBottom="2dp"
-                android:layout_marginTop="2dp"
-                android:textAllCaps="false"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
                 android:layout_weight="2.5"
                 android:background="@drawable/ripple_item"
-                android:textColor="@drawable/change_color_checkbox"
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="Hà Nội"
-                />
+                android:textAllCaps="false"
+                android:textColor="@drawable/change_color_checkbox" />
 
             <View
                 android:layout_width="0dp"
@@ -105,17 +105,17 @@ android:background="@color/white"
 
             <com.example.dell.appcuxa.CustomeView.RobButton
                 android:id="@+id/btnSG"
-                android:layout_marginBottom="2dp"
-                android:layout_marginTop="2dp"
-                android:textAllCaps="false"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
                 android:layout_weight="2.5"
                 android:background="@drawable/ripple_item"
                 android:button="@android:color/transparent"
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="Sài Gòn"
+                android:textAllCaps="false"
                 android:textColor="@drawable/change_color_checkbox" />
 
             <View
@@ -126,15 +126,15 @@ android:background="@color/white"
             <com.example.dell.appcuxa.CustomeView.RobButton
                 android:id="@+id/btnCurrentLocation"
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
                 android:layout_marginTop="2dp"
-                android:textAllCaps="false"
-                android:layout_height="wrap_content"
                 android:layout_weight="3"
                 android:background="@drawable/ripple_item"
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="Vị trí hiện tại"
+                android:textAllCaps="false"
                 android:textColor="@drawable/change_color_checkbox" />
 
             <View
@@ -142,16 +142,17 @@ android:background="@color/white"
                 android:layout_height="1dp"
                 android:layout_weight="0.5" />
         </RadioGroup>
+
         <RadioGroup
-            android:visibility="visible"
-            android:layout_marginBottom="10dp"
             android:id="@+id/rgOption"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="16dp"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal"
+            android:visibility="visible"
             android:weightSum="10">
 
             <com.example.dell.appcuxa.CustomeView.RobRadioButton
@@ -161,12 +162,11 @@ android:background="@color/white"
                 android:layout_weight="3"
                 android:background="@drawable/bg_radio"
                 android:button="@android:color/transparent"
-                android:textColor="@drawable/change_color_checkbox"
-                android:gravity="center"
                 android:checked="true"
+                android:gravity="center"
                 android:padding="10dp"
                 android:text="Phạm vi"
-                />
+                android:textColor="@drawable/change_color_checkbox" />
 
             <View
                 android:layout_width="0dp"
@@ -206,59 +206,64 @@ android:background="@color/white"
     </LinearLayout>
 
     <LinearLayout
-        android:visibility="gone"
         android:id="@+id/tvResult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:visibility="gone">
+
         <com.example.dell.appcuxa.CustomeView.RobBoldText
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:text="0"
             android:id="@+id/tvNumResult"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
         <com.example.dell.appcuxa.CustomeView.RobBoldText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text=" kết quả "
             android:textColor="@color/black"
-            android:textSize="18sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textSize="18sp" />
+
         <com.example.dell.appcuxa.CustomeView.RobBoldText
-            android:text="phạm vi"
             android:id="@+id/tvTypeResult"
-            android:textColor="@color/black"
-            android:textSize="18sp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="phạm vi"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:layout_marginTop="10dp"
-        android:background="@color/white"
         android:id="@+id/listSearchResultPV"
-        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </android.support.v7.widget.RecyclerView>
-    <android.support.v7.widget.RecyclerView
+        android:layout_height="match_parent"
         android:layout_marginTop="10dp"
         android:background="@color/white"
+        android:visibility="gone">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/listSearchResultPrice"
-        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </android.support.v7.widget.RecyclerView>
-    <android.support.v7.widget.RecyclerView
+        android:layout_height="match_parent"
         android:layout_marginTop="10dp"
         android:background="@color/white"
+        android:visibility="gone">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/listSearchResultTN"
-        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:background="@color/white"
+        android:visibility="gone">
 
     </android.support.v7.widget.RecyclerView>
     <!--</android.support.v7.widget.Toolbar>-->
@@ -273,10 +278,10 @@ android:background="@color/white"
             android:orientation="vertical">
 
             <com.example.dell.appcuxa.CustomeView.RobBoldText
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:layout_marginTop="10dp"
                 android:text="Gợi ý"
                 android:textColor="@color/black"
@@ -285,19 +290,19 @@ android:background="@color/white"
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recHint"
                 android:layout_width="match_parent"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
             </android.support.v7.widget.RecyclerView>
 
             <com.example.dell.appcuxa.CustomeView.RobBoldText
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:layout_marginTop="10dp"
                 android:text="Lịch sử tìm kiếm"
                 android:textColor="@color/black"
@@ -306,9 +311,9 @@ android:background="@color/white"
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recHistory"
                 android:layout_width="match_parent"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical">
 

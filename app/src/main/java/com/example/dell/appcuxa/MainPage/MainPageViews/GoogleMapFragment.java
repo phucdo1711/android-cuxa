@@ -272,6 +272,7 @@ public class GoogleMapFragment extends DialogFragment implements OnMapReadyCallb
                 Double[] latlon = new Double[]{latLong.latitude,latLong.longitude};
                 LocationRoom locationRoom = new LocationRoom("Point",latlon);
                 roomObject.setLocation(locationRoom);
+                roomObject.setDistance("10000");
                 Call<RoomSearchResult> searchRoom = fileService.searchRoom("Bearer "+ AppUtils.getToken(getActivity()), roomObject);
 
                 searchRoom.enqueue(new Callback<RoomSearchResult>() {

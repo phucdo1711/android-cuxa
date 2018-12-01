@@ -8,6 +8,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import com.example.dell.appcuxa.CustomeView.RobButton;
 import com.example.dell.appcuxa.CuxaAPI.CuXaAPI;
 import com.example.dell.appcuxa.CuxaAPI.NetworkController;
+import com.example.dell.appcuxa.Login.LoginView.MainActivity;
 import com.example.dell.appcuxa.MainPage.Adapter.ListRoomAdapter;
 import com.example.dell.appcuxa.MainPage.MainPageViews.Interface.IBackToListTopScreen;
 import com.example.dell.appcuxa.MainPage.MainPageViews.Interface.ILogicSaveRoom;
@@ -27,6 +29,10 @@ import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 import com.example.dell.appcuxa.Utils.AppUtils;
 import com.example.dell.appcuxa.R;
 import com.example.dell.appcuxa.base.FragmentCommon;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -87,7 +93,24 @@ public class FragmentSearch extends FragmentCommon implements ILogicSaveRoom, IB
         mView = inflater.inflate(R.layout.fragment_search, container, false);
         ButterKnife.bind(mView);
         iLogicSaveRoom = this;
-        fileService = NetworkController.upload();
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("ffcm", "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+
+                        // Log and toast
+                       // String msg = getString(R.string.msg_token_fmt, token);
+                        Log.d("ffcm1", token);
+                       // Toast.makeText(getActivity(), token, Toast.LENGTH_SHORT).show();
+                    }
+                });        fileService = NetworkController.upload();
         btnLiveTogether = mView.findViewById(R.id.btnLiveTogether);
         recyclerView = mView.findViewById(R.id.recRoomList);
         edtQuickSearch = mView.findViewById(R.id.lnQuickSearch);

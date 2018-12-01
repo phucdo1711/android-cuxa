@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             Log.d("TAG", "success");
-            Log.d("TAGG", account.toJson());
+           // Log.d("TAGG", account.toJson());
             loginInBackendless(account);
 
         } catch (ApiException e) {
