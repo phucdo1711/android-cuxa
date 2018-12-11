@@ -63,7 +63,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         sharedPreferences = getSharedPreferences("login_data",MODE_PRIVATE);
         editor = sharedPreferences.edit();
         String token = AppUtils.getToken(MainPageActivity.this);
-        if(!token.equals("")){
+        /*if(!token.equals("")){
             {
                 try {
                     mSocket = IO.socket(Constants.CHAT_SERVER_URL+ token);
@@ -71,8 +71,8 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
                     throw new RuntimeException(e);
                 }
             }
-        }
-        if(mSocket!=null){
+        }*/
+        /*if(mSocket!=null){
             mSocket.connect();
             mSocket.on("connect", new Emitter.Listener() {
                 @Override
@@ -80,7 +80,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
                     Log.d("aaaaaaabc","Connected");
                 }
             });
-        }
+        }*/
 
         mBottomNav.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -144,6 +144,8 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     protected void onStart() {
         super.onStart();
         String saveToken = sharedPreferences.getString("token","");
+        String name = sharedPreferences.getString("name","");
+        Log.d("nameuser",name);
         if(saveToken.equals("")){
             Intent intent = new Intent(MainPageActivity.this, MainActivity.class);
             startActivity(intent);
@@ -205,7 +207,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mSocket.close();
+       /* mSocket.close();*/
     }
 
 }

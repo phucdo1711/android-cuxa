@@ -48,6 +48,7 @@ public class FragmentPromotion extends DialogFragment implements View.OnClickLis
                 break;
             case R.id.btnPresent:
                 Toast.makeText(getContext(), "Mời mọc cái gì!!", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 }

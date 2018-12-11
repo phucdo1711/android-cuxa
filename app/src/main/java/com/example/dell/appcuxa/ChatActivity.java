@@ -1,6 +1,7 @@
 package com.example.dell.appcuxa;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -84,13 +85,18 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.fragment_chat_room);
         init();
         cuXaAPI = NetworkController.upload();
+        String name = AppUtils.getName(ChatActivity.this);
+        Log.d("nameuserr",name);
         String token = AppUtils.getToken(ChatActivity.this);
         if (token.equals("")) {
             Log.d("token_chat", "rỗng");
         } else {
             {
                 try {
+                    Log.d("tokennnn",token);
                     mSocket = IO.socket(Constants.CHAT_SERVER_URL + token);
+                    Log.d("tokennn",token);
+                    mSocket.connect();
                 } catch (URISyntaxException e) {
                     throw new RuntimeException(e);
                 }
@@ -105,8 +111,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        mSocket.connect();
-
         mSocket.on("connect", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
@@ -119,7 +123,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void call(final Object... args) {
                     Log.d("on_connect1", args[0]+"");
-                runOnUiThread(new Runnable() {
+                    runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         JSONObject object = (JSONObject) args[0];

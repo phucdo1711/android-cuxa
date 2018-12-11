@@ -47,6 +47,7 @@ import com.example.dell.appcuxa.MainPage.MainPageViews.ProfileTab.ProfileView.Fr
 import com.example.dell.appcuxa.ObjectModels.ChatRoomObj;
 import com.example.dell.appcuxa.ObjectModels.Item;
 import com.example.dell.appcuxa.ObjectModels.MessageItem;
+import com.example.dell.appcuxa.ObjectModels.NotiObject;
 import com.example.dell.appcuxa.ObjectModels.ObjectChat;
 import com.example.dell.appcuxa.R;
 import com.example.dell.appcuxa.Utils.AppUtils;
@@ -66,6 +67,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.internal.Utils;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -74,7 +76,7 @@ public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.Re
     ImageView imgView;
     List<ObjectChat> cartList;
     RecyclerView recyclerView;
-
+    boolean isSuccess = false;
     View mLayoutHeader;
     CallbackChatRoom callbackChatRoom;
     View mLayoutSearch;
@@ -214,12 +216,12 @@ public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.Re
                 // backup of removed item for undo purpose
                 final ObjectChat deletedItem = cartList.get(viewHolder.getAdapterPosition());
                 final int deletedIndex = viewHolder.getAdapterPosition();
-
+                deleteChatRoom(deletedItem.getId(), viewHolder.getAdapterPosition());
                 // remove the item from recycler view
-                mAdapter.removeItem(viewHolder.getAdapterPosition());
+              /*  mAdapter.removeItem(viewHolder.getAdapterPosition());*/
 
                 // showing snack bar with Undo option
-                Snackbar snackbar = Snackbar
+              /*  Snackbar snackbar = Snackbar
                         .make(coordinatorLayout, name + " removed from cart!", Snackbar.LENGTH_LONG);
                 snackbar.setAction("UNDO", new View.OnClickListener() {
                     @Override
@@ -230,7 +232,7 @@ public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.Re
                     }
                 });
                 snackbar.setActionTextColor(Color.YELLOW);
-                snackbar.show();
+                snackbar.show();*/
         }
 
     }
@@ -317,10 +319,33 @@ public class FragmentMess extends Fragment implements RecyclerItemTouchHelper.Re
         Intent intent = new Intent(getActivity(), ChatActivity.class);
         intent.putExtra("object",objectChat);
         startActivity(intent);
-       /* FragmentChatRoom myRoom = new FragmentChatRoom();
-        myRoom.setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogFragmentTheme);
-        myRoom.setObject(objectChat, getActivity());
-        myRoom.show(getFragmentManager(),"fragment_chat_room");*/
+    }
+
+    @Override
+    public void CallBackNotiScreen(NotiObject notiObject) {
+        // do nothing
+    }
+
+    public void deleteChatRoom(String id, final int delNum){
+        CuXaAPI cuXaAPI = NetworkController.upload();
+        Call<ResponseBody> delChatRoom = cuXaAPI.deleteChatRoom("Bearer "+AppUtils.getToken(getActivity()),id);
+        delChatRoom.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                if(response.isSuccessful()){
+                    isSuccess = true;
+                    mAdapter.removeItem(delNum);
+                    Toast.makeText(getActivity(), "Xóa thành công", Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getActivity(), "Xóa thất bại", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getActivity(), "Có lỗi sảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 }

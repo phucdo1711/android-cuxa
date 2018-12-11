@@ -46,6 +46,13 @@
         <activity
             android:name=".Login.LoginView.MainActivity"
             android:screenOrientation="portrait"></activity>
+
+        <activity android:name=".ChatActivity"></activity>
+        <service android:name=".Firebase.MyFirebaseInstanceService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
         <activity
             android:name=".MainPage.MainPageViews.MainPageActivity"
             android:screenOrientation="portrait">
@@ -55,13 +62,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ChatActivity"></activity>
-        <service android:name=".Firebase.MyFirebaseInstanceService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-
     </application>
 
 </manifest>

@@ -61,9 +61,9 @@
                     android:text="Thông báo"
                     android:textColor="@color/black"
                     />
-                <ImageView
+                <com.kyleduo.switchbutton.SwitchButton
+                    android:id="@+id/swipeButton"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_right_arrow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>

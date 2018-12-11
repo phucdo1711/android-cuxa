@@ -3,6 +3,8 @@ package com.example.dell.appcuxa.CuxaAPI;
 import com.example.dell.appcuxa.ObjectModels.ChatObject;
 import com.example.dell.appcuxa.ObjectModels.ChatRoomObj;
 import com.example.dell.appcuxa.ObjectModels.CommentContent;
+import com.example.dell.appcuxa.ObjectModels.NotiModel;
+import com.example.dell.appcuxa.ObjectModels.NotiObject;
 import com.example.dell.appcuxa.ObjectModels.ObjectChat;
 import com.example.dell.appcuxa.ObjectModels.ObjectListByOption;
 import com.example.dell.appcuxa.ObjectModels.RoomCreatedObj;
@@ -83,11 +85,20 @@ public interface CuXaAPI {
     @POST("rooms")
     Call<ResponseBody> uploadRoom(@Header("Authorization") String authHeader, @Body RoomObject room);
 
+    @PUT("rooms/{id}")
+    Call<ResponseBody> updateRoom(@Header("Authorization") String authHeader, @Path("id") String id, @Body RoomObject room);
+
     @POST("rooms/search")
     Call<RoomSearchResult> searchRoom(@Header("Authorization") String authHeader, @Body RoomSearch room);
 
     @DELETE("rooms/{id}")
     Call<ResponseBody> deleteRoom(@Header("Authorization") String authHeader, @Path("id") String id );
+
+    @DELETE("chat-rooms/{id}")
+    Call<ResponseBody> deleteChatRoom(@Header("Authorization") String authHeader, @Path("id") String id );
+
+    @DELETE("notifications/{id}")
+    Call<ResponseBody> deleteNoti(@Header("Authorization") String authHeader, @Path("id") String id );
 
     @GET("rooms/{id}/save")
     Call<ResponseBody> saveRoom(@Header("Authorization") String authHeader,
@@ -98,6 +109,7 @@ public interface CuXaAPI {
 
     @GET("rooms/{id}")
     Call<RoomSearchItem> getRoomById(@Header("Authorization") String authHeader, @Path("id") String id );
+
     @PUT("users/me")
     Call<ResponseBody> updateInfoUser(@Header("Authorization") String authHeader,@Body UpdateUserObj userObj);
 
@@ -121,4 +133,10 @@ public interface CuXaAPI {
 
     @GET("comments")
     Call<CommentContent[]> getListComment(@Header("Authorization") String authHeader, @Query("room") String idRoom, @Query("sort") String sort);
+
+    @GET("notifications")
+    Call<NotiModel> getLstNoti(@Header("Authorization") String token, @Query("receiver") String idUser);
+
+    @GET("notifications/{id}")
+    Call<NotiObject> getDetailNoti(@Header("Authorization") String token, @Path("id")String id);
 }

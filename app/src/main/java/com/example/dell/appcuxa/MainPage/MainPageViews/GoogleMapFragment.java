@@ -269,7 +269,7 @@ public class GoogleMapFragment extends DialogFragment implements OnMapReadyCallb
             case R.id.btnSearchMap:
                 CuXaAPI fileService = NetworkController.upload();
                 RoomSearch roomObject = new RoomSearch();
-                Double[] latlon = new Double[]{latLong.latitude,latLong.longitude};
+                Double[] latlon = new Double[]{latLong.longitude,latLong.latitude};
                 LocationRoom locationRoom = new LocationRoom("Point",latlon);
                 roomObject.setLocation(locationRoom);
                 roomObject.setDistance("10000");

@@ -73,7 +73,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 
 public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage, GenderBottomDialog.ICallBackGender,
-        View.OnClickListener,AddPhotoBottomDialogFragment.OnChooseReasonListener ,ImageAdapter.OnRecyclerViewItemClickListener {
+        View.OnClickListener, AddPhotoBottomDialogFragment.OnChooseReasonListener, ImageAdapter.OnRecyclerViewItemClickListener {
     public static List<byte[]> imageBytes = new ArrayList<>();
     SharedPreferences sharedPreferences;
     public static final int IMAGE_ITEM_ADD = -1;
@@ -116,11 +116,12 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
     String token = "";
     ImageView imgBack;
     protected GeoDataClient mGeoDataClient;
-    public  RoomSearchItem roomSearchItem;
-    private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40,-168),new LatLng(71,136));
+    public RoomSearchItem roomSearchItem;
+    private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40, -168), new LatLng(71, 136));
     SelectedImageAdapter selectedImageAdapter;
     PlaceAutoCompleteAdapter placeAutoCompleteAdapter;
     MyGridView gvCheckBox;
+
     public FragmentUpRoom() {
 
     }
@@ -136,42 +137,43 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
         mMainView = inflater.inflate(R.layout.fragment_dang_phong, container, false);
         ButterKnife.bind(getActivity());
         init();
-        if(roomSearchItem!=null){
+
+        if (roomSearchItem != null) {
             String purpose = roomSearchItem.getType();
-            if(purpose.equals("empty")){
+            if (purpose.equals("empty")) {
                 cbRent.setChecked(true);
-            }else{
+            } else {
                 cbLiveTogether.setChecked(true);
             }
             tvTitle.setText("Chỉnh sửa");
             edtRoomName.setText(roomSearchItem.getName());
             edtPrice.setText(roomSearchItem.getPrice());
-            edtWaterPrice.setText(roomSearchItem.getWaterPrice()==null?"":roomSearchItem.getWaterPrice());
-            edtElecPrice.setText(roomSearchItem.getElectricityPrice()==null?"":roomSearchItem.getElectricityPrice());
-            edtDienTich.setText(roomSearchItem.getArea()==null?"":roomSearchItem.getArea());
-            edtAddress.setText(roomSearchItem.getAddress()==null?"":roomSearchItem.getAddress());
-            edtNumOfPeople.setText("");
+            edtWaterPrice.setText(roomSearchItem.getWaterPrice() == null ? "" : roomSearchItem.getWaterPrice());
+            edtElecPrice.setText(roomSearchItem.getElectricityPrice() == null ? "" : roomSearchItem.getElectricityPrice());
+            edtDienTich.setText(roomSearchItem.getArea() == null ? "" : roomSearchItem.getArea());
+            edtAddress.setText(roomSearchItem.getAddress() == null ? "" : roomSearchItem.getAddress());
+            edtNumOfPeople.setText(roomSearchItem.getAmountOfTenant()==null?"":roomSearchItem.getAmountOfTenant());
             String gender = "";
-            if(roomSearchItem.getGenderAccepted().equals("both")){
-                gender ="Tất cả";
-            }else if(roomSearchItem.getGenderAccepted().equals("male")){
+            if (roomSearchItem.getGenderAccepted().equals("both")) {
+                gender = "Tất cả";
+            } else if (roomSearchItem.getGenderAccepted().equals("male")) {
                 gender = "Nam";
-            }else{
+            } else {
                 gender = "Nữ";
             }
-            edtGender.setText(roomSearchItem.getGenderAccepted().equals("")?"":gender);
-            edtDesc.setText(roomSearchItem.getDescription()==null?"":roomSearchItem.getDescription());
+            edtGender.setText(roomSearchItem.getGenderAccepted().equals("") ? "" : gender);
+            edtDesc.setText(roomSearchItem.getDescription() == null ? "" : roomSearchItem.getDescription());
         }
         fileService = NetworkController.upload();
         sharedPreferences = getActivity().getSharedPreferences("login_data", MODE_PRIVATE);
         token = sharedPreferences.getString("token", "");
         mGeoDataClient = Places.getGeoDataClient(getContext(), null);
-        placeAutoCompleteAdapter = new PlaceAutoCompleteAdapter(getContext(),mGeoDataClient,LAT_LNG_BOUNDS,null);
+        placeAutoCompleteAdapter = new PlaceAutoCompleteAdapter(getContext(), mGeoDataClient, LAT_LNG_BOUNDS, null);
         edtAddress.setAdapter(placeAutoCompleteAdapter);
         edtAddress.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if(!hasFocus){
+                if (!hasFocus) {
                     doubleList = geoLocate();
                 }
             }
@@ -179,11 +181,11 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
         edtAddress.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if(actionId == EditorInfo.IME_ACTION_SEARCH
+                if (actionId == EditorInfo.IME_ACTION_SEARCH
                         || actionId == EditorInfo.IME_ACTION_DONE
                         || keyEvent.getAction() == KeyEvent.ACTION_DOWN
                         || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER
-                     ){
+                        ) {
                     // execute method for searching
                     doubleList = geoLocate();
                 }
@@ -193,32 +195,32 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
         edtAddress.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
-            public void onItemClick(AdapterView<?> parent, View view,int position, long id)
-            {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 doubleList = geoLocate();
                 Log.d("location", doubleList.toString());
             }
         });
-        if(roomSearchItem!=null){
+        if (roomSearchItem != null) {
             btnUpload.setText("Cập nhật");
             List<ImageItem> lstImages = new ArrayList<>(Arrays.asList(roomSearchItem.getImages()));
-            selectedImageAdapterUpdate = new SelectedImageAdapter(getContext(),this,lstImages);
+            selectedImageAdapterUpdate = new SelectedImageAdapter(getContext(), this, lstImages);
             gridView.setAdapter(selectedImageAdapterUpdate);
             selectedImageAdapterUpdate.notifyDataSetChanged();
         }
-        if(Paper.book().read("utilities")!=null){
-            if(roomSearchItem!=null){
+        if (Paper.book().read("utilities") != null) {
+            if (roomSearchItem != null) {
+                utilityObjectList = Paper.book().read("utilities");
                 String[] utilitiesSelected = roomSearchItem.getUtilities();
-                CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(utilityObjectList,getContext(),utilitiesSelected);
+                CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(utilityObjectList, getContext(), utilitiesSelected);
                 gvCheckBox.setAdapter(checkBoxAdapter);
                 checkBoxAdapter.notifyDataSetChanged();
-            }else{
+            } else {
                 utilityObjectList = Paper.book().read("utilities");
-                CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(utilityObjectList,getContext());
+                CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(utilityObjectList, getContext());
                 gvCheckBox.setAdapter(checkBoxAdapter);
                 checkBoxAdapter.notifyDataSetChanged();
             }
-        }else{
+        } else {
             getAllUtilities();
         }
         Bundle bundle = getArguments();
@@ -251,75 +253,189 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
                 showBottomDialog(AppUtils.PICK_IMAGE_1);
                 break;
             case R.id.btnUpload:
-                if(imageHinhId.size()<3){
-                    Toast.makeText(getActivity(), "Bạn cần ít nhất 3 tấm ảnh phòng", Toast.LENGTH_SHORT).show();
-                    return;
+                if (roomSearchItem != null) {
+                    if (roomSearchItem.getImages().length < 3) {
+                        Toast.makeText(getActivity(), "Bạn cần ít nhất 3 tấm ảnh phòng", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                } else {
+                    if (imageHinhId.size() < 3) {
+                        Toast.makeText(getActivity(), "Bạn cần ít nhất 3 tấm ảnh phòng", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                 }
-                if(edtDienTich.getText().toString().trim().equals("")){
+                if (edtDienTich.getText().toString().trim().equals("")) {
                     Toast.makeText(getActivity(), "Bạn chưa nhập diện tích phòng", Toast.LENGTH_SHORT).show();
                 }
-                if(!cbLiveTogether.isChecked()&&!cbRent.isChecked()){
+                if (!cbLiveTogether.isChecked() && !cbRent.isChecked()) {
                     Toast.makeText(getActivity(), "Bạn chưa chọn mục đích", Toast.LENGTH_SHORT).show();
                     return;
-                }else if(cbRent.isChecked()){
+                } else if (cbRent.isChecked()) {
                     type = "empty";
-                }else{
+                } else {
                     type = "graft";
                 }
-                if(edtGender.getText().toString().trim().equals("")){
+                if (edtGender.getText().toString().trim().equals("")) {
                     Toast.makeText(getActivity(), "Bạn chưa chọn giới tính", Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     String gender = edtGender.getText().toString();
-                    if(gender.equals("Tất cả")){
+                    if (gender.equals("Tất cả")) {
                         genderAccepted = "both";
-                    }else if(gender.equals("Nam")){
+                    } else if (gender.equals("Nam")) {
                         genderAccepted = "male";
-                    }else{
+                    } else {
                         genderAccepted = "female";
                     }
                 }
 
                 latlon = new Double[doubleList.size()];
                 latlon = doubleList.toArray(latlon);
-                if(latlon.length!=2 || edtAddress.getText().toString().trim().equals("")){
-                    Toast.makeText(getActivity(), "Bạn chưa chọn địa điểm", Toast.LENGTH_SHORT).show();
-                    return;
+                if (roomSearchItem != null) {
+                    // do nothing
+                } else {
+                    if (latlon.length != 2 || edtAddress.getText().toString().trim().equals("")) {
+                        Toast.makeText(getActivity(), "Bạn chưa chọn địa điểm", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                 }
-                uploadRoom();
+                if(roomSearchItem!=null){
+                    updateRoom();
+                }else{
+                    uploadRoom();
+                }
+
                 break;
         }
     }
 
-    private void uploadRoom() {
+    private void updateRoom() {
+        String desc = "";
+        String area = "";
+        String amountOfTenant = "";
         List<String> utilis = new ArrayList<>();
-        for(int i = 0; i<utilityObjectList.size();i++){
-            if(utilityObjectList.get(i).isIsChecked()){
+        for (int i = 0; i < utilityObjectList.size(); i++) {
+            if (utilityObjectList.get(i).isIsChecked()) {
                 utilis.add(utilityObjectList.get(i).getId());
             }
         }
-        String[] utiArray = new String[utilis.size()];
-        utiArray = utilis.toArray(utiArray);
+        String[] utiArray;
+        if(roomSearchItem==null){
+            utiArray = new String[utilis.size()];
+            utiArray = utilis.toArray(utiArray);
+        }else{
+            utiArray = roomSearchItem.getUtilities();
+        }
+
         String roomName = edtRoomName.getText().toString();
 
         String price = edtPrice.getText().toString();
         String electricPrice = edtElecPrice.getText().toString();
         String wterPrice = edtWaterPrice.getText().toString();
         String downPayment = "12343";
+        LocationRoom locationRoom;
+        if (roomSearchItem != null) {
+            locationRoom = roomSearchItem.getLocationRoom();
+        } else {
+            locationRoom = new LocationRoom("Point", latlon);
+        }
+        String[] images;
+        if(roomSearchItem!=null){
+            List<String> idHinh = new ArrayList<>();
+            for(int i = 0;i<roomSearchItem.getImages().length;i++){
+                idHinh.add(roomSearchItem.getImages()[i].getId());
+            }
+            images = new String[idHinh.size()];
+            images = idHinh.toArray(images);
+        }else{
+            images = new String[imageHinhId.size()];
+            images = imageHinhId.toArray(images);
+        }
 
-        LocationRoom locationRoom = new LocationRoom("Point",latlon);
-        String[] images = new String[imageHinhId.size()];
-        images = imageHinhId.toArray(images);
+
         String address = edtAddress.getText().toString();
-        String desc = edtDesc.getText().toString();
-        String area = edtDienTich.getText().toString();
-        String amountOfTenant = edtNumOfPeople.getText().toString();
-        progressBar.setVisibility(View.VISIBLE);
-        RoomObject roomObject = new RoomObject(desc,type,roomName,price,electricPrice,wterPrice,downPayment,locationRoom,address,images,area,amountOfTenant,genderAccepted,utiArray);
-        Call<ResponseBody> call = fileService.uploadRoom("Bearer " + token,roomObject);
+
+        desc = edtDesc.getText().toString();
+        area = edtDienTich.getText().toString();
+        amountOfTenant = edtNumOfPeople.getText().toString();
+        progressBar.setVisibility(View.GONE);
+        RoomObject roomObject = new RoomObject(desc, type, roomName, price, electricPrice, wterPrice, downPayment, locationRoom, address, images, area, amountOfTenant, genderAccepted, utiArray);
+        Call<ResponseBody> call = fileService.updateRoom("Bearer " + token,roomSearchItem.getId(), roomObject);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getActivity(), "Cập nhật thành công", Toast.LENGTH_SHORT).show();
+                    imageBytes.clear();
+                    imageHinhId.clear();
+                    FragmentUpRoom.this.dismiss();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getActivity(), "Upload thất bại", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void uploadRoom() {
+        String desc = "";
+        String area = "";
+        String amountOfTenant = "";
+        List<String> utilis = new ArrayList<>();
+        for (int i = 0; i < utilityObjectList.size(); i++) {
+            if (utilityObjectList.get(i).isIsChecked()) {
+                utilis.add(utilityObjectList.get(i).getId());
+            }
+        }
+        String[] utiArray;
+        if(roomSearchItem==null){
+            utiArray = new String[utilis.size()];
+            utiArray = utilis.toArray(utiArray);
+        }else{
+            utiArray = roomSearchItem.getUtilities();
+        }
+
+        String roomName = edtRoomName.getText().toString();
+
+        String price = edtPrice.getText().toString();
+        String electricPrice = edtElecPrice.getText().toString();
+        String wterPrice = edtWaterPrice.getText().toString();
+        String downPayment = "12343";
+        LocationRoom locationRoom;
+        if (roomSearchItem != null) {
+            locationRoom = roomSearchItem.getLocationRoom();
+        } else {
+            locationRoom = new LocationRoom("Point", latlon);
+        }
+        String[] images;
+        if(roomSearchItem!=null){
+            List<String> idHinh = new ArrayList<>();
+            for(int i = 0;i<roomSearchItem.getImages().length;i++){
+                idHinh.add(roomSearchItem.getImages()[i].getId());
+            }
+            images = new String[idHinh.size()];
+            images = idHinh.toArray(images);
+        }else{
+            images = new String[imageHinhId.size()];
+            images = imageHinhId.toArray(images);
+        }
+
+
+        String address = edtAddress.getText().toString();
+
+        desc = edtDesc.getText().toString();
+        area = edtDienTich.getText().toString();
+        amountOfTenant = edtNumOfPeople.getText().toString();
+        progressBar.setVisibility(View.GONE);
+        RoomObject roomObject = new RoomObject(desc, type, roomName, price, electricPrice, wterPrice, downPayment, locationRoom, address, images, area, amountOfTenant, genderAccepted, utiArray);
+        Call<ResponseBody> call = fileService.uploadRoom("Bearer " + token, roomObject);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(getActivity(), "Upload thành công", Toast.LENGTH_SHORT).show();
                     imageBytes.clear();
@@ -366,7 +482,7 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
         cbRent.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
+                if (b) {
                     cbLiveTogether.setChecked(false);
                 }
             }
@@ -374,7 +490,7 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
         cbLiveTogether.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
+                if (b) {
                     cbRent.setChecked(false);
                 }
             }
@@ -386,10 +502,10 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
                 AddPhotoBottomDialogFragment.newInstance();
         Bundle bundle = new Bundle();
         bundle.putInt("pos", imageBytes.size());
-        if(imageBytes.size()>0){
-            Toast.makeText(getActivity(), imageBytes.size()+"", Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(getActivity(), imageBytes.size()+"", Toast.LENGTH_SHORT).show();
+        if (imageBytes.size() > 0) {
+            Toast.makeText(getActivity(), imageBytes.size() + "", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getActivity(), imageBytes.size() + "", Toast.LENGTH_SHORT).show();
         }
 
         addPhotoBottomDialogFragment.setArguments(bundle);
@@ -401,7 +517,7 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
     @Override
     public void onChooseReason(List<byte[]> listByte, int pos) {
         imageBytes.addAll(listByte);
-        selectedImageAdapter = new SelectedImageAdapter(imageBytes,getContext(),this);
+        selectedImageAdapter = new SelectedImageAdapter(imageBytes, getContext(), this);
         gridView.setAdapter(selectedImageAdapter);
         selectedImageAdapter.notifyDataSetChanged();
 
@@ -418,7 +534,7 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
          * Trường hợp chỉnh sửa, khi xóa thì không xóa hẳn mà chỉ bỏ bớt phần tử ra khỏi list
          * Nếu back(không cập nhật nữa) lại thì dữ liệu sẽ không có gì thay đổi.
          */
-        if(roomSearchItem==null) {
+        if (roomSearchItem == null) {
             Call<ResponseBody> call = fileService.deleteImage("Bearer " + token, imageHinhId.get(pos));
             call.enqueue(new Callback<ResponseBody>() {
                 @Override
@@ -438,19 +554,20 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
                     Toast.makeText(getActivity(), "Lỗi server", Toast.LENGTH_SHORT).show();
                 }
             });
-        }else{
+        } else {
            /* List<ImageItem> imageItems = new ArrayList<>(Arrays.asList(roomSearchItem.getImages()));
             imageItems.remove(imageItems.get(pos));
             selectedImageAdapterUpdate.notifyDataSetChanged();*/
         }
     }
-    public void getAllUtilities(){
-        progressBar.setVisibility(View.VISIBLE);
+
+    public void getAllUtilities() {
+        progressBar.setVisibility(View.GONE);
         Call<ResponseBody> call = fileService.getAllUtilities("code");
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if(response.isSuccessful()){
+                if (response.isSuccessful()) {
                     progressBar.setVisibility(View.GONE);
                     try {
                         JSONObject jsonObject = new JSONObject(response.body().string());
@@ -459,16 +576,16 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
                         for (int i = 0; i < 12; i++) {
                             JSONObject object = jsonArray.getJSONObject(i);
                             UtilityObject utilityObject =
-                                    new UtilityObject(object.getString("id"),object.getString("name"),object.getString("code"));
+                                    new UtilityObject(object.getString("id"), object.getString("name"), object.getString("code"));
                             utilityObjectList.add(utilityObject);
                         }
-                        if(roomSearchItem!=null){
+                        if (roomSearchItem != null) {
                             String[] utilitiesSelected = roomSearchItem.getUtilities();
-                            CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(utilityObjectList,getContext(),utilitiesSelected);
+                            CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(utilityObjectList, getContext(), utilitiesSelected);
                             gvCheckBox.setAdapter(checkBoxAdapter);
                             checkBoxAdapter.notifyDataSetChanged();
-                        }else{
-                            CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(utilityObjectList,getContext());
+                        } else {
+                            CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(utilityObjectList, getContext());
                             gvCheckBox.setAdapter(checkBoxAdapter);
                             checkBoxAdapter.notifyDataSetChanged();
                         }
@@ -488,25 +605,27 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
             }
         });
     }
+
     private List<Double> geoLocate() {
         List<Double> listPos = new ArrayList<>();
         String searchContent = edtAddress.getText().toString();
         Geocoder geocoder = new Geocoder(getContext());
         List<Address> list = new ArrayList<>();
         try {
-            list = geocoder.getFromLocationName(searchContent,1);
+            list = geocoder.getFromLocationName(searchContent, 1);
         } catch (IOException e) {
             e.printStackTrace();
-            Log.d("geoLocate",e.getMessage());
+            Log.d("geoLocate", e.getMessage());
         }
-        if(list.size()>0){
+        if (list.size() > 0) {
             Address address = list.get(0);
-            Log.d("geoLocate, a location",address.toString());
+            Log.d("geoLocate, a location", address.toString());
             listPos.add(address.getLongitude());
             listPos.add(address.getLatitude());
         }
         return listPos;
     }
+
     @Override
     public void onActivityCreated(Bundle arg0) {
         super.onActivityCreated(arg0);
@@ -520,10 +639,10 @@ public class FragmentUpRoom extends DialogFragment implements ILogicDeleteImage,
         return gender;
     }
 
-    public void setDataEdit(RoomSearchItem object){
-        if(object ==null){
+    public void setDataEdit(RoomSearchItem object) {
+        if (object == null) {
             Toast.makeText(getActivity(), "Null", Toast.LENGTH_SHORT).show();
-        }else{
+        } else {
             roomSearchItem = object;
         }
     }

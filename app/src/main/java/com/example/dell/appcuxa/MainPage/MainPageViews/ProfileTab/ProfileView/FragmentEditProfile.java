@@ -1,5 +1,6 @@
 package com.example.dell.appcuxa.MainPage.MainPageViews.ProfileTab.ProfileView;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,9 +28,15 @@ import com.example.dell.appcuxa.Utils.AppUtils;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -46,7 +53,7 @@ public class FragmentEditProfile extends DialogFragment implements View.OnClickL
     RobEditText edtName, edtCurAddress, edtCurSchool, edtEmail,edtPhoneNo, edtCmnd;
     private ImageView imgBack;
     CuXaAPI cuXaAPI;
-    public static String idHinh = "";
+    public static String urlImage = "";
     RobButton btnSaveChange;
     final Calendar newCalendar = Calendar.getInstance();
     public FragmentEditProfile(){
@@ -57,6 +64,12 @@ public class FragmentEditProfile extends DialogFragment implements View.OnClickL
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mMainView = inflater.inflate(R.layout.fragment_edit_profile, container, false);
         init();
+        if(AppUtils.haveNetworkConnection(getContext())){
+            getInfoMe();
+        }else{
+            Toast.makeText(getActivity(), "Không có mạng", Toast.LENGTH_SHORT).show();
+        }
+
         return mMainView;
     }
 
@@ -110,7 +123,7 @@ public class FragmentEditProfile extends DialogFragment implements View.OnClickL
                     }
 
                 }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
-                StartTime .show();
+                StartTime.show();
                 break;
 
         }
@@ -119,13 +132,23 @@ public class FragmentEditProfile extends DialogFragment implements View.OnClickL
     private void submitChange() {
         cuXaAPI = NetworkController.upload();
         UpdateUserObj updateUserObj = new UpdateUserObj();
-        updateUserObj.setGender(tvGender.getText().toString());
+        String gender = tvGender.getText().toString();
+        String genderUpload = "";
+        if(gender.equals("Nam")){
+            genderUpload = "male";
+        }else if(gender.equals("Nữ")){
+            genderUpload = "female";
+        }else{
+            genderUpload = "both";
+        }
+        updateUserObj.setGender(genderUpload);
         updateUserObj.setBirth(AppUtils.getCurrentUTC(AppUtils.parseStringToDate(tvBirthday.getText().toString())));
         updateUserObj.setIdCard(edtCmnd.getText().toString());
         updateUserObj.setSchool(edtCurSchool.getText().toString());
-        updateUserObj.setName(edtName.getText().toString());
-        updateUserObj.setPicture(idHinh);
+        updateUserObj.setCurrentResidence(edtCurAddress.getText().toString());
+        updateUserObj.setPicture(urlImage);
         updateUserObj.setPhone(edtPhoneNo.getText().toString());
+
         Call<ResponseBody> call = cuXaAPI.updateInfoUser("Bearer "+ AppUtils.getToken(getActivity()),updateUserObj);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -166,5 +189,59 @@ public class FragmentEditProfile extends DialogFragment implements View.OnClickL
         Bitmap bmp = BitmapFactory.decodeByteArray(image, 0, image.length);
         imgAvatar.setImageBitmap(bmp);
 
+    }
+
+    private void getInfoMe() {
+        CuXaAPI fileService = NetworkController.upload();
+        Call<ResponseBody> getMe = fileService.getInfoMe("Bearer " + AppUtils.getToken(getActivity()));
+        getMe.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()){
+                    try {
+                        JSONObject object = new JSONObject(response.body().string());
+                        String phone = object.getString("phone");
+                        String gender =object.getString("gender");
+                        String email = object.getString("email");
+                        String birth = object.getString("birth");
+                        String name = object.getString("name");
+                        String picture = object.getString("picture");
+                        String idCard = object.getString("idCard");
+                        edtCmnd.setText(idCard);
+                        edtPhoneNo.setText(phone);
+                        edtName.setText(name);
+                        edtName.setEnabled(false);
+                        edtEmail.setText(email);
+                        edtEmail.setEnabled(false);
+                        String sex = "";
+                        if(gender.equals("male")){
+                            sex = "Nam";
+                        }else if(gender.equals("female")){
+                            sex = "Nữ";
+                        }else{
+                            sex = "Tất cả";
+                        }
+                        tvGender.setText(sex);
+                        Picasso.get().load(picture).placeholder(R.drawable.default_image).into(imgAvatar);
+                        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+                        Date date = dateFormat.parse(birth);
+                        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy"); //If you need time just put specific format for time like 'HH:mm:ss'
+                        String dateStr = formatter.format(date);
+                        tvBirthday.setText(dateStr);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
     }
 }

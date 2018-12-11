@@ -1,5 +1,6 @@
 package com.example.dell.appcuxa.Login.LoginView;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,8 +16,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.dell.appcuxa.CuxaAPI.NetworkController;
 import com.example.dell.appcuxa.MainPage.MainPageViews.MainPageActivity;
 import com.example.dell.appcuxa.Login.Models.ISignIn;
+import com.example.dell.appcuxa.ObjectModels.DeviceObject;
+import com.example.dell.appcuxa.ObjectModels.UpdateUserObj;
 import com.example.dell.appcuxa.ObjectModels.UserModel;
 import com.example.dell.appcuxa.Login.Presenters.SignInLogicPresenter;
 import com.example.dell.appcuxa.R;
@@ -37,10 +41,16 @@ import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.Arrays;
 
 import me.relex.circleindicator.CircleIndicator;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,LoginView, ISignIn {
     private static final String TAG = "GOOGLE";
@@ -212,11 +222,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * Hàm nhận về data của login facebook.
+     * Hàm nhận về data của login facebook, google.
      * @param userModel
      */
     @Override
     public void sendBackUserModel(UserModel userModel) {
+        updateUserWithFCM(userModel);
         if(userModel!=null){
             edit.putString("token",userModel.getToken());
             edit.putString("id_user",userModel.getUserObject().getId());
@@ -233,5 +244,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         moveTaskToBack(true);
+    }
+
+    public void updateFirebaseCloudMessage(final String token, UpdateUserObj obj){
+        Call<ResponseBody> call = NetworkController.upload().updateInfoUser("Bearer "+token,obj);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Log.d("tokenUpdateFCM",token);
+                if(response.isSuccessful()){
+                    Log.d("updateFCM","Success");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Có lỗi sảy ra, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    public void updateUserWithFCM(final UserModel user){
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("ffcm", "getInstanceId failed", task.getException());
+                            return;
+                        }
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+
+                        Log.d("ffcm1", token);
+                        UpdateUserObj updateUserObj = new UpdateUserObj();
+                        DeviceObject deviceObject = new DeviceObject();
+                        deviceObject.setPlatform("android");
+                        deviceObject.setFcmToken(token);
+                        updateUserObj.setDevice(deviceObject);
+                        updateFirebaseCloudMessage("Bearer "+user.getToken(),updateUserObj);
+                    }
+                });
     }
 }

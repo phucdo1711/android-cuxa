@@ -26,16 +26,20 @@ import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 import com.example.dell.appcuxa.R;
 import com.squareup.picasso.Picasso;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 import static android.content.Context.MODE_PRIVATE;
 
 public class FragmentProfile extends Fragment implements View.OnClickListener, ISendBackToEdit{
     private View mMainView;
     ImageView imgEdit;
+    CircleImageView imgAvatar;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     RobBoldText tvUserName;
     String token = "";
     String username = "";
+    String image = "";
     LinearLayout lnLogout, lnFeedBack, lnHelp, lnSetting, lnQrCode,lnInviteFriend, lnCoupon,lnMyRoom;
     public FragmentProfile(){
 
@@ -49,6 +53,10 @@ public class FragmentProfile extends Fragment implements View.OnClickListener, I
         editor = sharedPreferences.edit();
         token = sharedPreferences.getString("token", "");
         username = sharedPreferences.getString("name","");
+        image = sharedPreferences.getString("image_avatar","");
+        if(!image.equals("")){
+            Picasso.get().load(image).placeholder(R.drawable.default_image).into(imgAvatar);
+        }
         if(username.equals("")){
             tvUserName.setText("Người dùng Cư Xá");
         }else{
@@ -58,6 +66,7 @@ public class FragmentProfile extends Fragment implements View.OnClickListener, I
     }
 
     private void init() {
+        imgAvatar = mMainView.findViewById(R.id.imgAvatar);
         tvUserName = mMainView.findViewById(R.id.tvUserName);
         imgEdit = mMainView.findViewById(R.id.imgEditprofile);
         lnLogout = mMainView.findViewById(R.id.layout_logout);
@@ -133,7 +142,7 @@ public class FragmentProfile extends Fragment implements View.OnClickListener, I
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 SharedPreferences preferences = getActivity().getSharedPreferences("login_data", MODE_PRIVATE);
-                preferences.edit().clear().commit();
+                preferences.edit().clear().apply();
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 startActivity(intent);
             }

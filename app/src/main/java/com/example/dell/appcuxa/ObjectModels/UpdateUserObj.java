@@ -9,6 +9,9 @@ public class UpdateUserObj {
     public String currentResidence;
     public String school;
     public String idCard;
+    public DeviceObject device;
+
+    public UpdateUserObj(){}
 
     public UpdateUserObj(String name, String picture, String phone, String gender, String birth, String currentResidence, String school, String idCard) {
         this.name = name;
@@ -19,6 +22,14 @@ public class UpdateUserObj {
         this.currentResidence = currentResidence;
         this.school = school;
         this.idCard = idCard;
+    }
+
+    public DeviceObject getDevice() {
+        return device;
+    }
+
+    public void setDevice(DeviceObject device) {
+        this.device = device;
     }
 
     public String getBirth() {
@@ -53,7 +64,6 @@ public class UpdateUserObj {
         this.idCard = idCard;
     }
 
-    public UpdateUserObj(){}
     public UpdateUserObj(String name, String picture, String phone, String gender) {
         this.name = name;
         this.picture = picture;

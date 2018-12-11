@@ -188,6 +188,14 @@ public class AppUtils {
         id_user = sharedPreferences.getString("id_user", "");
         return id_user;
     }
+
+    public static String getName(Context context){
+        String name = "";
+        sharedPreferences = context.getSharedPreferences("login_data", MODE_PRIVATE);
+        name = sharedPreferences.getString("name", "");
+        return name;
+    }
+
     public static String formatMoney2(String input) {
         if (input.trim().equals("")) {
             return "";

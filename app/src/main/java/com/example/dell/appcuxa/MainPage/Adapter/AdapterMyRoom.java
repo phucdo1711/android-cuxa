@@ -45,7 +45,9 @@ public class AdapterMyRoom extends RecyclerView.Adapter<AdapterMyRoom.ViewHolder
     public void onBindViewHolder(final AdapterMyRoom.ViewHolder holder, int position) {
         final RoomSearchItem info = roomSearchResults.get(position);
         holder.tvName.setText((info.getName()==null)?"":info.getName());
-        Picasso.get().load(info.getImages()[0].getSrc()).placeholder(R.drawable.default_image).into(holder.imgHinh);
+        if(info.getImages().length>0){
+            Picasso.get().load(info.getImages()[0].getSrc()).placeholder(R.drawable.default_image).into(holder.imgHinh);
+        }
         holder.tvAddress.setText(info.getAddress()==null?"":info.getAddress());
         holder.tvPrice.setText(info.getPrice()==null?"": AppUtils.formatMoney2(info.getPrice())+" đ");
         holder.tvPurpose.setText("NHÀ CHUNG");

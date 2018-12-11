@@ -107,7 +107,7 @@ public class FragmentSaveRoom extends Fragment implements IUnsaveRoomLogic {
     @Override
     public void backToSavedScreen(RoomSearchItem savedRoom) {
         RoomDetailFragment roomDetailFragment = new RoomDetailFragment();
-        roomDetailFragment.setObject(savedRoom);
+        roomDetailFragment.setObject(savedRoom, AppUtils.getIdUser(getActivity()));
         roomDetailFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
         roomDetailFragment.show(getFragmentManager(), "fragment_detail");
     }
@@ -143,6 +143,9 @@ public class FragmentSaveRoom extends Fragment implements IUnsaveRoomLogic {
                 swipeContainer.setRefreshing(false);
             }
         });
+    }
+    public List<RoomSearchItem> getRoomSearchItems(){
+        return  roomSearchItems;
     }
 }
 

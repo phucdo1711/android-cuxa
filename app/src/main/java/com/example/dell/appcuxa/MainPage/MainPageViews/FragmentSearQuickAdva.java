@@ -452,7 +452,7 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
     @Override
     public void backToScreen(RoomSearchItem room) {
         RoomDetailFragment roomDetailFragment = new RoomDetailFragment();
-        roomDetailFragment.setObject(room);
+        roomDetailFragment.setObject(room, AppUtils.getIdUser(getActivity()));
         roomDetailFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
         roomDetailFragment.show(getFragmentManager(), "fragment_detail");
     }

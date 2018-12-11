@@ -6,8 +6,15 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.dell.appcuxa.CuxaAPI.NetworkController;
+import com.example.dell.appcuxa.ObjectModels.DeviceObject;
+import com.example.dell.appcuxa.ObjectModels.UpdateUserObj;
 import com.example.dell.appcuxa.ObjectModels.UserModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,7 +35,7 @@ public class SignInModel {
         Call<UserModel> loginObjectCall = NetworkController.signInAuth().getInfoUserByFacebook(accessToken);
         loginObjectCall.enqueue(new Callback<UserModel>() {
             @Override
-            public void onResponse(@NonNull Call<UserModel> call, @NonNull Response<UserModel> response) {
+            public void onResponse(@NonNull Call<UserModel> call, @NonNull final Response<UserModel> response) {
                 if (response.isSuccessful()&& response.body() != null && response.body().getUserObject() != null && response.body().getUserObject().getName() != null) {
                     Log.d("FACETAG", response.body().getUserObject().getName());
                     iSignIn.sendBackUserModel(response.body());

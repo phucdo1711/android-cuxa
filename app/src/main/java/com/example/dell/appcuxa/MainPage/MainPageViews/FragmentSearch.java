@@ -93,24 +93,7 @@ public class FragmentSearch extends FragmentCommon implements ILogicSaveRoom, IB
         mView = inflater.inflate(R.layout.fragment_search, container, false);
         ButterKnife.bind(mView);
         iLogicSaveRoom = this;
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w("ffcm", "getInstanceId failed", task.getException());
-                            return;
-                        }
-
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
-
-                        // Log and toast
-                       // String msg = getString(R.string.msg_token_fmt, token);
-                        Log.d("ffcm1", token);
-                       // Toast.makeText(getActivity(), token, Toast.LENGTH_SHORT).show();
-                    }
-                });        fileService = NetworkController.upload();
+        fileService = NetworkController.upload();
         btnLiveTogether = mView.findViewById(R.id.btnLiveTogether);
         recyclerView = mView.findViewById(R.id.recRoomList);
         edtQuickSearch = mView.findViewById(R.id.lnQuickSearch);
@@ -156,27 +139,6 @@ public class FragmentSearch extends FragmentCommon implements ILogicSaveRoom, IB
         return mView;
     }
 
-    private void getInfoMe() {
-        Call<ResponseBody> getMe = fileService.getInfoMe("Bearer " + token);
-        getMe.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    JSONObject object = new JSONObject(response.body().string());
-                    String phone = object.getString("phone");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        });
-    }
 
     private void getListTop() {
         Call<ObjectListByOption> getListTop = fileService.getListTop("Bearer " + token, "application/json");
@@ -288,7 +250,7 @@ public class FragmentSearch extends FragmentCommon implements ILogicSaveRoom, IB
     @Override
     public void backToListTopScreen(RoomSearchItem roomInfo) {
         RoomDetailFragment roomDetailFragment = new RoomDetailFragment();
-        roomDetailFragment.setObject(roomInfo);
+        roomDetailFragment.setObject(roomInfo, AppUtils.getIdUser(getActivity()));
         roomDetailFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
         roomDetailFragment.show(getFragmentManager(), "fragment_detail");
     }

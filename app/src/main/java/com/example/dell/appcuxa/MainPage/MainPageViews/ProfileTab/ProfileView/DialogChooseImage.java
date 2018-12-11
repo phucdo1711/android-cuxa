@@ -194,7 +194,7 @@ public class DialogChooseImage extends BottomSheetDialogFragment implements View
                                 jArray = new JSONArray(response.body().string());
                                 for (int i = 0; i < jArray.length(); i++) {
                                     JSONObject object = jArray.optJSONObject(i);
-                                    FragmentEditProfile.idHinh = object.getString("id");
+                                    FragmentEditProfile.urlImage = object.getString("src");
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -237,7 +237,7 @@ public class DialogChooseImage extends BottomSheetDialogFragment implements View
                                 for (int i = 0; i < jArray.length(); i++) {
                                     JSONObject object = jArray.optJSONObject(i);
                                     lstImageObject.add(new ImageObject(object.getString("id"),object.getString("src")));
-                                    FragmentEditProfile.idHinh = object.getString("id");
+                                    FragmentEditProfile.urlImage = object.getString("src");
                                     sendBackImage(lstBitmap);
                                 }
                             } catch (JSONException e) {

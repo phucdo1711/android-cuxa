@@ -1,5 +1,6 @@
 package com.example.dell.appcuxa.MainPage.MainPageViews;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,6 +29,7 @@ import com.example.dell.appcuxa.CuxaAPI.NetworkController;
 import com.example.dell.appcuxa.MainPage.Adapter.AdapterComment;
 import com.example.dell.appcuxa.MainPage.Adapter.CheckBoxAdapter;
 import com.example.dell.appcuxa.MainPage.Adapter.SlideImageAdapter;
+import com.example.dell.appcuxa.MainPage.MainPageViews.SavedTab.SavedView.FragmentSaveRoom;
 import com.example.dell.appcuxa.ObjectModels.CommentContent;
 import com.example.dell.appcuxa.ObjectModels.ObjectChat;
 import com.example.dell.appcuxa.ObjectModels.RoomCreatedObj;
@@ -55,10 +57,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RoomDetailFragment extends DialogFragment implements View.OnClickListener,IBackToDetailRoom {
+public class RoomDetailFragment extends DialogFragment implements View.OnClickListener, IBackToDetailRoom {
     public View mMainView;
     Toolbar toolbar;
     String id = "";
+    boolean isTrue = false;
     RoomSearchItem roomSearchItem = new RoomSearchItem();
     CircleImageView imgAvatar;
     SpinKitView progressDialog;
@@ -92,6 +95,11 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
         fileService = NetworkController.upload();
         iBackToDetailRoom = this;
         init();
+        if(isTrue){
+            btnMesNow.setVisibility(View.GONE);
+        }else {
+            btnMesNow.setVisibility(View.VISIBLE);
+        }
 
         getAllUtilities();
 
@@ -177,19 +185,21 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
         slideImageAdapter.notifyDataSetChanged();
         circleIndicator.setViewPager(imgHinh);
         Picasso.get().load(roomSearchItem.getLandLord().getPicture()).into(imgAvatar);
-        cbSave.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      /*  cbSave.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (!b) {
                     saveOrUnsave(false);
                 }
             }
-        });
+        });*/
 
         cbSave.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
+                if (!b) {
+                    saveOrUnsave(false);
+                } else {
                     saveOrUnsave(true);
                 }
             }
@@ -256,9 +266,9 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
                 saveOrUnsave(cbSave.isChecked());
                 break;
             case R.id.btnSendCmt:
-                if(!edtCmtContent.getText().toString().trim().equals("")){
-                   String content = edtCmtContent.getText().toString().trim();
-                   sendComment(content);
+                if (!edtCmtContent.getText().toString().trim().equals("")) {
+                    String content = edtCmtContent.getText().toString().trim();
+                    sendComment(content);
                 }
                 break;
             case R.id.btnMesNow:
@@ -317,8 +327,13 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
         }
     }
 
-    public RoomSearchItem setObject(RoomSearchItem roomSearchItem) {
+    public RoomSearchItem setObject(RoomSearchItem roomSearchItem, String id) {
         this.roomSearchItem = roomSearchItem;
+        if (roomSearchItem.getLandLord().getId().equalsIgnoreCase(id)) {
+            isTrue = true;
+        } else {
+            isTrue = false;
+        }
         return roomSearchItem;
     }
 
@@ -394,7 +409,7 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
             public void onResponse(Call<CommentContent[]> call, Response<CommentContent[]> response) {
                 if (response.isSuccessful()) {
                     List<CommentContent> commentObjectList = new ArrayList<>(Arrays.asList(response.body()));
-                    AdapterComment adapterComment = new AdapterComment(getContext(),commentObjectList,iBackToDetailRoom, false);
+                    AdapterComment adapterComment = new AdapterComment(getContext(), commentObjectList, iBackToDetailRoom, false);
                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
                     lstCmts.setLayoutManager(linearLayoutManager);
                     lstCmts.setAdapter(adapterComment);
@@ -412,8 +427,8 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
     @Override
     public void sendBackObject(CommentContent commentContent) {
         FragmentShowMoreCmt fragment = new FragmentShowMoreCmt();
-        fragment.setStyle(DialogFragment.STYLE_NORMAL,R.style.DialogFragmentTheme);
+        fragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
         fragment.setObject(commentContent);
-        fragment.show(getFragmentManager(),"fragment_showmore_comment");
+        fragment.show(getFragmentManager(), "fragment_showmore_comment");
     }
 }

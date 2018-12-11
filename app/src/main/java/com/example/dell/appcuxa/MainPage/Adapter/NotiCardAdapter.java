@@ -1,36 +1,30 @@
 package com.example.dell.appcuxa.MainPage.Adapter;
 
-/**
- * Created by truongnv on 02/11/18.
- */
-
 import android.content.Context;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.dell.appcuxa.MainPage.MainPageViews.MessTab.MessView.Interface.CallbackChatRoom;
-import com.example.dell.appcuxa.ObjectModels.Item;
+import com.example.dell.appcuxa.ObjectModels.NotiObject;
 import com.example.dell.appcuxa.ObjectModels.ObjectChat;
 import com.example.dell.appcuxa.R;
 import com.example.dell.appcuxa.Utils.AppUtils;
-import com.google.android.gms.vision.text.Line;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.MyViewHolder> {
+public class NotiCardAdapter  extends RecyclerView.Adapter<NotiCardAdapter.MyViewHolder> {
     private Context context;
-    private List<ObjectChat> cartList;
+    private List<NotiObject> cartList;
     private CallbackChatRoom callbackChatRoom;
 
 
@@ -52,45 +46,37 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.MyView
     }
 
 
-    public CartListAdapter(Context context, List<ObjectChat> cartList,CallbackChatRoom callbackChatRoom) {
+    public NotiCardAdapter(Context context, List<NotiObject> cartList,CallbackChatRoom callbackChatRoom) {
         this.context = context;
         this.cartList = cartList;
         this.callbackChatRoom = callbackChatRoom;
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public NotiCardAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.cart_list_item, parent, false);
 
-        return new MyViewHolder(itemView);
+        return new NotiCardAdapter.MyViewHolder(itemView);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         Date date = new Date();
-        final ObjectChat item = cartList.get(position);
-        holder.name.setText(item.getName());
-        holder.description.setText(item.getName());
+        final NotiObject item = cartList.get(position);
+        holder.name.setText(item.getTitle());
+        holder.description.setText(item.getMessage());
         holder.price.setText(AppUtils.parseDateFromWS(item.getCreatedAt()));
-
-        String idUser1 = item.getUsers()[0].getId();
-        String idUser2 = item.getUsers()[1].getId();
-        String idCurrentId = AppUtils.getIdUser(context);
-        if(idCurrentId.equalsIgnoreCase(idUser1)){
-            Glide.with(context)
-                    .load(item.getUsers()[1].getPicture())
-                    .into(holder.thumbnail);
-        }else if(idCurrentId.equalsIgnoreCase(idUser2)){
-            Glide.with(context)
-                    .load(item.getUsers()[0].getPicture())
-                    .into(holder.thumbnail);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            holder.thumbnail.setImageDrawable(context.getDrawable(R.drawable.ic_rent));
         }
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                callbackChatRoom.CallBackRoomChat(item);
+                callbackChatRoom.CallBackNotiScreen(item);
             }
         });
     }
@@ -108,12 +94,12 @@ public class CartListAdapter extends RecyclerView.Adapter<CartListAdapter.MyView
         notifyItemRemoved(position);
     }
 
-    public void restoreItem(ObjectChat item, int position) {
+    public void restoreItem(NotiObject item, int position) {
         cartList.add(position, item);
         // notify item added by position
         notifyItemInserted(position);
     }
-    public void setFilter(List<ObjectChat> items) {
+    public void setFilter(List<NotiObject> items) {
         cartList = new ArrayList<>();
         cartList.addAll(items);
         notifyDataSetChanged();
