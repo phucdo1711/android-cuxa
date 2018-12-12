@@ -170,44 +170,47 @@ public class AddPhotoBottomDialogFragment extends BottomSheetDialogFragment impl
         super.onActivityResult(requestCode,resultCode,data);
         if (data != null) {
             if (requestCode == CAMERA) {
-                Bitmap photo = (Bitmap) data.getExtras().get("data");
-                Bitmap photoResized = AppUtils.getResizedBitmap(photo,500);
-                lstBitmap.add(photoResized);
-                sendBackImage(lstBitmap);
-                Uri imageUri = getImageUri(getContext(),photoResized);
-                List<MultipartBody.Part> parts = new ArrayList<>();
+                if(data.getExtras()!=null){
+                    Bitmap photo = (Bitmap) data.getExtras().get("data");
+                    Bitmap photoResized = AppUtils.getResizedBitmap(photo,500);
+                    lstBitmap.add(photoResized);
+                    sendBackImage(lstBitmap);
+                    Uri imageUri = getImageUri(getContext(),photoResized);
+                    List<MultipartBody.Part> parts = new ArrayList<>();
 
-                parts.add(prepareFilePart("images", imageUri));
-                MultipartBody.Part[] parts1 = new MultipartBody.Part[parts.size()];
-                parts.toArray(parts1);
-                FragmentUpRoom.progressBar.setVisibility(View.VISIBLE);
-                Call<ResponseBody> call = fileService.postImage("Bearer " + token, parts1);
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.isSuccessful()) {
-                            FragmentUpRoom.progressBar.setVisibility(View.GONE);
-                            JSONArray jArray = null;
-                            try {
-                                jArray = new JSONArray(response.body().string());
-                                for (int i = 0; i < jArray.length(); i++) {
-                                    JSONObject object = jArray.optJSONObject(i);
-                                    FragmentUpRoom.imageHinhId.add(object.getString("id"));
+                    parts.add(prepareFilePart("images", imageUri));
+                    MultipartBody.Part[] parts1 = new MultipartBody.Part[parts.size()];
+                    parts.toArray(parts1);
+                    FragmentUpRoom.progressBar.setVisibility(View.VISIBLE);
+                    Call<ResponseBody> call = fileService.postImage("Bearer " + token, parts1);
+                    call.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            if (response.isSuccessful()) {
+                                FragmentUpRoom.progressBar.setVisibility(View.GONE);
+                                JSONArray jArray = null;
+                                try {
+                                    jArray = new JSONArray(response.body().string());
+                                    for (int i = 0; i < jArray.length(); i++) {
+                                        JSONObject object = jArray.optJSONObject(i);
+                                        FragmentUpRoom.imageHinhId.add(object.getString("id"));
+                                    }
+                                    Log.d("hihhh", response.toString());
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
                                 }
-                                Log.d("hihhh", response.toString());
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
                             }
                         }
-                    }
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Log.d("hihhh", "failure");
-                        FragmentUpRoom.progressBar.setVisibility(View.GONE);
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                            Log.d("hihhh", "failure");
+                            FragmentUpRoom.progressBar.setVisibility(View.GONE);
+                        }
+                    });
+                }
+
             } else if (requestCode ==  PhotoPicker.REQUEST_CODE) {
                 Log.d("dataa",data.toString());
                 ArrayList<String> photos =

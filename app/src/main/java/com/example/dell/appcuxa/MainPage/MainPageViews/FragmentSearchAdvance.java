@@ -172,7 +172,7 @@ public class FragmentSearchAdvance extends DialogFragment implements View.OnClic
                         searchRoom();
                     }
                 }else{
-                    Toast.makeText(getActivity(), "Đéo có mạng", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Mạng không khả dụng, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }

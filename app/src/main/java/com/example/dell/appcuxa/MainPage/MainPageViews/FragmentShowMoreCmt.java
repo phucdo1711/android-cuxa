@@ -34,6 +34,8 @@ public class FragmentShowMoreCmt extends DialogFragment implements View.OnClickL
     private ImageView imgBack;
     CuXaAPI cuXaAPI;
     ImageView btnSendCmt;
+    AdapterComment adapterComment;
+    List<CommentContent> commentContents;
     RobEditText edtSendCmt;
     RecyclerView recComment;
     CommentContent commentContent;
@@ -49,9 +51,9 @@ public class FragmentShowMoreCmt extends DialogFragment implements View.OnClickL
         mMainView = inflater.inflate(R.layout.fragment_show_more_cmt, container, false);
         cuXaAPI = NetworkController.upload();
         init();
-        List<CommentContent> commentContents = new ArrayList<>();
+        commentContents = new ArrayList<>();
         commentContents.add(commentContent);
-        AdapterComment adapterComment = new AdapterComment(getContext(),commentContents,true, true);
+        adapterComment = new AdapterComment(getContext(),commentContents,true, true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recComment.setLayoutManager(linearLayoutManager);
         recComment.setAdapter(adapterComment);
@@ -94,17 +96,19 @@ public class FragmentShowMoreCmt extends DialogFragment implements View.OnClickL
         commentObject.setContent(content);
         commentObject.setRoom(commentContent.getRoom());
         commentObject.setParent(commentContent.getId());
-        Call<ResponseBody> sendCmt = cuXaAPI.uploadCommentWithParent("Bearer " + AppUtils.getToken(getActivity()), commentObject);
-        sendCmt.enqueue(new Callback<ResponseBody>() {
+        Call<CommentContent> sendCmt = cuXaAPI.uploadCommentWithParent("Bearer " + AppUtils.getToken(getActivity()), commentObject);
+        sendCmt.enqueue(new Callback<CommentContent>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(Call<CommentContent> call, Response<CommentContent> response) {
                 if (response.isSuccessful()) {
                     edtSendCmt.setText("");
+                    commentContents.add(response.body());
+                    adapterComment.notifyDataSetChanged();
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<CommentContent> call, Throwable t) {
 
             }
         });

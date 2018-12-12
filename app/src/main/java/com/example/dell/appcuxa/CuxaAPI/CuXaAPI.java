@@ -3,6 +3,7 @@ package com.example.dell.appcuxa.CuxaAPI;
 import com.example.dell.appcuxa.ObjectModels.ChatObject;
 import com.example.dell.appcuxa.ObjectModels.ChatRoomObj;
 import com.example.dell.appcuxa.ObjectModels.CommentContent;
+import com.example.dell.appcuxa.ObjectModels.ContentObject;
 import com.example.dell.appcuxa.ObjectModels.NotiModel;
 import com.example.dell.appcuxa.ObjectModels.NotiObject;
 import com.example.dell.appcuxa.ObjectModels.ObjectChat;
@@ -126,10 +127,13 @@ public interface CuXaAPI {
     Call<ObjectChat> createRoom(@Header("Authorization")String authHeader, @Body RoomCreatedObj roomCreatedObj);
 
     @POST("comments")
-    Call<ResponseBody> uploadCommentNoParent(@Header("Authorization")String authHeader, @Body CommentContent commentObject);
+    Call<CommentContent> uploadCommentNoParent(@Header("Authorization")String authHeader, @Body CommentContent commentObject);
 
     @POST("comments")
-    Call<ResponseBody> uploadCommentWithParent(@Header("Authorization")String authHeader, @Body CommentContent commentObject);
+    Call<CommentContent> uploadCommentWithParent(@Header("Authorization")String authHeader, @Body CommentContent commentObject);
+
+    @POST("feedbacks")
+    Call<ResponseBody> uploadFeedBack(@Header("Authorization")String authHeader, @Body ContentObject content);
 
     @GET("comments")
     Call<CommentContent[]> getListComment(@Header("Authorization") String authHeader, @Query("room") String idRoom, @Query("sort") String sort);

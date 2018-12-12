@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -43,7 +44,9 @@ import retrofit2.Response;
 public class FragmentNotification extends Fragment implements RecItemNotiTouchAdapter.RecyclerItemTouchHelperListener,View.OnClickListener,CallbackChatRoom {
     private View mMainView;
     RecyclerView recyclerView;
+    SwipeRefreshLayout refreshLayout;
     NotiCardAdapter mAdapter;
+    List<NotiObject> notiObjects;
     List<NotiObject> notiObjectList;
     ImageView imgView;
     public FragmentNotification(){
@@ -56,6 +59,13 @@ public class FragmentNotification extends Fragment implements RecItemNotiTouchAd
         //imgView = mMainView.findViewById(R.id.imgView);
         //imgView.setImageBitmap(AppUtils.decodeSampledBitmapFromResource(getResources(), R.drawable.fragment_first, 200, 200));
         recyclerView = mMainView.findViewById(R.id.recNoti);
+        refreshLayout = mMainView.findViewById(R.id.refreshLayout);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getLstNoti();
+            }
+        });
         notiObjectList = new ArrayList<>();
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -102,18 +112,23 @@ public class FragmentNotification extends Fragment implements RecItemNotiTouchAd
     }
 
     public void getLstNoti(){
+        notiObjectList.clear();
         CuXaAPI cuXaAPI = NetworkController.upload();
         Call<NotiModel> call = cuXaAPI.getLstNoti("Bearer "+ AppUtils.getToken(getActivity()),AppUtils.getIdUser(getActivity()));
         call.enqueue(new Callback<NotiModel>() {
             @Override
             public void onResponse(Call<NotiModel> call, Response<NotiModel> response) {
-                List<NotiObject> notiObjects = new ArrayList<>(Arrays.asList(response.body().notiObjects));
-                notiObjectList.addAll(notiObjects);
-                mAdapter.notifyDataSetChanged();
+                if(response.isSuccessful()){
+                    notiObjects = new ArrayList<>(Arrays.asList(response.body().notiObjects));
+                    notiObjectList.addAll(notiObjects);
+                    mAdapter.notifyDataSetChanged();
+                }
+                refreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onFailure(Call<NotiModel> call, Throwable t) {
+                refreshLayout.setRefreshing(false);
 
             }
         });

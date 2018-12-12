@@ -3,6 +3,7 @@ package com.example.dell.appcuxa.MainPage.Adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.example.dell.appcuxa.R;
 import com.example.dell.appcuxa.Utils.AppUtils;
 import com.squareup.picasso.Picasso;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -95,7 +97,13 @@ public class MessageRoomChatAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         final MessageItem message = lstMess.get(i);
         if (viewHolder.getItemViewType() == 1) {
             final ViewHolderUser viewHolderUser = (ViewHolderUser) viewHolder;
-            viewHolderUser.tvContentChatUser.setText(message.getContent() == null ? "" : message.getContent());
+            byte[] data = Base64.decode(message.getContent() == null ? "" : message.getContent(), Base64.DEFAULT);
+            try {
+                String text = new String(data, "UTF-8");
+                viewHolderUser.tvContentChatUser.setText(text);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             viewHolderUser.tvContentChatUser.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -111,7 +119,13 @@ public class MessageRoomChatAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             });
         } else {
             final ViewHolderFriend viewHolderFriend = (ViewHolderFriend) viewHolder;
-            viewHolderFriend.tvContentChatFriend.setText(message.getContent() == null ? "" : message.getContent());
+            byte[] data = Base64.decode(message.getContent() == null ? "" : message.getContent(), Base64.DEFAULT);
+            try {
+                String text = new String(data, "UTF-8");
+                viewHolderFriend.tvContentChatFriend.setText(text);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             Picasso.get().load(avatFriend).placeholder(R.drawable.default_image).into(viewHolderFriend.imgAvatar);
             viewHolderFriend.tvContentChatFriend.setOnClickListener(new View.OnClickListener() {
                 @Override

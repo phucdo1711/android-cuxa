@@ -84,6 +84,7 @@
                 <com.example.dell.appcuxa.CustomeView.RobBoldText
                     android:textColor="#000000"
                     android:textSize="18dp"
+                    android:layout_marginTop="10dp"
                     android:text="Cư xá có thể giúp gì bạn?"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />

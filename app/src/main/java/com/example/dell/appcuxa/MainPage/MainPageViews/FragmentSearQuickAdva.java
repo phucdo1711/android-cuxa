@@ -187,7 +187,7 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
                     recPrice.setVisibility(View.VISIBLE);
                     listSearchResultPV.setVisibility(View.GONE);
                     recTienNghi.setVisibility(View.GONE);
-                    if (locationOption.count != null && Integer.valueOf(priceOption.count) > 0) {
+                    if (priceOption.count != null && Integer.valueOf(priceOption.count) > 0) {
                         tvNumResult.setText(priceOption.count);
                         tvTypeResult.setText("về giá");
                         AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(), priceOption, iLogicSaveRoom,fileService);
@@ -221,10 +221,10 @@ public class FragmentSearQuickAdva extends DialogFragment implements View.OnClic
                     recPrice.setVisibility(View.GONE);
                     listSearchResultPV.setVisibility(View.GONE);
                     recTienNghi.setVisibility(View.VISIBLE);
-                    if (tienNghiOption.count != null && Integer.valueOf(locationOption.count) > 0) {
-                        tvNumResult.setText(locationOption.count);
+                    if (tienNghiOption.count != null && Integer.valueOf(tienNghiOption.count) > 0) {
+                        tvNumResult.setText(tienNghiOption.count);
                         tvTypeResult.setText("về tiện nghi");
-                        AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(), locationOption, iLogicSaveRoom,fileService);
+                        AdapterSearchResultRoom adapterSearchResultRoom = new AdapterSearchResultRoom(getContext(), tienNghiOption, iLogicSaveRoom,fileService);
                         recTienNghi.setAdapter(adapterSearchResultRoom);
                         adapterSearchResultRoom.notifyDataSetChanged();
                     }else{

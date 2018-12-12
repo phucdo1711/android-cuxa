@@ -59,7 +59,7 @@ import retrofit2.Response;
 
 public class GoogleMapFragment extends DialogFragment implements OnMapReadyCallback, View.OnClickListener {
     private static final String TAG = "GoogleMapFragment";
-    public View mMainView;
+    public static View mMainView;
     protected GeoDataClient mGeoDataClient;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40,-168),new LatLng(71,136));
     private static final String FIND_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;

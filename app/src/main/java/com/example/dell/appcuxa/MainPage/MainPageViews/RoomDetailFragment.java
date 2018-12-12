@@ -60,7 +60,9 @@ import retrofit2.Response;
 public class RoomDetailFragment extends DialogFragment implements View.OnClickListener, IBackToDetailRoom {
     public View mMainView;
     Toolbar toolbar;
+    AdapterComment adapterComment;
     String id = "";
+    List<CommentContent> commentObjectList;
     boolean isTrue = false;
     RoomSearchItem roomSearchItem = new RoomSearchItem();
     CircleImageView imgAvatar;
@@ -386,17 +388,20 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
         CommentContent commentObject = new CommentContent();
         commentObject.setContent(content);
         commentObject.setRoom(id);
-        Call<ResponseBody> sendCmt = fileService.uploadCommentNoParent("Bearer " + AppUtils.getToken(getActivity()), commentObject);
-        sendCmt.enqueue(new Callback<ResponseBody>() {
+        Call<CommentContent> sendCmt = fileService.uploadCommentNoParent("Bearer " + AppUtils.getToken(getActivity()), commentObject);
+        sendCmt.enqueue(new Callback<CommentContent>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(Call<CommentContent> call, Response<CommentContent> response) {
                 if (response.isSuccessful()) {
                     edtCmtContent.setText("");
+                    commentObjectList.add(response.body());
+                    adapterComment.notifyDataSetChanged();
+                    //logic thêm tin nhắn.
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<CommentContent> call, Throwable t) {
 
             }
         });
@@ -408,8 +413,8 @@ public class RoomDetailFragment extends DialogFragment implements View.OnClickLi
             @Override
             public void onResponse(Call<CommentContent[]> call, Response<CommentContent[]> response) {
                 if (response.isSuccessful()) {
-                    List<CommentContent> commentObjectList = new ArrayList<>(Arrays.asList(response.body()));
-                    AdapterComment adapterComment = new AdapterComment(getContext(), commentObjectList, iBackToDetailRoom, false);
+                    commentObjectList = new ArrayList<>(Arrays.asList(response.body()));
+                    adapterComment = new AdapterComment(getContext(), commentObjectList, iBackToDetailRoom, false);
                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
                     lstCmts.setLayoutManager(linearLayoutManager);
                     lstCmts.setAdapter(adapterComment);

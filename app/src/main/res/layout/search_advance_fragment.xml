@@ -41,6 +41,7 @@
             android:id="@+id/spin_kit"
             style="@style/SpinKitView.Large.Circle"
             android:layout_width="30dp"
+            android:visibility="gone"
             android:layout_height="30dp"
             android:layout_gravity="center"
             app:SpinKit_Color="@color/orange" />

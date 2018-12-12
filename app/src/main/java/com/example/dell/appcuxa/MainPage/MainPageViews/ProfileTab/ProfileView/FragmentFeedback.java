@@ -13,7 +13,16 @@ import android.widget.Toast;
 import com.example.dell.appcuxa.CustomeView.RobBoldText;
 import com.example.dell.appcuxa.CustomeView.RobButton;
 import com.example.dell.appcuxa.CustomeView.RobEditText;
+import com.example.dell.appcuxa.CuxaAPI.CuXaAPI;
+import com.example.dell.appcuxa.CuxaAPI.NetworkController;
+import com.example.dell.appcuxa.ObjectModels.ContentObject;
 import com.example.dell.appcuxa.R;
+import com.example.dell.appcuxa.Utils.AppUtils;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FragmentFeedback extends DialogFragment implements View.OnClickListener {
     public View mMainView;
@@ -50,10 +59,34 @@ public class FragmentFeedback extends DialogFragment implements View.OnClickList
                 if(edtContentFeedback.getText().toString().trim().length()==0){
                     Toast.makeText(getContext(), "Mời bạn nhập vào nội dung", Toast.LENGTH_SHORT).show();
                 }else{
-                    edtContentFeedback.setText("");
-                    Toast.makeText(getContext(), "Cám ơn bạn đã đóng góp ý kiến", Toast.LENGTH_SHORT).show();
+                    if(AppUtils.haveNetworkConnection(getContext())){
+                        uploadContent(edtContentFeedback.getText().toString().trim());
+                    }else{
+                        Toast.makeText(getContext(), "Mạng không khả dụng, vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 break;
         }
+    }
+    public void uploadContent(String content){
+        CuXaAPI cuXaAPI = NetworkController.upload();
+        ContentObject contentObject = new ContentObject();
+        contentObject.setContent(content);
+        Call<ResponseBody> call = cuXaAPI.uploadFeedBack("Bearer "+ AppUtils.getToken(getActivity()),contentObject);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()){
+                    Toast.makeText(getContext(), "Cám ơn bạn đã đóng góp ý kiến", Toast.LENGTH_SHORT).show();
+                    edtContentFeedback.setText("");
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
     }
 }

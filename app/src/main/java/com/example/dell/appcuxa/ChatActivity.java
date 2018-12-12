@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -119,6 +120,16 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+      /*  mSocket.on("on_message", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                String jsonString = args[0].toString();
+                Log.d(TAG, jsonString);
+                final MessageItem chat = new Gson().fromJson(jsonString, MessageItem.class);
+                Log.d(TAG,chat.toString());
+            }
+        });*/
+
         mSocket.on("on_message", new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
@@ -130,6 +141,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         try {
 
                             String content = object.getString("content");
+                            byte[] data = Base64.decode(content, Base64.DEFAULT);
+                            String text = new String(data, "UTF-8");
                             byte[] bytes = content.getBytes("UTF-8"); // Charset to encode into
                             Log.d("on_connect96",new String(object.getString("content").getBytes("ISO-8859-1"), "UTF-8").replace("\\",""));
                             String chatRoom = object.getString("chatRoom");
@@ -169,7 +182,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void getMessage(long page){
+    public void getMessage(final long page){
         Call<ChatObject> call = cuXaAPI.getListMess("Bearer " + AppUtils.getToken(this), chat.getId(), Constants.LIMIT_MESSAGE, page);
         call.enqueue(new Callback<ChatObject>() {
             @Override
@@ -178,10 +191,10 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     ChatObject chatObject = response.body();
                     chats = new ArrayList<>(Arrays.asList(chatObject.getMessageItems()));
                     Collections.reverse(chats);
-                    if (chats.size() > 0) {
-                        tvBegin.setVisibility(View.GONE);
-                    } else {
+                    if (page==1&&chats.size() <= 0) {
                         tvBegin.setVisibility(View.VISIBLE);
+                    } else {
+                        tvBegin.setVisibility(View.GONE);
                     }
                     if(mesList.size()>0){
                         mesList.addAll(0,chats);
@@ -190,6 +203,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     adapter = new MessageRoomChatAdapter(getApplicationContext(), mesList, avatarFriend);
                     LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
+                /*    manager.setReverseLayout(true);
+                    manager.setStackFromEnd(true);*/
                     mMessagesView.setLayoutManager(manager);
                     mMessagesView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
@@ -234,11 +249,18 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnSendMess:
                 if (chat != null) {
                     String content = edtChatContent.getText().toString().trim();
+                    byte[] data = new byte[0];
+                    try {
+                        data = content.getBytes("UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    String base64 = Base64.encodeToString(data, Base64.DEFAULT);
                     if (content.length() == 0) {
                         return;
                     }
                     Gson gson = new Gson();
-                    String json = gson.toJson(new MessageItem(chat.getId(), "text", content));
+                    String json = gson.toJson(new MessageItem(chat.getId(), "text", base64));
                     JSONObject jsonObject = null;
                     try {
                         jsonObject = new JSONObject(json);

@@ -22,6 +22,7 @@ import com.example.dell.appcuxa.MainPage.MainPageViews.FragmentSearchAdvance;
 import com.example.dell.appcuxa.MainPage.MainPageViews.FragmentUpRoom;
 import com.example.dell.appcuxa.MainPage.MainPageViews.Interface.ISendBackToEdit;
 import com.example.dell.appcuxa.MainPage.MainPageViews.MainPageActivity;
+import com.example.dell.appcuxa.MainPage.MainPageViews.NotiTab.NotiView.FragmentDetailNoti;
 import com.example.dell.appcuxa.ObjectModels.RoomSearchItem;
 import com.example.dell.appcuxa.R;
 import com.squareup.picasso.Picasso;
@@ -93,6 +94,12 @@ public class FragmentProfile extends Fragment implements View.OnClickListener, I
         switch (view.getId()){
             case R.id.layout_logout:
                 logout();
+                break;
+            case R.id.layout_help:
+                FragmentDetailNoti help = new FragmentDetailNoti();
+                //fragmentSearQuickAdva.setCancelable(false);
+                help.setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogFragmentTheme);
+                help.show(getFragmentManager(), "fragment_detail_noti");
                 break;
             case R.id.layout_qrcode:
                 FragmentQrCode fragment = new FragmentQrCode();
